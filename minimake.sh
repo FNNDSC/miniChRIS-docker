@@ -39,7 +39,7 @@ docker-compose exec chris_store sh -c \
 docker-compose exec chris sh -c \
   'while ! curl -sSf http://localhost:8000/api/v1/users/; do sleep 1; done;' > /dev/null 2>&1
 
-printf "Performing setup..."
+printf "Performing setup... "
 
 function create_user () {
 docker-compose exec -T $1 sh -c 'python manage.py shell' << EOF
@@ -63,3 +63,4 @@ else
   echo "Setup failed."
   exit 1
 fi
+
