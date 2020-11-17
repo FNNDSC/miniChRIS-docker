@@ -1,0 +1,179 @@
+# an ephemeral instance of ChRIS backend services
+# for local testing purposes
+# based on https://raw.githubusercontent.com/FNNDSC/ChRIS_ultron_backEnd/master/docker-compose.yml
+# commit 0ed91d7c3b3feaf9d68348623649a5d2e9918e34
+
+version: '3.7'
+
+services:
+  chris:
+    container_name: chris
+    image: fnndsc/chris:latest
+    ports:
+      - "127.0.0.1:8000:8000"
+    depends_on:
+      - chris_db
+      - swift_service
+      - queue
+      - chris_store
+      - pfcon_service
+    networks:
+      - local
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings.production
+      - DJANGO_ALLOWED_HOSTS=*
+      - DJANGO_SECRET_KEY="thisisnotsecure"
+      - DJANGO_CORS_ORIGIN_WHITELIST=babymri.org
+      - DJANGO_SECURE_PROXY_SSL_HEADER=
+      - DJANGO_USE_X_FORWARDED_HOST=false
+      - DJANGO_CORS_ORIGIN_ALLOW_ALL=true
+      - STATIC_ROOT=/home/localuser/mod_wsgi-0.0.0.0:8000/htdocs/static/
+      - CHRIS_STORE_URL=http://chrisstore.local:8010/api/v1/
+      - SWIFT_CONTAINER_NAME=users
+      - SWIFT_AUTH_URL=http://swift_service:8080/auth/v1.0
+      - SWIFT_USERNAME=chris:chris1234
+      - SWIFT_KEY=testing
+      - CELERY_BROKER_URL=amqp://queue:5672
+      - DATABASE_HOST=chris_db
+      - DATABASE_PORT=3306
+      - MYSQL_ROOT_PASSWORD=rootp
+      - MYSQL_DATABASE=chris
+      - MYSQL_USER=chris
+      - MYSQL_PASSWORD=Chris1234
+  worker:
+    image: fnndsc/chris:latest
+    entrypoint: ''
+    command: celery -A core worker -c 4 -l info -Q main
+    environment:
+      - CELERY_RDB_HOST=0.0.0.0
+    depends_on:
+      - chris_db
+      - swift_service
+      - queue
+      - pfcon_service
+    networks:
+      - local
+  scheduler:
+    image: fnndsc/chris:latest
+    entrypoint: ''
+    command: celery -A core beat -l info --pidfile /home/localuser/celerybeat.pid --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    depends_on:
+      - chris_db
+      - swift_service
+      - queue
+    networks:
+      - local
+
+  chris_db:
+    image: mysql:5
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootp
+      - MYSQL_DATABASE=chris
+      - MYSQL_USER=chris
+      - MYSQL_PASSWORD=Chris1234
+    networks:
+      - local
+
+  queue:
+    image: rabbitmq:3
+    networks:
+      - local
+
+  chris_store:
+    container_name: chris_store
+    image: fnndsc/chris_store
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings.production
+      - DJANGO_ALLOWED_HOSTS=*
+      - DJANGO_SECRET_KEY="alsonotverysecure"
+      - DJANGO_CORS_ORIGIN_ALLOW_ALL=true
+      - DJANGO_CORS_ORIGIN_WHITELIST=babymri.org
+      - DJANGO_SECURE_PROXY_SSL_HEADER=
+      - DJANGO_USE_X_FORWARDED_HOST=false
+      - DATABASE_HOST=chris_store_db
+      - DATABASE_PORT=3306
+      - SWIFT_AUTH_URL=http://swift_service:8080/auth/v1.0
+      - MYSQL_ROOT_PASSWORD=rootp
+      - MYSQL_DATABASE=chris_store
+      - MYSQL_USER=chris
+      - MYSQL_PASSWORD=Chris1234
+      - SWIFT_USERNAME=chris:chris1234
+      - SWIFT_KEY=testing
+      - SWIFT_CONTAINER_NAME=store_users
+    ports:
+      - "8010:8010"
+    depends_on:
+      - chris_store_db
+      - swift_service
+    networks:
+      local:
+        aliases:
+          - chrisstore.local
+
+  chris_store_db:
+    image: mysql:5
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootp
+      - MYSQL_DATABASE=chris_store
+      - MYSQL_USER=chris
+      - MYSQL_PASSWORD=Chris1234
+    networks:
+      - local
+    labels:
+      name: "ChRIS_store MySQL Database"
+
+  swift_service:
+    image: fnndsc/docker-swift-onlyone
+    init: true
+    environment:
+      - SWIFT_USERNAME=chris:chris1234
+      - SWIFT_KEY=testing
+    ports:
+      - "127.0.0.1:8080:8080"
+    networks:
+      - local
+
+  pfcon_service:
+    container_name: pfcon
+    image: fnndsc/pfcon:latest
+    command: ["--forever", "--httpResponse", "--verbosity", "1"]
+    ports:
+      - "127.0.0.1:5005:5005"
+    depends_on:
+      - swift_service
+      - pman_service
+      - pfioh_service
+    networks:
+      local:
+        aliases:
+          - pfcon.local
+
+  pfioh_service:
+    container_name: pfioh
+    # We need to map a physical dir in the HOST to the key store in pfioh.
+    # The keystore is specified by the --storeBase flag.
+    image: fnndsc/pfioh:latest
+    command: ["--forever", "--httpResponse", "--createDirsAsNeeded", "--storeBase", "/hostFS/storeBase"]
+    volumes:
+      - ./FS/remote:/hostFS/storeBase
+    ports:
+      - "127.0.0.1:5055:5055"
+    networks:
+      - local
+
+  pman_service:
+    container_name: pman
+    environment:
+      - STOREBASE=${PWD}/FS/remote
+    image: fnndsc/pman:latest
+    command: ["--rawmode", "1", "--http", "--port", "5010", "--listeners", "12", "--verbosity", "1"]
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./FS/remote:/hostFS/storeBase
+    ports:
+      - "127.0.0.1:5010:5010"
+    networks:
+      - local
+
+networks:
+  local:
