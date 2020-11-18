@@ -1,0 +1,19 @@
+# run everything just to make sure it works!
+
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: run CUBE
+        run: ./minimake.sh
+      - name: destroy CUBE
+        run: ./unmake.sh
