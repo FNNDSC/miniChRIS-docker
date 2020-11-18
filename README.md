@@ -5,7 +5,7 @@ A no-nonsense local ChRIS instance runner without the shenanigans of
 
 If you've caught yourself muttering
 
-> I don't care about anything, just work
+> I don't care about all of this, just work
 
 then this is the repo for you.
 
@@ -29,11 +29,12 @@ https://github.com/FNNDSC/ChRIS_ultron_backEnd/tree/0ed91d7c3b3feaf9d68348623649
 `./minimake.sh` wraps `docker-compose up -d` and it does a _few_ more things:
 
 1. start swarm
-2. pull containers
+2. pull images
 3. start containers
-4. setup
+4. wait for services
+4. first-run setup
 
-`./minimake.sh` takes around ~1 minute to run ~60 lines of code.
+`./minimake.sh` takes around ~1 minute to run.
 
 ## Tips And Tricks
 
@@ -62,4 +63,3 @@ vagrant up
 ```bash
 vagrant destroy -f
 ```
-

@@ -1,3 +1,6 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
 Vagrant.configure("2") do |config|
   config.vm.box = "debian/buster64"
   config.vm.provider "virtualbox" do |vb|
@@ -20,4 +23,3 @@ Vagrant.configure("2") do |config|
   
   config.vm.provision "shell", run: "always", inline: "cd /vagrant && ./minimake.sh"
 end
-
