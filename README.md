@@ -37,6 +37,29 @@ https://github.com/FNNDSC/ChRIS_ultron_backEnd/tree/0ed91d7c3b3feaf9d68348623649
 
 ## Tips And Tricks
 
+- if `./minimake.sh` exits with a non-0 status, it is strongly recommended to run `./unmake.sh`
 - default superusers `chris:chris1234` created in _CUBE_ and *ChRIS_store*
 - containers are named `chris`, `chris_store`, `pfcon`, `pfioh`, and `pman` so you can directly run `docker exec chris ...`
 - `./minimake.sh` blocks until CUBE is ready to accept connections, and it exits leaving the services up -- it should be easy to use for tests.
+
+## Vagrant
+
+No docker? That's okay.
+
+`Vagrantfile` provides a virtual machine (VM) with latest `docker-compose` installed.
+VMs are inherently slow, and docker image pulls are not cached between lifecycles.
+Setup using Vagrant is wasteful of time, memory, disk, and network bandwidth.
+For me, `vagrant up` took 9 minutes.
+
+### Start
+
+```bash
+vagrant up
+```
+
+### Stop
+
+```bash
+vagrant destroy -f
+```
+

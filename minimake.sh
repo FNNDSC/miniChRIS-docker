@@ -28,35 +28,48 @@ docker-compose pull
 docker-compose up -d
 
 if [ "$?" != "0" ]; then
-  ./unmake.sh
   exit 1
 fi
 
 echo "Waiting for services to come online..."
 
-docker-compose exec chris_store sh -c \
-  'while ! curl -sSf http://localhost:8010/api/v1/users/; do sleep 1; done;' > /dev/null 2>&1
-docker-compose exec chris sh -c \
-  'while ! curl -sSf http://localhost:8000/api/v1/users/; do sleep 1; done;' > /dev/null 2>&1
+# poll /api/v1/users/ on a given port once every two seconds,
+# unblocking after a successful request. Max 30 tries i.e. timeout 60 secs
+function block_until_ready () {
+  for i in {0..10}; do
+    sleep 2
+    curl -s http://localhost:$1/api/v1/users/ > /dev/null && return 0
+  done
+  echo "Timed out, giving up."
+  exit 1
+}
+
+block_until_ready 8000 # CUBE
+block_until_ready 8010 # ChRIS_store
 
 printf "Performing setup... "
 
-function create_user () {
-docker-compose exec -T $1 sh -c 'python manage.py shell' << EOF
+superuser_script='
 from django.contrib.auth.models import User
-User.objects.create_superuser(username='chris', password='chris1234', email='dev@babymri.org')
-EOF
+User.objects.create_superuser(username="chris", password="chris1234", email="dev@babymri.org")
+'
+function create_user () {
+  docker exec $1 python manage.py shell -c "$superuser_script"
 }
 
 create_user chris
 create_user chris_store
-docker-compose exec chris python plugins/services/manager.py \
+docker exec chris        python plugins/services/manager.py \
   add host "http://pfcon.local:5005" --description "Local compute"
-docker-compose exec chris_store python plugins/services/manager.py \
+docker exec chris_store  python plugins/services/manager.py \
   add pl-dircopy chris https://github.com/FNNDSC/pl-dircopy fnndsc/pl-dircopy \
-  --descriptorstring "$(docker run --rm fnndsc/pl-dircopy dircopy.py --json 2> /dev/null)" > /dev/null
-docker-compose exec chris python plugins/services/manager.py register host --pluginname pl-dircopy
+  --descriptorstring "$(docker run --rm fnndsc/pl-dircopy dircopy.py --json   \
+  2> /dev/null)" > /dev/null 2>&1
+docker exec chris python plugins/services/manager.py register host --pluginname pl-dircopy
 
+# assert setup was successful:
+# - can log in as the user "chris"
+# - "pl-dircopy" plugin found in CUBE
 if curl -su 'chris:chris1234' http://localhost:8000/api/v1/plugins/ | grep -q pl-dircopy; then
   echo "Done!"
 else
