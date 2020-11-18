@@ -19,33 +19,12 @@ services:
       - pfcon_service
     networks:
       - local
-    environment:
-      - DJANGO_SETTINGS_MODULE=config.settings.production
-      - DJANGO_ALLOWED_HOSTS=*
-      - DJANGO_SECRET_KEY="thisisnotsecure"
-      - DJANGO_CORS_ORIGIN_WHITELIST=babymri.org
-      - DJANGO_SECURE_PROXY_SSL_HEADER=
-      - DJANGO_USE_X_FORWARDED_HOST=false
-      - DJANGO_CORS_ORIGIN_ALLOW_ALL=true
-      - STATIC_ROOT=/home/localuser/mod_wsgi-0.0.0.0:8000/htdocs/static/
-      - CHRIS_STORE_URL=http://chrisstore.local:8010/api/v1/
-      - SWIFT_CONTAINER_NAME=users
-      - SWIFT_AUTH_URL=http://swift_service:8080/auth/v1.0
-      - SWIFT_USERNAME=chris:chris1234
-      - SWIFT_KEY=testing
-      - CELERY_BROKER_URL=amqp://queue:5672
-      - DATABASE_HOST=chris_db
-      - DATABASE_PORT=3306
-      - MYSQL_ROOT_PASSWORD=rootp
-      - MYSQL_DATABASE=chris
-      - MYSQL_USER=chris
-      - MYSQL_PASSWORD=Chris1234
+    env_file: secrets.env
   worker:
     image: fnndsc/chris:latest
     entrypoint: ''
     command: celery -A core worker -c 4 -l info -Q main
-    environment:
-      - CELERY_RDB_HOST=0.0.0.0
+    env_file: secrets.env
     depends_on:
       - chris_db
       - swift_service
@@ -57,6 +36,7 @@ services:
     image: fnndsc/chris:latest
     entrypoint: ''
     command: celery -A core beat -l info --pidfile /home/localuser/celerybeat.pid --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    env_file: secrets.env
     depends_on:
       - chris_db
       - swift_service
