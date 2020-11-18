@@ -1,4 +1,7 @@
-# Minimake
+# ![ChRIS logo](https://raw.githubusercontent.com/FNNDSC/ChRIS_ultron_backEnd/master/docs/assets/logo_chris.png) Minimake
+
+[![CI](https://github.com/FNNDSC/minimake/workflows/CI/badge.svg)](https://github.com/FNNDSC/minimake/actions?query=workflow%3ACI)
+[![GitHub license](https://img.shields.io/github/license/FNNDSC/minimake)](https://github.com/FNNDSC/minimake)
 
 A no-nonsense local ChRIS instance runner without the shenanigans of
 [make.sh](https://github.com/FNNDSC/ChRIS_ultron_backEnd/blob/master/make.sh).
