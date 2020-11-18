@@ -26,8 +26,19 @@ function print_status () {
   local prefix='\r'
   local suffix='\n'
   shift
+
+  # simplify output for boring terminals
+  if ! tput sgr0 2> /dev/null; then
+    if [ "$symbol" = "run" ]; then
+      printf "$@..."
+    else
+      echo "$symbol"
+    fi
+    return 0
+  fi
+
   case $symbol in
-    run )   symbol="$(tput setaf 6)•" suffix= ;;
+    run )   symbol="$(tput setaf 6)●" suffix= ;;
     done )  symbol="$(tput setaf 2)✓";;
     error ) symbol="$(tput setaf 1)✕";;
   esac
