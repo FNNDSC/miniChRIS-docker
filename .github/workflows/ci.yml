@@ -15,5 +15,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: run CUBE
         run: ./minimake.sh
+      - name: run pl-dircopy
+        run: ./test.sh
       - name: destroy CUBE
         run: ./unmake.sh
