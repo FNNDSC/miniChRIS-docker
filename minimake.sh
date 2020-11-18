@@ -17,9 +17,9 @@ if ! docker swarm init --advertise-addr 127.0.0.1 > /dev/null; then
 fi
 
 # print a symbol and message, e.g.:
-#  ✓  pull                
-#  ✓  start               
-#  •  wait                
+#  ✓  pull
+#  ✓  start
+#  •  wait
 #  ✕  setup
 function print_status () {
   local symbol=$1
@@ -77,9 +77,9 @@ print_status done start
 print_status run wait
 # Poll /api/v1/users/ on a given port every two seconds,
 # unblocking after a successful request.
-# Max 30 tries i.e. timeout after 2 minutes
+# Max 150 tries i.e. timeout after 5 minutes
 function block_until_ready () {
-  for i in {0..60}; do
+  for i in {0..150}; do
     sleep 2
     curl -s http://localhost:$1/api/v1/users/ > /dev/null && return 0
   done
@@ -125,3 +125,4 @@ else
   print_status error setup
   exit 1
 fi
+
