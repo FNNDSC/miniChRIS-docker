@@ -41,10 +41,33 @@ https://github.com/FNNDSC/ChRIS_ultron_backEnd/tree/0ed91d7c3b3feaf9d68348623649
 
 ## Tips And Tricks
 
+- http://localhost:8000/chris-admin/
 - if `./minimake.sh` exits with a non-0 status, it is strongly recommended to run `./unmake.sh`
 - default superusers `chris:chris1234` created in _CUBE_ and *ChRIS_store*
 - containers are named `chris`, `chris_store`, `pfcon`, `pfioh`, and `pman` so you can directly run `docker exec chris ...`
-- `./minimake.sh` blocks until CUBE is ready to accept connections, and it exits leaving the services up -- it should be easy to use for tests.
+
+### E2E Testing
+
+`./minimake.sh` blocks until CUBE is ready to accept connections,
+and it exits leaving the services up -- it should be easy to use for tests.
+
+See https://github.com/FNNDSC/cni-store-proxy/blob/master/package.json
+as an example.
+
+### More Plugins
+
+You can do a search on https://chrisstore.co for plugins to add,
+then use a for-loop to register them all.
+
+```bash
+search=$(
+  curl -s -H 'Accept:application/json' 'https://chrisstore.co/api/v1/plugins/' \
+    | jq -r '.results[] | .url'
+)
+for $pu in $search; do
+  docker exec chris python plugins/services/manager.py register host --pluginurl "$pu"
+fi
+```
 
 ## Vagrant
 
