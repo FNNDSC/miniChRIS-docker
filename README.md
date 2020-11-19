@@ -37,7 +37,21 @@ https://github.com/FNNDSC/ChRIS_ultron_backEnd/tree/0ed91d7c3b3feaf9d68348623649
 4. wait for services
 4. first-run setup
 
-`./minimake.sh` takes around ~1 minute to run.
+`./minimake.sh` takes 50 seconds on an okay laptop (quad-core, 16 GB, SSD)
+and takes 2-3 minutes in [Github Actions' Ubuntu VMs](https://github.com/FNNDSC/minimake/actions).
+
+### Goals
+
+- fast
+- simple use (one purpose, no arguments)
+- understandable code
+- practical for E2E testing
+
+#### Non-Goals
+
+- configurable
+- production use
+- back-end development environment
 
 ## Tips And Tricks
 
@@ -89,3 +103,4 @@ vagrant up
 ```bash
 vagrant destroy -f
 ```
+
