@@ -27,7 +27,24 @@ https://github.com/FNNDSC/ChRIS_ultron_backEnd/tree/0ed91d7c3b3feaf9d68348623649
 ./unmake.sh
 ```
 
-## Details
+# Github Actions
+
+```yaml
+on: [push]
+
+jobs:
+  hello_world_job:
+    runs-on: ubuntu-latest
+    name: Do nothing useful
+    steps:
+    - name: setup CUBE
+      id: cube
+      uses: fnndsc/minimake@v1
+    - name: make a request
+      run: curl -u "${{ steps.cube.outputs.cube-user }}" "${{ steps.cube.outputs.cube-url }}"
+```
+
+# About
 
 `./minimake.sh` wraps `docker-compose up -d` and it does a _few_ more things:
 
@@ -83,7 +100,7 @@ for $pu in $search; do
 fi
 ```
 
-## Vagrant
+### Vagrant
 
 No docker? That's okay.
 
@@ -92,15 +109,14 @@ VMs are inherently slow, and docker image pulls are not cached between lifecycle
 Setup using Vagrant is wasteful of time, memory, disk, and network bandwidth.
 For me, `vagrant up` took 9 minutes.
 
-### Start
+#### Start
 
 ```bash
 vagrant up
 ```
 
-### Stop
+#### Stop
 
 ```bash
 vagrant destroy -f
 ```
-

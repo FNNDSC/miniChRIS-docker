@@ -1,0 +1,16 @@
+{
+  "name": "minimake",
+  "version": "1.0.0",
+  "description": "Github action for ChRIS backend services",
+  "author": "FNNDSC <dev@babyMRI.org>",
+  "license": "MIT",
+  "main": "wrapper.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FNNDSC/minimake.git"
+  },
+  "homepage": "https://github.com/FNNDSC/minimake#readme",
+  "bugs": {
+    "url": "https://github.com/FNNDSC/minimake/issues"
+  }
+}

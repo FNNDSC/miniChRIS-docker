@@ -1,0 +1,18 @@
+name: "ChRIS Backend"
+description: "Bring up ephemeral instances of CUBE, pfcon, pman, pfioh, swift, and ChRIS_store"
+author: "FNNDSC"
+outputs:
+  cube-user:
+    description: "ChRIS user"
+    value: "chris:chris1234"
+  cube-url:
+    description: "CUBE URL"
+    value: "http://localhost:8010/api/v1/"
+runs:
+  using: node12
+  main: wrapper.js
+  post: wrapper.js
+
+branding:
+  color: "blue"
+  icon: "box"
