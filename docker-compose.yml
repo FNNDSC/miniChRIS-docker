@@ -30,6 +30,7 @@ services:
       - swift_service
       - queue
       - pfcon_service
+    restart: on-failure
     networks:
       - local
   scheduler:
@@ -41,17 +42,20 @@ services:
       - chris_db
       - swift_service
       - queue
+    restart: on-failure
     networks:
       - local
 
   chris_db:
     image: mysql:5
     env_file: secrets.env
+    restart: on-failure
     networks:
       - local
 
   queue:
     image: rabbitmq:3
+    restart: on-failure
     networks:
       - local
 
