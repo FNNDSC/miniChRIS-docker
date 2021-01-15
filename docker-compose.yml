@@ -1,6 +1,9 @@
-# an ephemeral instance of ChRIS backend services
-# for local testing purposes
-# based on https://raw.githubusercontent.com/FNNDSC/ChRIS_ultron_backEnd/master/docker-compose.yml
+# an ephemeral instance of ChRIS backend services for local development
+#
+# warning: /var/run/docker.sock is mounted into some services (notably pman)
+#
+# CUBE configuration based on
+# https://raw.githubusercontent.com/FNNDSC/ChRIS_ultron_backEnd/master/docker-compose.yml
 # commit 0ed91d7c3b3feaf9d68348623649a5d2e9918e34
 
 version: '3.7'
@@ -13,10 +16,10 @@ services:
       - "127.0.0.1:8000:8000"
     depends_on:
       - chris_db
-      - swift_service
+      - swift
       - queue
       - chris_store
-      - pfcon_service
+      - pfcon
     networks:
       - local
     env_file: secrets.env
@@ -27,9 +30,9 @@ services:
     env_file: secrets.env
     depends_on:
       - chris_db
-      - swift_service
+      - swift
       - queue
-      - pfcon_service
+      - pfcon
     restart: on-failure
     networks:
       - local
@@ -40,19 +43,17 @@ services:
     env_file: secrets.env
     depends_on:
       - chris_db
-      - swift_service
+      - swift
       - queue
     restart: on-failure
     networks:
       - local
-
   chris_db:
     image: mysql:5
     env_file: secrets.env
     restart: on-failure
     networks:
       - local
-
   queue:
     image: rabbitmq:3
     restart: on-failure
@@ -72,7 +73,7 @@ services:
       - DJANGO_USE_X_FORWARDED_HOST=false
       - DATABASE_HOST=chris_store_db
       - DATABASE_PORT=3306
-      - SWIFT_AUTH_URL=http://swift_service:8080/auth/v1.0
+      - SWIFT_AUTH_URL=http://swift:8080/auth/v1.0
       - MYSQL_ROOT_PASSWORD=rootp
       - MYSQL_DATABASE=chris_store
       - MYSQL_USER=chris
@@ -84,12 +85,11 @@ services:
       - "8010:8010"
     depends_on:
       - chris_store_db
-      - swift_service
+      - swift
     networks:
       local:
         aliases:
           - chrisstore.local
-
   chris_store_db:
     image: mysql:5
     environment:
@@ -102,7 +102,9 @@ services:
     labels:
       name: "ChRIS_store MySQL Database"
 
-  swift_service:
+  # swift, pfioh, and pman have hard-coded names inside pfcon by default
+  # so network aliases are set to be swift_service, pfioh_service, pman_service
+  swift:
     image: fnndsc/docker-swift-onlyone
     init: true
     environment:
@@ -111,49 +113,114 @@ services:
     ports:
       - "127.0.0.1:8080:8080"
     networks:
-      - local
+      local:
+        aliases:
+          - swift_service
 
-  pfcon_service:
+  pfcon:
     container_name: pfcon
     image: fnndsc/pfcon:latest
     command: ["--forever", "--httpResponse", "--verbosity", "1"]
     ports:
       - "127.0.0.1:5005:5005"
     depends_on:
-      - swift_service
-      - pman_service
-      - pfioh_service
+      - swift
+      - pman
+      - pfioh
     networks:
       local:
         aliases:
           - pfcon.local
-
-  pfioh_service:
+  pfioh:
     container_name: pfioh
-    # We need to map a physical dir in the HOST to the key store in pfioh.
-    # The keystore is specified by the --storeBase flag.
     image: fnndsc/pfioh:latest
     command: ["--forever", "--httpResponse", "--createDirsAsNeeded", "--storeBase", "/hostFS/storeBase"]
     volumes:
-      - ./FS/remote:/hostFS/storeBase
+      - remote:/hostFS/storeBase
     ports:
       - "127.0.0.1:5055:5055"
     networks:
-      - local
+      local:
+        aliases:
+          - pfioh_service
 
-  pman_service:
+  pman:
     container_name: pman
     environment:
-      - STOREBASE=${PWD}/FS/remote
+      - PMAN_DOCKER_VOLUME=chris-remote
+    depends_on:
+      - swarm-status
     image: fnndsc/pman:latest
+    entrypoint: /entrypoint.sh
     command: ["--rawmode", "1", "--http", "--port", "5010", "--listeners", "12", "--verbosity", "1"]
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./FS/remote:/hostFS/storeBase
+      - ./entrypoints/pman.sh:/entrypoint.sh:ro
     ports:
       - "127.0.0.1:5010:5010"
     networks:
+      local:
+        aliases:
+          - pman_service
+
+  chris_ui:
+    image: fnndsc/chris_ui:latest
+    ports:
+      - "127.0.0.1:3000:3000"
+  chris_store_ui:
+    image: fnndsc/chris_store_ui:latest
+    ports:
+      - "127.0.0.1:3001:3000"
+
+  # ====================
+  # Provisioning
+  # ====================
+
+  # start docker swarm for pman
+  swarm-status:
+    image: docker
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./provision/swarm.sh:/entrypoint.sh
+    entrypoint: /entrypoint.sh
+  
+  # wait for CUBE to come online
+  cube-starting:
+    image: curlimages/curl:latest
+    container_name: cube-starting
+    depends_on:
+      - chris
+    volumes:
+      - ./provision/wait.sh:/wait.sh:ro
+    entrypoint: /wait.sh
+    command: ["chris:8000"]
+    networks:
       - local
+  
+  cube-setup:
+    image: docker
+    container_name: cube-setup
+    depends_on:
+      - cube-starting
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./provision/setup.sh:/entrypoint.sh
+    entrypoint: /entrypoint.sh
+
+  # not actually backend services, but these container images are ran one-off by the backend
+  # they are listed here so that they can be updated by
+  #
+  #     docker-compose pull
+  noop-pfdcm:
+    image: fnndsc/pfdcm
+    entrypoint: /bin/true
+  noop-swarm:
+    image: fnndsc/swarm
+    entrypoint: /bin/true
 
 networks:
   local:
+
+volumes:
+  remote:
+    name: chris-remote
