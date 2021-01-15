@@ -36,10 +36,10 @@ feed=$(
 
 job_url=$(echo $feed | jq -r .url)
 
-# wait for job to finish, timeout after 2 minutes
+# wait for job to finish, timeout after 5 minutes
 { set +x; } 2> /dev/null
 for i in {0..60}; do
-  sleep 2
+  sleep 5
   job=$(
     curl -s "$job_url" \
       -H "Authorization: Token $token" \
