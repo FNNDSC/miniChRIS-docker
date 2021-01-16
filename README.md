@@ -35,6 +35,14 @@ docker-compose down -v
 docker-compose pull
 ```
 
+### Wait
+
+Block until CUBE is ready for use.
+
+```bash
+docker wait cube-setup
+```
+
 ### Fancy Start
 
 Beautiful output and some runtime assertions.
@@ -83,19 +91,8 @@ CUBE setup involves:
 It needs `/var/run/docker.sock` to be mounted inside the container.
 We can resolve the two setup requirements by connecting to the host's dockerd.
 
-There is no clean way to `STOREBASE`.
-The upstream workaround is to mount `$PWD/FS/remote`
-and then tell `pman` the path on the host to this volume.
-This leads to difficult cleanup: `$PWD/FS/remote`
-is polluted by files with mixed permissions,
-neither can it be automatically cleaned up by `docker-compose down -v`
-hence an `./unmake.sh <<< y` is necessary.
-
-Here, our workaround is completely managed by `docker-compose`.
-A named volume `chris-remote` is defined, and its path on the host
-(a.k.a. "Mountpoint") is discovered dynamically and automatically
-in `entrypoints/pman.sh`.
-Teardown of this CUBE setup does not require any further steps after  `docker-compose down -v`.
+The workaround for `STOREBASE` was merged upstream.
+https://github.com/FNNDSC/pman/pull/142
 
 `./minimake.sh` takes 50 seconds on an okay laptop (quad-core, 16 GB, SSD)
 and takes 2-3 minutes in [Github Actions' Ubuntu VMs](https://github.com/FNNDSC/minimake/actions).

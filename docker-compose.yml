@@ -136,7 +136,7 @@ services:
     image: fnndsc/pfioh:latest
     command: ["--forever", "--httpResponse", "--createDirsAsNeeded", "--storeBase", "/hostFS/storeBase"]
     volumes:
-      - remote:/hostFS/storeBase
+      - pfioh-remote:/hostFS/storeBase
     ports:
       - "127.0.0.1:5055:5055"
     networks:
@@ -145,17 +145,16 @@ services:
           - pfioh_service
 
   pman:
+    image: fnndsc/pman:latest
     container_name: pman
     environment:
-      - PMAN_DOCKER_VOLUME=chris-remote
+      - PMAN_DOCKER_VOLUME=pfioh-remote
     depends_on:
       - swarm-status
-    image: fnndsc/pman:latest
-    entrypoint: /entrypoint.sh
-    command: ["--rawmode", "1", "--http", "--port", "5010", "--listeners", "12", "--verbosity", "1"]
+    command: ["--rawmode", "1", "--http", "--port", "5010", "--listeners", "12"]
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - remote:/hostFS/storeBase
+      - pfioh-remote:/hostFS/storeBase
       - ./entrypoints/pman.sh:/entrypoint.sh:ro
     ports:
       - "127.0.0.1:5010:5010"
@@ -223,5 +222,5 @@ networks:
   local:
 
 volumes:
-  remote:
-    name: chris-remote
+  pfioh-remote:
+    name: pfioh-remote
