@@ -16,4 +16,4 @@ if [ -z "$STOREBASE" ]; then
   fi
 fi
 
-pman $@
+exec pman $@
