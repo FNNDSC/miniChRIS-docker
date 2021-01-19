@@ -105,7 +105,7 @@ services:
   # swift, pfioh, and pman have hard-coded names inside pfcon by default
   # so network aliases are set to be swift_service, pfioh_service, pman_service
   swift:
-    image: fnndsc/docker-swift-onlyone
+    image: fnndsc/docker-swift-onlyone:latest
     init: true
     environment:
       - SWIFT_USERNAME=chris:chris1234
@@ -119,7 +119,7 @@ services:
 
   pfcon:
     container_name: pfcon
-    image: fnndsc/pfcon:latest
+    image: fnndsc/pfcon:2.3.1
     command: ["--forever", "--httpResponse", "--verbosity", "1"]
     ports:
       - "127.0.0.1:5005:5005"
@@ -133,7 +133,7 @@ services:
           - pfcon.local
   pfioh:
     container_name: pfioh
-    image: fnndsc/pfioh:latest
+    image: fnndsc/pfioh:3.0.1
     command: ["--forever", "--httpResponse", "--createDirsAsNeeded", "--storeBase", "/hostFS/storeBase"]
     volumes:
       - pfioh-remote:/hostFS/storeBase
@@ -145,7 +145,7 @@ services:
           - pfioh_service
 
   pman:
-    image: fnndsc/pman:latest
+    image: fnndsc/pman:2.2.1
     container_name: pman
     environment:
       - PMAN_DOCKER_VOLUME=pfioh-remote
