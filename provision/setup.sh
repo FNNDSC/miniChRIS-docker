@@ -11,6 +11,7 @@ from django.contrib.auth.models import User
 User.objects.create_superuser(username="chris", password="chris1234", email="dev@babymri.org")'
 
 docker exec chris python manage.py shell -c "$superuser_script"
+docker exec chris_store python manage.py shell -c "$superuser_script"
 
 docker exec chris python plugins/services/manager.py \
   add host "http://pfcon.local:5005" --description "Local compute"
