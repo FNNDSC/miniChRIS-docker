@@ -15,4 +15,6 @@ docker exec chris python manage.py shell -c "$superuser_script"
 docker exec chris python plugins/services/manager.py \
   add host "http://pfcon.local:5005" --description "Local compute"
 
-docker exec chris python plugins/services/manager.py register host --pluginurl https://chrisstore.co/api/v1/plugins/1/
+# pl-dircopy
+docker exec chris python plugins/services/manager.py register host --pluginurl https://chrisstore.co/api/v1/plugins/3/
+
