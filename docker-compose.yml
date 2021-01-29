@@ -155,7 +155,6 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - pfioh-remote:/hostFS/storeBase
-      - ./entrypoints/pman.sh:/entrypoint.sh:ro
     ports:
       - "127.0.0.1:5010:5010"
     networks:
