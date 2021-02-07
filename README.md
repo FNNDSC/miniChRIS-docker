@@ -55,6 +55,24 @@ Beautiful output and some runtime assertions.
 ./minimake.sh
 ```
 
+### Add Plugins
+
+You can add plugins directly from https://chrisstore.co
+
+```bash
+plname=pl-brainmgz
+json=$(
+  curl -s -H 'Accept:application/json' \
+    "https://chrisstore.co/api/v1/plugins/search/?name=$plname"
+)
+url=$(jq -r '.results[0].url' <<< "$json")
+dock_image=$(jq -r '.results[0].dock_image' <<< "$json")
+docker exec chris python plugins/services/manager.py register host --pluginurl "$url"
+docker pull $dock_image
+```
+
+For more examples, see https://github.com/FNNDSC/minimake/wiki/Add-Plugins
+
 # Github Actions
 
 *Minimake* can be used as a step in Github Actions workflows to spin up
@@ -127,32 +145,6 @@ and takes 2-3 minutes in [Github Actions' Ubuntu VMs](https://github.com/FNNDSC/
 - configurable
 - production use
 - back-end development environment
-
-### More Plugins
-
-You can do a search on https://chrisstore.co for plugins to add,
-then use a for-loop to register them all.
-
-```bash
-# add one thing
-name=pl-brainmgz
-url=$(
-  curl -s -H 'Accept:application/json' \
-    "https://chrisstore.co/api/v1/plugins/search/?name=$url" \
-      | jq -r '.results[].url'
-)
-docker exec chris python plugins/services/manager.py register host --pluginurl "$url"
-
-# add everything
-search=$(
-  curl -s -H 'Accept:application/json' \
-    'https://chrisstore.co/api/v1/plugins/' \
-      | jq -r '.results[].url'
-)
-for $pu in $search; do
-  docker exec chris python plugins/services/manager.py register host --pluginurl "$pu"
-fi
-```
 
 ### Vagrant
 
