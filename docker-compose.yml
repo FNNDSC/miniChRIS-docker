@@ -11,7 +11,7 @@ version: '3.7'
 services:
   chris:
     container_name: chris
-    image: fnndsc/chris:latest
+    image: fnndsc/chris:1.1.0
     ports:
       - "127.0.0.1:8000:8000"
     depends_on:
@@ -24,7 +24,7 @@ services:
       - local
     env_file: secrets.env
   worker:
-    image: fnndsc/chris:latest
+    image: fnndsc/chris:1.1.0
     entrypoint: ''
     command: celery -A core worker -c 4 -l info -Q main
     env_file: secrets.env
@@ -37,7 +37,7 @@ services:
     networks:
       - local
   scheduler:
-    image: fnndsc/chris:latest
+    image: fnndsc/chris:1.1.0
     entrypoint: ''
     command: celery -A core beat -l info --pidfile /home/localuser/celerybeat.pid --scheduler django_celery_beat.schedulers:DatabaseScheduler
     env_file: secrets.env
@@ -119,8 +119,7 @@ services:
 
   pfcon:
     container_name: pfcon
-    image: fnndsc/pfcon:2.3.1
-    command: ["--forever", "--httpResponse", "--verbosity", "1"]
+    image: fnndsc/pfcon:2.4.0
     ports:
       - "127.0.0.1:5005:5005"
     depends_on:
@@ -133,7 +132,7 @@ services:
           - pfcon.local
   pfioh:
     container_name: pfioh
-    image: fnndsc/pfioh:3.0.1
+    image: fnndsc/pfioh:3.0.2
     command: ["--forever", "--httpResponse", "--createDirsAsNeeded", "--storeBase", "/hostFS/storeBase"]
     volumes:
       - pfioh-remote:/hostFS/storeBase
@@ -145,13 +144,12 @@ services:
           - pfioh_service
 
   pman:
-    image: fnndsc/pman:2.2.1
+    image: fnndsc/pman:2.2.2
     container_name: pman
     environment:
       - PMAN_DOCKER_VOLUME=pfioh-remote
     depends_on:
       - swarm-status
-    command: ["--rawmode", "1", "--http", "--port", "5010", "--listeners", "12"]
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - pfioh-remote:/hostFS/storeBase

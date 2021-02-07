@@ -3,13 +3,17 @@
 [![CI](https://github.com/FNNDSC/minimake/workflows/CI/badge.svg)](https://github.com/FNNDSC/minimake/actions?query=workflow%3ACI)
 [![GitHub license](https://img.shields.io/github/license/FNNDSC/minimake)](https://github.com/FNNDSC/minimake/blob/master/LICENSE)
 
-A no-nonsense local ChRIS instance runner without the shenanigans of
-[make.sh](https://github.com/FNNDSC/ChRIS_ultron_backEnd/blob/master/make.sh).
-Uses various hacks so that CUBE setup is managed completely by `docker-compose`.
+Run a demo of ChRIS. https://chrisproject.org/
+
+```bash
+git clone https://github.com/FNNDSC/minimake.git chris_minimake
+cd chris_minimake
+./minimake.sh
+```
 
 ## Usage
 
-Default superuser `chris:chris1234` is created in _CUBE_.
+A default superuser `chris:chris1234` is created.
 
 website        | URL
 ---------------|-----
@@ -53,6 +57,10 @@ Beautiful output and some runtime assertions.
 
 # Github Actions
 
+*Minimake* can be used as a step in Github Actions workflows to spin up
+an ephermeral instance of the ChRIS backend and its ancillary services
+for the purpose of end-to-end testing.
+
 ```yaml
 on: [push]
 
@@ -63,16 +71,21 @@ jobs:
     steps:
     - name: setup CUBE
       id: cube
-      uses: fnndsc/minimake@v1
+      uses: fnndsc/minimake@v3
     - name: make a request
       run: curl -u "${{ steps.cube.outputs.cube-user }}" "${{ steps.cube.outputs.cube-url }}"
 ```
 
+See https://github.com/FNNDSC/cni-store-proxy/blob/master/package.json
+as an example.
+
 # About
 
-`./minimake.sh` shoves everything inside of shell scripts and `docker-compose.yml`.
-Traditionally, to bring up a single-machine on-the-metal requires
-a few extra steps on the host.
+`./minimake.sh` is a no-nonsense collection of scripts to start ChRIS without the shenanigans of
+[make.sh](https://github.com/FNNDSC/ChRIS_ultron_backEnd/blob/master/make.sh).
+It is fully managed by `docker-compose`.
+
+Traditionally, to bring up CUBE+pfcon+pfioh+pman on a single-machine on-the-metal requires a few extra steps on the host.
 
 CUBE setup involves:
 
@@ -86,7 +99,7 @@ CUBE setup involves:
 1. joining a docker swarm
 2. figuring out the [`STOREBASE` environment variable](https://github.com/FNNDSC/ChRIS_ultron_backEnd/blob/78670f6abf0b6ebac7aeef75989893b4502d4823/docker-compose_dev.yml#L208-L222)
 
-`pman` is messy because it is a container which spawns other containers on its host.
+`pman` is special because it itself is a container which spawns other containers on its host.
 
 It needs `/var/run/docker.sock` to be mounted inside the container.
 We can resolve the two setup requirements by connecting to the host's dockerd.
@@ -100,7 +113,9 @@ and takes 2-3 minutes in [Github Actions' Ubuntu VMs](https://github.com/FNNDSC/
 ### Goals
 
 - fast
-- simple use (one purpose, no arguments)
+- simple use
+  - no arguments
+  - do one thing, and one thing well (a UNIX philosophy)
 - legible code
 - practical for E2E testing
 
@@ -110,23 +125,26 @@ and takes 2-3 minutes in [Github Actions' Ubuntu VMs](https://github.com/FNNDSC/
 - production use
 - back-end development environment
 
-### E2E Testing
-
-`./minimake.sh` blocks until CUBE is ready to accept connections,
-and it exits leaving the services up -- it should be easy to use for tests.
-
-See https://github.com/FNNDSC/cni-store-proxy/blob/master/package.json
-as an example.
-
 ### More Plugins
 
 You can do a search on https://chrisstore.co for plugins to add,
 then use a for-loop to register them all.
 
 ```bash
+# add one thing
+name=pl-brainmgz
+url=$(
+  curl -s -H 'Accept:application/json' \
+    "https://chrisstore.co/api/v1/plugins/search/?name=$url" \
+      | jq -r '.results[].url'
+)
+docker exec chris python plugins/services/manager.py register host --pluginurl "$url"
+
+# add everything
 search=$(
-  curl -s -H 'Accept:application/json' 'https://chrisstore.co/api/v1/plugins/' \
-    | jq -r '.results[] | .url'
+  curl -s -H 'Accept:application/json' \
+    'https://chrisstore.co/api/v1/plugins/' \
+      | jq -r '.results[].url'
 )
 for $pu in $search; do
   docker exec chris python plugins/services/manager.py register host --pluginurl "$pu"
