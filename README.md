@@ -76,8 +76,11 @@ jobs:
       run: curl -u "${{ steps.cube.outputs.cube-user }}" "${{ steps.cube.outputs.cube-url }}"
 ```
 
-See https://github.com/FNNDSC/cni-store-proxy/blob/master/package.json
-as an example.
+### Examples
+
+- [FNNDSC/cookicutter-chrisapp/.github/workflows/test.yml](https://github.com/FNNDSC/cookiecutter-chrisapp/blob/16db74860e8201f3d201183961eadc39116ce8a7/.github/workflows/test.yml#L31) uses *ChRIS Minimake* for end-to-end testing.
+- [FNNDSC/cni-store-proxy/package.json](https://github.com/FNNDSC/cni-store-proxy/blob/master/package.json) uses *ChRIS Minimake* as a git submodule for a local dev environment.
+
 
 # About
 
