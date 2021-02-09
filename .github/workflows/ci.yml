@@ -13,9 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: run CUBE
-        run: ./minimake.sh
+      - name: Minimake
+        uses: ./
       - name: run pl-dircopy
         run: ./test.sh
-      - name: destroy CUBE
-        run: ./unmake.sh
