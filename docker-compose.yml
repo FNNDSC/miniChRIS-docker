@@ -148,8 +148,6 @@ services:
     container_name: pman
     environment:
       - PMAN_DOCKER_VOLUME=pfioh-remote
-    depends_on:
-      - swarm-status
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - pfioh-remote:/hostFS/storeBase
@@ -176,6 +174,9 @@ services:
   # start docker swarm for pman
   swarm-status:
     image: docker
+    # service blocks itself by waiting on pman
+    depends_on:
+      - pman
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./provision/swarm.sh:/entrypoint.sh

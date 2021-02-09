@@ -6,6 +6,10 @@
 
 docker wait cube-starting
 
+if [ -f .setup ]; then
+  echo "Already set up"
+fi
+
 superuser_script='
 from django.contrib.auth.models import User
 User.objects.create_superuser(username="chris", password="chris1234", email="dev@babymri.org")'
@@ -18,3 +22,5 @@ docker exec chris python plugins/services/manager.py \
 
 # pl-dircopy
 docker exec chris python plugins/services/manager.py register host --pluginurl https://chrisstore.co/api/v1/plugins/7/
+
+touch .setup

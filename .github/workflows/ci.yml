@@ -15,5 +15,5 @@ jobs:
       - uses: actions/checkout@v2
       - name: Minimake
         uses: ./
-      - name: run pl-dircopy
+      - name: Run pl-dircopy
         run: ./test.sh
