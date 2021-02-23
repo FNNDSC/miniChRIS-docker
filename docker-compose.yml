@@ -151,6 +151,8 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - pfioh-remote:/hostFS/storeBase
+    depends_on:
+      - swarm-status
     ports:
       - "127.0.0.1:5010:5010"
     networks:
@@ -174,9 +176,7 @@ services:
   # start docker swarm for pman
   swarm-status:
     image: docker
-    # service blocks itself by waiting on pman
-    depends_on:
-      - pman
+    container_name: swarm-status
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./provision/swarm.sh:/entrypoint.sh
