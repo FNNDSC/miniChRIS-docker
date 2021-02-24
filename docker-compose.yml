@@ -197,16 +197,11 @@ services:
       - ./provision/setup.sh:/entrypoint.sh
     entrypoint: /entrypoint.sh
 
-  # not actually backend services, but these container images are ran one-off by the backend
-  # they are listed here so that they can be updated by
-  #
-  #     docker-compose pull
-  noop-pfdcm:
-    image: fnndsc/pfdcm
-    entrypoint: /bin/true
-  noop-swarm:
-    image: fnndsc/swarm
-    entrypoint: /bin/true
+  # If we needed to pull containers which aren't used, we can do a no-op like this
+  # But why, that doesn't make sense? Apparently tests fail w/o fnndsc/pfdcm
+  #noop-pfdcm:
+  #  image: fnndsc/pfdcm
+  #  entrypoint: /bin/true
 
 networks:
   local:
