@@ -1,14 +1,14 @@
-# ![ChRIS logo](https://raw.githubusercontent.com/FNNDSC/ChRIS_ultron_backEnd/master/docs/assets/logo_chris.png) _ChRIS_ Minimake
+# ![ChRIS logo](https://raw.githubusercontent.com/FNNDSC/ChRIS_ultron_backEnd/master/docs/assets/logo_chris.png) miniChRIS
 
-[![CI](https://github.com/FNNDSC/minimake/workflows/CI/badge.svg)](https://github.com/FNNDSC/minimake/actions?query=workflow%3ACI)
-[![GitHub license](https://img.shields.io/github/license/FNNDSC/minimake)](https://github.com/FNNDSC/minimake/blob/master/LICENSE)
+[![CI](https://github.com/FNNDSC/miniChRIS/workflows/CI/badge.svg)](https://github.com/FNNDSC/miniChRIS/actions?query=workflow%3ACI)
+[![GitHub license](https://img.shields.io/github/license/FNNDSC/miniChRIS)](https://github.com/FNNDSC/miniChRIS/blob/master/LICENSE)
 
 Run a demo of ChRIS. https://chrisproject.org/
 
 ```bash
-git clone https://github.com/FNNDSC/minimake.git chris_minimake
-cd chris_minimake
-./minimake.sh
+git clone https://github.com/FNNDSC/miniChRIS.git
+cd miniChRIS
+./minichris.sh
 ```
 
 ## Usage
@@ -52,7 +52,7 @@ docker wait cube-setup
 Beautiful output and some runtime assertions.
 
 ```bash
-./minimake.sh
+./minichris.sh
 ```
 
 ### Add Plugins
@@ -71,11 +71,11 @@ docker exec chris python plugins/services/manager.py register host --pluginurl "
 docker pull $dock_image
 ```
 
-For more examples, see https://github.com/FNNDSC/minimake/wiki/Add-Plugins
+For more examples, see https://github.com/FNNDSC/miniChRIS/wiki/Add-Plugins
 
 # Github Actions
 
-*Minimake* can be used as a step in Github Actions workflows to spin up
+*miniChRIS* can be used as a step in Github Actions workflows to spin up
 an ephermeral instance of the ChRIS backend and its ancillary services
 for the purpose of end-to-end testing.
 
@@ -89,20 +89,20 @@ jobs:
     steps:
     - name: setup CUBE
       id: cube
-      uses: fnndsc/minimake@v3
+      uses: fnndsc/miniChRIS@v3
     - name: make a request
       run: curl -u "${{ steps.cube.outputs.cube-user }}" "${{ steps.cube.outputs.cube-url }}"
 ```
 
 ### Examples
 
-- [FNNDSC/cookicutter-chrisapp/.github/workflows/test.yml](https://github.com/FNNDSC/cookiecutter-chrisapp/blob/16db74860e8201f3d201183961eadc39116ce8a7/.github/workflows/test.yml#L31) uses *ChRIS Minimake* for end-to-end testing.
-- [FNNDSC/cni-store-proxy/package.json](https://github.com/FNNDSC/cni-store-proxy/blob/master/package.json) uses *ChRIS Minimake* as a git submodule for a local dev environment.
+- [FNNDSC/cookicutter-chrisapp/.github/workflows/test.yml](https://github.com/FNNDSC/cookiecutter-chrisapp/blob/16db74860e8201f3d201183961eadc39116ce8a7/.github/workflows/test.yml#L31) uses *ChRIS miniChRIS* for end-to-end testing.
+- [FNNDSC/cni-store-proxy/package.json](https://github.com/FNNDSC/cni-store-proxy/blob/master/package.json) uses *ChRIS miniChRIS* as a git submodule for a local dev environment.
 
 
 # About
 
-`./minimake.sh` is a no-nonsense collection of scripts to start ChRIS without the shenanigans of
+`./minichris.sh` is a no-nonsense collection of scripts to start ChRIS without the shenanigans of
 [make.sh](https://github.com/FNNDSC/ChRIS_ultron_backEnd/blob/master/make.sh).
 It is fully managed by `docker-compose`.
 
@@ -128,8 +128,8 @@ We can resolve the two setup requirements by connecting to the host's dockerd.
 The workaround for `STOREBASE` was merged upstream.
 https://github.com/FNNDSC/pman/pull/142
 
-`./minimake.sh` takes 50 seconds on an okay laptop (quad-core, 16 GB, SSD)
-and takes 2-3 minutes in [Github Actions' Ubuntu VMs](https://github.com/FNNDSC/minimake/actions).
+`./minichris.sh` takes 50 seconds on an okay laptop (quad-core, 16 GB, SSD)
+and takes 2-3 minutes in [Github Actions' Ubuntu VMs](https://github.com/FNNDSC/miniChRIS/actions).
 
 ### Goals
 

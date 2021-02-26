@@ -14,7 +14,7 @@ fi
 docker exec chris python manage.py shell -c '
 from core.models import ChrisInstance
 inst = ChrisInstance.load()
-inst.job_id_prefix = "chris-minimake-jid-"
+inst.job_id_prefix = "minichris-jid-"
 inst.save()'
 
 

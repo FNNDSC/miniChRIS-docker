@@ -21,5 +21,5 @@ Vagrant.configure("2") do |config|
     systemctl enable --now docker
   SHELL
   
-  config.vm.provision "shell", run: "always", inline: "cd /vagrant && ./minimake.sh"
+  config.vm.provision "shell", run: "always", inline: "cd /vagrant && ./minichris.sh"
 end

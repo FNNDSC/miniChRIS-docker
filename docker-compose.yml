@@ -140,7 +140,7 @@ services:
     image: fnndsc/pman:3.1.0-rc.1
     container_name: pman
     environment:
-      PMAN_DOCKER_VOLUME: chris-minimake-pfioh-remote
+      PMAN_DOCKER_VOLUME: minichris-pfioh-remote
       CONTAINER_ENV: swarm
       SECRET_KEY: secret
     volumes:
@@ -209,4 +209,4 @@ networks:
 
 volumes:
   pfioh-remote:
-    name: chris-minimake-pfioh-remote
+    name: minichris-pfioh-remote
