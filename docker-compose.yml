@@ -7,7 +7,7 @@ version: '3.7'
 services:
   chris:
     container_name: chris
-    image: fnndsc/chris:2.0.0-rc.1
+    image: fnndsc/chris:2.1.0
     ports:
       - "127.0.0.1:8000:8000"
     depends_on:
@@ -17,11 +17,16 @@ services:
     networks:
       - local
     env_file: secrets.env
+    environment:
+      DJANGO_DB_MIGRATE: "on"
+      DJANGO_COLLECTSTATIC: "on"
   worker:
-    image: fnndsc/chris:2.0.0-rc.1
-    entrypoint: ''
-    command: celery -A core worker -c 4 -l info -Q main
+    image: fnndsc/chris:2.1.0
+    command: celery -A core worker -c 4 -l info -Q main1,main2
     env_file: secrets.env
+    environment:
+      DJANGO_DB_MIGRATE: "off"
+      DJANGO_COLLECTSTATIC: "off"
     depends_on:
       - chris_db
       - swift
@@ -30,14 +35,28 @@ services:
     restart: on-failure
     networks:
       - local
-  scheduler:
-    image: fnndsc/chris:2.0.0-rc.1
-    entrypoint: ''
-    command: celery -A core beat -l info --pidfile /home/localuser/celerybeat.pid --scheduler django_celery_beat.schedulers:DatabaseScheduler
+  worker_periodic:
+    image: fnndsc/chris:2.1.0
+    environment:
+      DJANGO_DB_MIGRATE: "off"
+      DJANGO_COLLECTSTATIC: "off"
+    command: celery -A core worker -c 2 -l info -Q periodic
     env_file: secrets.env
     depends_on:
       - chris_db
-      - swift
+      - queue
+    restart: on-failure
+    networks:
+      - local
+  scheduler:
+    image: fnndsc/chris:2.1.0
+    command: celery -A core beat -l info --pidfile /home/localuser/celerybeat.pid --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    env_file: secrets.env
+    environment:
+      DJANGO_DB_MIGRATE: "off"
+      DJANGO_COLLECTSTATIC: "off"
+    depends_on:
+      - chris_db
       - queue
     restart: on-failure
     networks:
@@ -46,6 +65,8 @@ services:
     image: mysql:5
     env_file: secrets.env
     restart: on-failure
+    volumes:
+      - chris_db_data:/var/lib/mysql
     networks:
       - local
   queue:
@@ -56,8 +77,9 @@ services:
 
   chris_store:
     container_name: chris_store
-    image: fnndsc/chris_store
+    image: fnndsc/chris_store:1.1.0
     environment:
+      - DJANGO_DB_MIGRATE=on
       - DJANGO_SETTINGS_MODULE=config.settings.production
       - DJANGO_ALLOWED_HOSTS=*
       - DJANGO_SECRET_KEY=secret
@@ -91,6 +113,8 @@ services:
       - MYSQL_DATABASE=chris_store
       - MYSQL_USER=chris
       - MYSQL_PASSWORD=Chris1234
+    volumes:
+      - chris_store_db_data:/var/lib/mysql
     networks:
       - local
     labels:
@@ -104,47 +128,40 @@ services:
       - SWIFT_KEY=testing
     ports:
       - "127.0.0.1:8080:8080"
+    volumes:
+      - swift_storage:/srv
     networks:
       - local
 
   pfcon:
     container_name: pfcon
-    image: fnndsc/pfcon:3.0.0.0-rc.1
+    image: fnndsc/pfcon:3.2.0
     environment:
       COMPUTE_SERVICE_URL: http://pman:5010/api/v1/
-      DATA_SERVICE_URL: http://pfioh:5055/api/v1/cmd
       SECRET_KEY: secret
     ports:
       - "127.0.0.1:5005:5005"
     depends_on:
       - pman
-      - pfioh
+    volumes:
+      - remote:/home/localuser/storeBase
     networks:
       local:
         aliases:
           - pfcon.local
       remote:
 
-  pfioh:
-    container_name: pfioh
-    image: fnndsc/pfioh:3.0.2
-    command: ["--forever", "--httpResponse", "--createDirsAsNeeded", "--storeBase", "/hostFS/storeBase"]
-    volumes:
-      - pfioh-remote:/hostFS/storeBase
-    ports:
-      - "127.0.0.1:5055:5055"
-    networks:
-      - remote
-
   pman:
-    image: fnndsc/pman:3.1.0-rc.1
+    image: fnndsc/pman:3.0.0
     container_name: pman
     environment:
-      PMAN_DOCKER_VOLUME: minichris-pfioh-remote
       CONTAINER_ENV: swarm
       SECRET_KEY: secret
+    entrypoint: /entrypoint.sh
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./provision/volume_mapper.sh:/entrypoint.sh:ro
+    userns_mode: "host"
     depends_on:
       - swarm-status
     ports:
@@ -172,8 +189,9 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./provision/swarm.sh:/entrypoint.sh
+    userns_mode: "host"
     entrypoint: /entrypoint.sh
-  
+
   # wait for CUBE to come online
   cube-starting:
     image: curlimages/curl:latest
@@ -195,18 +213,17 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./provision/setup.sh:/entrypoint.sh
+    userns_mode: "host"
     entrypoint: /entrypoint.sh
 
-  # If we needed to pull containers which aren't used, we can do a no-op like this
-  # But why, that doesn't make sense? Apparently tests fail w/o fnndsc/pfdcm
-  #noop-pfdcm:
-  #  image: fnndsc/pfdcm
-  #  entrypoint: /bin/true
 
 networks:
   local:
   remote:
 
 volumes:
-  pfioh-remote:
-    name: minichris-pfioh-remote
+  chris_db_data:
+  chris_store_db_data:
+  swift_storage:
+  remote:
+    name: minichris-remote-data

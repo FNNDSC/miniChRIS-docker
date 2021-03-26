@@ -5,9 +5,15 @@
 # 3. register pl-dircopy
 
 docker wait cube-starting
+res=$(docker inspect --format '{{ .State.ExitCode }}'  cube-starting)
+if [ "$res" != "0" ]; then
+  echo "Timed out waiting for ChRIS backend."
+  exit 1
+fi
 
 if [ -f .setup ]; then
   echo "Already set up"
+  exit 1
 fi
 
 

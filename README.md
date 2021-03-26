@@ -68,7 +68,6 @@ json=$(
 url=$(jq -r '.results[0].url' <<< "$json")
 dock_image=$(jq -r '.results[0].dock_image' <<< "$json")
 docker exec chris python plugins/services/manager.py register host --pluginurl "$url"
-docker pull $dock_image
 ```
 
 For more examples, see https://github.com/FNNDSC/miniChRIS/wiki/Add-Plugins
@@ -130,6 +129,7 @@ https://github.com/FNNDSC/pman/pull/142
 
 `./minichris.sh` takes 50 seconds on an okay laptop (quad-core, 16 GB, SSD)
 and takes 2-3 minutes in [Github Actions' Ubuntu VMs](https://github.com/FNNDSC/miniChRIS/actions).
+It is strongly recommended that you use an SSD!
 
 ### Goals
 
