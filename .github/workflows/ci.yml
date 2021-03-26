@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Minimake
+      - name: miniChRIS
         uses: ./
       - name: Run pl-dircopy
         run: ./test.sh
