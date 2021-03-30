@@ -172,11 +172,11 @@ services:
   chris_ui:
     image: fnndsc/chris_ui:latest
     ports:
-      - "127.0.0.1:3000:3000"
+      - "127.0.0.1:8020:3000"
   chris_store_ui:
     image: fnndsc/chris_store_ui:latest
     ports:
-      - "127.0.0.1:3001:3000"
+      - "127.0.0.1:8021:3000"
 
   # ====================
   # Provisioning

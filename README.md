@@ -17,9 +17,9 @@ A default superuser `chris:chris1234` is created.
 
 website        | URL
 ---------------|-----
-ChRIS_ui       | http://localhost:3000/
+ChRIS_ui       | http://localhost:8020/
 ChRIS admin    | http://localhost:8000/chris-admin/
-ChRIS_store_ui | http://localhost:3001/
+ChRIS_store_ui | http://localhost:8021/
 
 ### Start
 
