@@ -229,4 +229,3 @@ volumes:
   chris_store_db_data:
   swift_storage:
   remote:
-    name: minichris-remote-data
