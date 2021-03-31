@@ -141,8 +141,6 @@ services:
       SECRET_KEY: secret
     ports:
       - "127.0.0.1:5005:5005"
-    depends_on:
-      - pman
     volumes:
       - remote:/home/localuser/storeBase
     networks:
@@ -150,6 +148,8 @@ services:
         aliases:
           - pfcon.local
       remote:
+    labels:
+      org.chrisproject.role: "pfcon"
 
   pman:
     image: fnndsc/pman:3.0.0
@@ -164,10 +164,13 @@ services:
     userns_mode: "host"
     depends_on:
       - swarm-status
+      - pfcon
     ports:
       - "127.0.0.1:5010:5010"
     networks:
       - remote
+    labels:
+      org.chrisproject.role: "pman"
 
   chris_ui:
     image: fnndsc/chris_ui:latest

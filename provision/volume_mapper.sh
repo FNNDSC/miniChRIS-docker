@@ -8,19 +8,29 @@
 # For a single machine ChRIS, we use a volume managed by
 # docker-compose. Its name is hard-coded.
 
+
+
+
 py="
 import docker
 import os
 
-d = docker.from_env()
+client = docker.from_env()
 
-v = d.volumes.get('minichris-remote-data')
-print(v.attrs['Mountpoint'])
+def by_label(label):
+    filter = {'label': f'org.chrisproject.role={label}'}
+    return client.containers.list(filters=filter)[0]
 
-image = d.containers.get('pman').image
+pfcon = by_label('pfcon')
+storebase = [
+    v['Source'] for v in pfcon.attrs['Mounts']
+    if v['Destination'] == '/home/localuser/storeBase'
+][0]
+print(storebase)
 
-print(' '.join(image.attrs['Config']['Entrypoint']))
-print(' '.join(image.attrs['Config']['Cmd']))
+pman = by_label('pman')
+print(' '.join(pman.image.attrs['Config']['Entrypoint']))
+print(' '.join(pman.image.attrs['Config']['Cmd']))
 "
 
 data="$(python -c "$py")"
