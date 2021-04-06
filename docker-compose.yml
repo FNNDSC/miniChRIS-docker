@@ -152,15 +152,13 @@ services:
       org.chrisproject.role: "pfcon"
 
   pman:
-    image: fnndsc/pman:3.0.0
+    image: fnndsc/pman:3.1.0-rc.1
     container_name: pman
     environment:
       CONTAINER_ENV: swarm
       SECRET_KEY: secret
-    entrypoint: /entrypoint.sh
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./provision/volume_mapper.sh:/entrypoint.sh:ro
     userns_mode: "host"
     depends_on:
       - swarm-status
