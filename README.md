@@ -114,6 +114,8 @@ CUBE setup involves:
 3. adding `host` as a compute environment
 4. registering some plugins
 
+### pman
+
 `pman` setup involves:
 
 1. joining a docker swarm
@@ -123,6 +125,8 @@ CUBE setup involves:
 
 It needs `/var/run/docker.sock` to be mounted inside the container.
 We can resolve the two setup requirements by connecting to the host's dockerd.
+
+#### `STOREBASE`
 
 The workaround for `STOREBASE` is not merged upstream because it might not work
 on a multi-node docker swarm deployment using `docker stack deploy`.
