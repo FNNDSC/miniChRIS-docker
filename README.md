@@ -105,7 +105,7 @@ jobs:
 [make.sh](https://github.com/FNNDSC/ChRIS_ultron_backEnd/blob/master/make.sh).
 It is fully managed by `docker-compose`.
 
-Traditionally, to bring up CUBE+pfcon+pfioh+pman on a single-machine on-the-metal requires a few extra steps on the host.
+Traditionally, to bring up CUBE+pfcon+pman on a single-machine on-the-metal requires a few extra steps on the host.
 
 CUBE setup involves:
 
@@ -124,8 +124,15 @@ CUBE setup involves:
 It needs `/var/run/docker.sock` to be mounted inside the container.
 We can resolve the two setup requirements by connecting to the host's dockerd.
 
-The workaround for `STOREBASE` was merged upstream.
-https://github.com/FNNDSC/pman/pull/142
+The workaround for `STOREBASE` is not merged upstream because it might not work
+on a multi-node docker swarm deployment using `docker stack deploy`.
+The pull request is here: https://github.com/FNNDSC/pman/pull/165
+
+Hence, a fork of `pman` with the patch applied is independently maintained and pushed
+under the docker tag `fnndsc/pman:*-rc.?-single`.
+This image is recommended for use with single-machine deployments.
+
+### Performance
 
 `./minichris.sh` takes 50 seconds on an okay laptop (quad-core, 16 GB, SSD)
 and takes 2-3 minutes in [Github Actions' Ubuntu VMs](https://github.com/FNNDSC/miniChRIS/actions).
