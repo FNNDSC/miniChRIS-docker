@@ -1,3 +1,5 @@
 *
 !required.txt
 !.gitignore
+!README
+!script/

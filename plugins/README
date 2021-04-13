@@ -1,0 +1,14 @@
+List plugins, one per line, in any file with the name *.txt in this folder.
+Lines starting with '#' are ignored.
+
+They may take one of the following forms:
+
+As a URL:               https://chrisstore.co/api/v1/plugins/71/
+As a name:              pl-fetal-brain-assessment
+As a docker image tag:  fnndsc/pl-fetal-brain-mask:1.2.1
+
+The command to synchronize this folder with ChRIS is
+
+    docker-compose up --build plugins
+
+For more examples, see https://github.com/FNNDSC/miniChRIS/wiki/Add-Plugins

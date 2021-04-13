@@ -1,7 +1,7 @@
 # ![ChRIS logo](https://raw.githubusercontent.com/FNNDSC/ChRIS_ultron_backEnd/master/docs/assets/logo_chris.png) miniChRIS
 
 [![CI](https://github.com/FNNDSC/miniChRIS/workflows/CI/badge.svg)](https://github.com/FNNDSC/miniChRIS/actions?query=workflow%3ACI)
-[![GitHub license](https://img.shields.io/github/license/FNNDSC/miniChRIS)](https://github.com/FNNDSC/miniChRIS/blob/master/LICENSE)
+[![GitHub license](https://img.shields.io/github/license/FNNDSC/miniChRIS)](LICENSE)
 
 Run a demo of ChRIS. https://chrisproject.org/
 
@@ -57,20 +57,7 @@ Beautiful output and some runtime assertions.
 
 ### Add Plugins
 
-You can add plugins directly from https://chrisstore.co
-
-```bash
-plname=pl-brainmgz
-json=$(
-  curl -s -H 'Accept:application/json' \
-    "https://chrisstore.co/api/v1/plugins/search/?name=$plname"
-)
-url=$(jq -r '.results[0].url' <<< "$json")
-dock_image=$(jq -r '.results[0].dock_image' <<< "$json")
-docker exec chris python plugins/services/manager.py register host --pluginurl "$url"
-```
-
-For more examples, see https://github.com/FNNDSC/miniChRIS/wiki/Add-Plugins
+See [plugins/README](plugins/REAMDE)
 
 # Github Actions
 
@@ -88,7 +75,7 @@ jobs:
     steps:
     - name: setup CUBE
       id: cube
-      uses: fnndsc/miniChRIS@v3
+      uses: fnndsc/miniChRIS@v5
     - name: make a request
       run: curl -u "${{ steps.cube.outputs.cube-user }}" "${{ steps.cube.outputs.cube-url }}"
 ```

@@ -11,7 +11,7 @@ if [ "$res" != "0" ]; then
   exit 1
 fi
 
-if [ -f .setup ]; then
+if [ -f /miniChRIS_state/.setup ]; then
   echo "Already set up"
   exit 1
 fi
@@ -28,15 +28,21 @@ superuser_script='
 from django.contrib.auth.models import User
 User.objects.create_superuser(username="chris", password="chris1234", email="dev@babymri.org")'
 
-docker exec chris python manage.py shell -c "$superuser_script"
+docker exec chris       python manage.py shell -c "$superuser_script"
 docker exec chris_store python manage.py shell -c "$superuser_script"
 
 docker exec chris python plugins/services/manager.py \
-  add host "http://pfcon.local:5005/api/v1/" --description "Local compute"
+  add host "http://pfcon.host:5005/api/v1/" --description "Local compute"
 
-# pl-dircopy
-docker exec chris python plugins/services/manager.py register host --pluginurl \
-  https://chrisstore.co/api/v1/plugins/25/
-docker pull fnndsc/pl-dircopy:2.1.0
+touch /miniChRIS_state/.setup
 
-touch .setup
+# find the plugin installer container while outside of the docker-compose context
+COMPOSE_PROJECT_NAME=$(
+  docker inspect chris --format '{{ index .Config.Labels "com.docker.compose.project" }}'
+)
+plugin_installation_container=$(
+  docker ps -a --format '{{.ID}}' \
+    --filter label=com.docker.compose.service=plugins \
+    --filter label=com.docker.compose.project=$COMPOSE_PROJECT_NAME
+)
+docker restart $plugin_installation_container

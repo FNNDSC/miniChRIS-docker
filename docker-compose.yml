@@ -146,7 +146,7 @@ services:
     networks:
       local:
         aliases:
-          - pfcon.local
+          - pfcon.host
       remote:
     labels:
       org.chrisproject.role: "pfcon"
@@ -207,15 +207,27 @@ services:
       - local
   
   cube-setup:
-    image: docker
     container_name: cube-setup
+    image: docker
+    command: /setup.sh
     depends_on:
       - cube-starting
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./provision/setup.sh:/entrypoint.sh
+      - state:/miniChRIS_state
+      - ./provision/setup.sh:/setup.sh
     userns_mode: "host"
-    entrypoint: /entrypoint.sh
+
+  plugins:
+    build:
+      context: ./plugins/script
+      args:
+        - http_proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - state:/miniChRIS_state:ro
+      - ./plugins:/plugins
+    userns_mode: "host"
 
 
 networks:
@@ -227,3 +239,4 @@ volumes:
   chris_store_db_data:
   swift_storage:
   remote:
+  state:

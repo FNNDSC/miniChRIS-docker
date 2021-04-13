@@ -73,7 +73,7 @@ finish_task pull
 ##################
 
 print_status run start
-! docker-compose up -d 2>&1 | grep -i error
+! docker-compose up -d --build 2>&1 | grep -i error
 finish_task start
 
 # WAIT FOR SERVICES TO BE READY
