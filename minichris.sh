@@ -63,7 +63,7 @@ function finish_task () {
 ####################
 
 # change to directory where this script lives
-cd $(dirname "$(readlink -f "$0")")
+cd $(dirname "$0")
 
 print_status run pull
 docker-compose pull -q
