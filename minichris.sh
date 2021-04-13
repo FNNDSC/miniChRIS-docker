@@ -5,10 +5,11 @@
 ###############
 
 if [ "$(docker info -f '{{ .Swarm.LocalNodeState }}')" = "active" ]; then
-  echo "cannot proceed: please leave the docker swarm"
-  echo
-  echo "    docker swarm leave --force"
-  exit 1
+  echo "WARNING: docker swarm is currently active. Proceed? [yN]"
+  read -n 1 proceed
+  if [ $proceed != 'y' ]; then
+    exit
+  fi
 fi
 
 if docker ps | grep -q chris; then
