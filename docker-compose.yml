@@ -219,6 +219,7 @@ services:
     userns_mode: "host"
 
   plugins:
+    container_name: minichris_plugins_installer
     build:
       context: ./plugins/script
       args:

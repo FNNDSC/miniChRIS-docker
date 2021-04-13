@@ -36,13 +36,5 @@ docker exec chris python plugins/services/manager.py \
 
 touch /miniChRIS_state/.setup
 
-# find the plugin installer container while outside of the docker-compose context
-COMPOSE_PROJECT_NAME=$(
-  docker inspect chris --format '{{ index .Config.Labels "com.docker.compose.project" }}'
-)
-plugin_installation_container=$(
-  docker ps -a --format '{{.ID}}' \
-    --filter label=com.docker.compose.service=plugins \
-    --filter label=com.docker.compose.project=$COMPOSE_PROJECT_NAME
-)
-docker restart $plugin_installation_container
+# install plugins
+docker restart minichris_plugins_installer

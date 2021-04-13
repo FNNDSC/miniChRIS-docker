@@ -97,7 +97,7 @@ docker wait cube-setup > /dev/null
 # - can log in as the user "chris"
 # - "pl-dircopy" plugin found in CUBE
 
-if curl -su 'chris:chris1234' http://localhost:8000/api/v1/plugins/ | grep -q pl-dircopy; then
+if curl -su 'chris:chris1234' http://localhost:8000/api/v1/users/ | grep -q password; then
   print_status done setup
 else
   print_status error setup
