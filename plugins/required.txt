@@ -1,6 +1,6 @@
 # All 'ts' plugins are required by the ChRIS backend.
 # However, their docker images are actually no-ops.
 
-fnndsc/pl-dircopy:latest
-fnndsc/pl-tsdircopy:latest
-fnndsc/pl-topologicalcopy:latest
+pl-dircopy
+pl-tsdircopy
+pl-topologicalcopy

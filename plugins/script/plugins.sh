@@ -41,7 +41,7 @@ upload_docker_image()
 upload_plugin_name()
 {
   local pluginurl=$(
-    curl -s "https://chrisstore.co/api/v1/plugins/search/?name_exact=$plname" \
+    curl -s "https://chrisstore.co/api/v1/plugins/search/?name_exact=$1" \
       | jq -r '.collection.items[0].href'
   )
   [ -n "$pluginurl" ] || return 1
