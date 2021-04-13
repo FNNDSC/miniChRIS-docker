@@ -87,7 +87,6 @@ finish_task wait
 #################
 # - create superusers
 # - add host pfcon
-# - add pl-dircopy
 
 print_status run setup
 docker wait cube-setup > /dev/null
@@ -101,5 +100,22 @@ if curl -su 'chris:chris1234' http://localhost:8000/api/v1/users/ | grep -q pass
   print_status done setup
 else
   print_status error setup
+  exit 1
+fi
+
+# PLUGINS INSTALLATION
+######################
+# - install required 'ts' plugins e.g. pl-dircopy
+# - install other plugins listed by you in the plugins folder
+
+print_status run plugins
+plugins_success=$(docker wait minichris_plugins_installer)
+
+if [ "$plugins_success" -eq "0" ] && \
+  curl -su 'chris:chris1234' http://localhost:8000/api/v1/plugins/ | grep -q pl-dircopy
+  then
+  print_status done plugins
+else
+  print_status error plugins
   exit 1
 fi
