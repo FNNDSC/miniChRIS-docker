@@ -57,7 +57,7 @@ Beautiful output and some runtime assertions.
 
 ### Add Plugins
 
-See [plugins/README](plugins/REAMDE)
+See [plugins/README](plugins/)
 
 # Github Actions
 
