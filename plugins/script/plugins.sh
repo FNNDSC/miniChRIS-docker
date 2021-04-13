@@ -23,7 +23,12 @@ upload_docker_image()
 {
   local dock_image=$1
   local script=$(docker inspect --format '{{ (index .Config.Cmd 0)}}' $dock_image)
-  [ "$?" = "0" ] || return 1
+  if [ "$?" != "0" ]; then
+    docker pull -q $dock_image > /dev/null
+    script=$(docker inspect --format '{{ (index .Config.Cmd 0)}}' $dock_image)
+    local exit_code=$?
+    [ "$exit_code" != "0" ] || return $exit_code
+  fi
   local json_description="$(docker run --rm $dock_image $script --json 2> /dev/null)"
 
   # docker.io/fnndsc/pl-app:version --> pl-app
