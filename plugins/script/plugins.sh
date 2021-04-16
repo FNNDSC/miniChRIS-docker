@@ -22,12 +22,12 @@ GIT_REPO_WEBSITE=${GIT_REPO_WEBSITE:-https://github.com}
 upload_docker_image()
 {
   local dock_image=$1
-  local script=$(docker inspect --format '{{ (index .Config.Cmd 0)}}' $dock_image)
-  if [ "$?" != "0" ]; then
+  local script=$(docker inspect --format '{{ (index .Config.Cmd 0)}}' $dock_image 2> /dev/null)
+  if [ -z "$script" ]; then
     docker pull -q $dock_image > /dev/null
     script=$(docker inspect --format '{{ (index .Config.Cmd 0)}}' $dock_image)
     local exit_code=$?
-    [ "$exit_code" != "0" ] || return $exit_code
+    [ "$exit_code" = "0" ] || return $exit_code
   fi
   local json_description="$(docker run --rm $dock_image $script --json 2> /dev/null)"
 

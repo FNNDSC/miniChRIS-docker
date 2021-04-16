@@ -1,7 +1,20 @@
-#!/bin/bash -ex
+#!/bin/bash -x
 # run pl-dircopy on the file "LICENSE", that's it
 
 cd $(dirname "$(readlink -f "$0")")
+
+# should be able to add plugins by docker image name
+extra_file=$(mktemp -p plugins --suffix=.txt)
+echo 'fnndsc/pl-simpledsapp:2.0.2' > $extra_file
+docker-compose up plugins
+rm $extra_file
+set -e
+curl -su 'chris:chris1234' \
+  'http://localhost:8000/api/v1/plugins/search/?name_exact=pl-simpledsapp' \
+  | grep -q 'fnndsc/pl-simpledsapp:2.0.2'
+
+# fail on non-zero exit code
+set -e
 
 # log in
 token=$(
