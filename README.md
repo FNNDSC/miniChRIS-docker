@@ -33,23 +33,9 @@ docker-compose up -d
 docker-compose down -v
 ```
 
-### Update
-
-```bash
-docker-compose pull
-```
-
-### Wait
-
-Block until CUBE is ready for use.
-
-```bash
-docker wait cube-setup
-```
-
 ### Fancy Start
 
-Beautiful output and some runtime assertions.
+Waits for the backend to be ready and does a few sanity checks.
 
 ```bash
 ./minichris.sh
