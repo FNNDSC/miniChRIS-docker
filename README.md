@@ -41,6 +41,22 @@ Waits for the backend to be ready and does a few sanity checks.
 ./minichris.sh
 ```
 
+### Not Working?
+
+1. Make sure you have `docker` and `docker-compose` both installed and working properly.
+2. Stop all running containers.
+3. No process should be bound to ports 5005, 5010, 5055, 8000, 8010, 8020, 8021
+
+#### Troubleshooting
+
+Run `docker-compose down -v && docker-compose up -d`
+
+
+If you still get an error, create a detailed [bug report](https://github.com/FNNDSC/miniChRIS/issues).
+Include the output from the above command. Also wait 5 minutes and use
+`docker-compose ps` to see specifically which service was unsuccessful, and
+`docker-compose logs <service_name>` for a complete error report.
+
 ### Add Plugins
 
 See [plugins/README](plugins/)
