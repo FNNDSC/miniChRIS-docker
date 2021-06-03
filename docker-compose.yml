@@ -20,6 +20,8 @@ services:
     environment:
       DJANGO_DB_MIGRATE: "on"
       DJANGO_COLLECTSTATIC: "on"
+    labels:
+      org.chrisproject.info: "miniChRIS"
   worker:
     image: fnndsc/chris:2.1.1-rc.3
     command: celery -A core worker -c 4 -l info -Q main1,main2
