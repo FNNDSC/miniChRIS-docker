@@ -137,7 +137,7 @@ services:
 
   pfcon:
     container_name: pfcon
-    image: fnndsc/pfcon:3.2.0
+    image: fnndsc/pfcon:3.4.0
     environment:
       COMPUTE_SERVICE_URL: http://pman:5010/api/v1/
       SECRET_KEY: secret
@@ -154,14 +154,15 @@ services:
       org.chrisproject.role: "pfcon"
 
   pman:
-    image: fnndsc/pman:3.0.1-rc.1-single
+    image: fnndsc/pman:3.2.0
     container_name: pman
     environment:
       CONTAINER_ENV: swarm
       SECRET_KEY: secret
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    userns_mode: "host"
+      - /var/run/docker.sock:/var/run/docker.sock:rw
+      - ./storebase_workaround.sh:/entrypoint.sh:ro
+    entrypoint: /entrypoint.sh
     depends_on:
       - swarm-status
       - pfcon
@@ -169,6 +170,7 @@ services:
       - "5010:5010"
     networks:
       - remote
+    userns_mode: "host"
     labels:
       org.chrisproject.role: "pman"
 
