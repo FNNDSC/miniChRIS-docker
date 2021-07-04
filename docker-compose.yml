@@ -175,7 +175,7 @@ services:
       org.chrisproject.role: "pman"
 
   chris_ui:
-    image: fnndsc/chris_ui:1.4.4
+    image: fnndsc/chris_ui:1.4.6
     command: sirv --quiet --single
     environment:
       REACT_APP_CHRIS_UI_URL: http://localhost:8000/api/v1/
