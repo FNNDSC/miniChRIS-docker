@@ -7,7 +7,7 @@ version: '3.7'
 services:
   chris:
     container_name: chris
-    image: fnndsc/chris:2.2.0
+    image: fnndsc/chris:2.4.0
     ports:
       - "8000:8000"
     depends_on:
@@ -23,7 +23,7 @@ services:
     labels:
       org.chrisproject.info: "miniChRIS"
   worker:
-    image: fnndsc/chris:2.2.0
+    image: fnndsc/chris:2.4.0
     command: celery -A core worker -c 4 -l info -Q main1,main2
     env_file: secrets.env
     environment:
@@ -38,7 +38,7 @@ services:
     networks:
       - local
   worker_periodic:
-    image: fnndsc/chris:2.2.0
+    image: fnndsc/chris:2.4.0
     environment:
       DJANGO_DB_MIGRATE: "off"
       DJANGO_COLLECTSTATIC: "off"
@@ -51,7 +51,7 @@ services:
     networks:
       - local
   scheduler:
-    image: fnndsc/chris:2.2.0
+    image: fnndsc/chris:2.4.0
     command: celery -A core beat -l info --pidfile /home/localuser/celerybeat.pid --scheduler django_celery_beat.schedulers:DatabaseScheduler
     env_file: secrets.env
     environment:
@@ -64,7 +64,7 @@ services:
     networks:
       - local
   chris_db:
-    image: mysql:5
+    image: postgres:13
     env_file: secrets.env
     restart: on-failure
     volumes:
@@ -79,7 +79,7 @@ services:
 
   chris_store:
     container_name: chris_store
-    image: fnndsc/chris_store:1.1.0
+    image: fnndsc/chris_store:1.4.0
     environment:
       - DJANGO_DB_MIGRATE=on
       - DJANGO_SETTINGS_MODULE=config.settings.production
@@ -90,12 +90,11 @@ services:
       - DJANGO_SECURE_PROXY_SSL_HEADER=
       - DJANGO_USE_X_FORWARDED_HOST=false
       - DATABASE_HOST=chris_store_db
-      - DATABASE_PORT=3306
+      - DATABASE_PORT=5432
+      - POSTGRES_DB=chris_store
+      - POSTGRES_USER=chris
+      - POSTGRES_PASSWORD=chirs1234
       - SWIFT_AUTH_URL=http://swift:8080/auth/v1.0
-      - MYSQL_ROOT_PASSWORD=rootp
-      - MYSQL_DATABASE=chris_store
-      - MYSQL_USER=chris
-      - MYSQL_PASSWORD=Chris1234
       - SWIFT_USERNAME=chris:chris1234
       - SWIFT_KEY=testing
       - SWIFT_CONTAINER_NAME=store_users
@@ -109,12 +108,11 @@ services:
         aliases:
           - chrisstore.local
   chris_store_db:
-    image: mysql:5
+    image: postgres:13
     environment:
-      - MYSQL_ROOT_PASSWORD=rootp
-      - MYSQL_DATABASE=chris_store
-      - MYSQL_USER=chris
-      - MYSQL_PASSWORD=Chris1234
+      - POSTGRES_DB=chris_store
+      - POSTGRES_USER=chris
+      - POSTGRES_PASSWORD=chirs1234
     volumes:
       - chris_store_db_data:/var/lib/mysql
     networks:
