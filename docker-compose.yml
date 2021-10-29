@@ -7,7 +7,7 @@ version: '3.7'
 services:
   chris:
     container_name: chris
-    image: fnndsc/chris:2.4.0
+    image: docker.io/fnndsc/chris:2.7.2
     ports:
       - "8000:8000"
     depends_on:
@@ -23,7 +23,7 @@ services:
     labels:
       org.chrisproject.info: "miniChRIS"
   worker:
-    image: fnndsc/chris:2.4.0
+    image: docker.io/fnndsc/chris:2.7.2
     command: celery -A core worker -c 4 -l info -Q main1,main2
     env_file: secrets.env
     environment:
@@ -38,7 +38,7 @@ services:
     networks:
       - local
   worker_periodic:
-    image: fnndsc/chris:2.4.0
+    image: docker.io/fnndsc/chris:2.7.2
     environment:
       DJANGO_DB_MIGRATE: "off"
       DJANGO_COLLECTSTATIC: "off"
@@ -51,7 +51,7 @@ services:
     networks:
       - local
   scheduler:
-    image: fnndsc/chris:2.4.0
+    image: docker.io/fnndsc/chris:2.7.2
     command: celery -A core beat -l info --pidfile /home/localuser/celerybeat.pid --scheduler django_celery_beat.schedulers:DatabaseScheduler
     env_file: secrets.env
     environment:
@@ -79,7 +79,7 @@ services:
 
   chris_store:
     container_name: chris_store
-    image: fnndsc/chris_store:1.4.0
+    image: ghcr.io/fnndsc/chris_store:2.0.0
     environment:
       - DJANGO_DB_MIGRATE=on
       - DJANGO_SETTINGS_MODULE=config.settings.production
@@ -135,7 +135,7 @@ services:
 
   pfcon:
     container_name: pfcon
-    image: fnndsc/pfcon:3.4.0
+    image: ghcr.io/fnndsc/pfcon:3.4.1
     environment:
       COMPUTE_SERVICE_URL: http://pman:5010/api/v1/
       SECRET_KEY: secret
@@ -152,7 +152,7 @@ services:
       org.chrisproject.role: "pfcon"
 
   pman:
-    image: fnndsc/pman:3.2.0
+    image: ghcr.io/fnndsc/pman:3.2.1
     container_name: pman
     environment:
       CONTAINER_ENV: swarm
@@ -173,14 +173,14 @@ services:
       org.chrisproject.role: "pman"
 
   chris_ui:
-    image: fnndsc/chris_ui:1.4.6
+    image: docker.io/fnndsc/chris_ui:1.4.6
     command: sirv --quiet --single
     environment:
       REACT_APP_CHRIS_UI_URL: http://localhost:8000/api/v1/
     ports:
       - "8020:3000"
   chris_store_ui:
-    image: fnndsc/chris_store_ui:0.2.0-rc.1
+    image: docker.io/fnndsc/chris_store_ui:0.2.0-rc.1
     command: sirv --quiet --single
     environment:
       REACT_APP_STORE_URL: http://localhost:8010/api/v1/
@@ -203,7 +203,7 @@ services:
 
   # wait for CUBE to come online
   cube-starting:
-    image: curlimages/curl:latest
+    image: docker.io/curlimages/curl:latest
     container_name: cube-starting
     depends_on:
       - chris
