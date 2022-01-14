@@ -79,7 +79,7 @@ services:
 
   chris_store:
     container_name: chris_store
-    image: ghcr.io/fnndsc/chris_store:2.0.0
+    image: ghcr.io/fnndsc/chris_store:2.0.1
     environment:
       - DJANGO_DB_MIGRATE=on
       - DJANGO_SETTINGS_MODULE=config.settings.production
