@@ -135,10 +135,12 @@ services:
 
   pfcon:
     container_name: pfcon
-    image: ghcr.io/fnndsc/pfcon:3.4.1
+    image: ghcr.io/fnndsc/pfcon:4.0.0
     environment:
       COMPUTE_SERVICE_URL: http://pman:5010/api/v1/
       SECRET_KEY: secret
+      PFCON_USER: pfcon
+      PFCON_PASSWORD: pfcon1234
     ports:
       - "5005:5005"
     volumes:

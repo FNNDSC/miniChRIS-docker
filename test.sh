@@ -3,6 +3,18 @@
 
 cd $(dirname "$(readlink -f "$0")")
 
+ok_statuses=(created waiting scheduled started registeringFiles)
+
+function is_ok() {
+  for ok in "${ok_statuses[@]}"; do
+    if [ "$1" == "$ok" ]; then
+      return 0
+    fi
+  done
+  return 1
+}
+
+
 # should be able to add plugins by docker image name
 extra_file=$(mktemp -p plugins --suffix=.txt)
 echo 'fnndsc/pl-simpledsapp:2.0.2' > $extra_file
@@ -61,8 +73,12 @@ for i in {0..60}; do
   run_status=$(echo $job | jq -r .status)
   if [[ "$run_status" == "finished"* ]]; then
     break
+  elif is_ok "$run_status"; then
+    printf .
+  else
+    echo "ERROR: run_status=$run_status"
+    exit 1
   fi
-  printf .
 done
 echo
 
