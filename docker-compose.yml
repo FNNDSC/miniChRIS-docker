@@ -152,7 +152,7 @@ services:
       org.chrisproject.role: "pfcon"
 
   pman:
-    image: ghcr.io/fnndsc/pman:3.2.1
+    image: ghcr.io/fnndsc/pman:3.3.0
     container_name: pman
     environment:
       CONTAINER_ENV: swarm
