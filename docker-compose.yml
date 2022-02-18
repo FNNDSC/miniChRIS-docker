@@ -7,7 +7,7 @@ version: '3.7'
 services:
   chris:
     container_name: chris
-    image: docker.io/fnndsc/chris:3.0.0.pre1
+    image: ghcr.io/fnndsc/chris:3.0.0.pre2
     ports:
       - "8000:8000"
     depends_on:
@@ -23,7 +23,7 @@ services:
     labels:
       org.chrisproject.info: "miniChRIS"
   worker:
-    image: docker.io/fnndsc/chris:3.0.0.pre1
+    image: ghcr.io/fnndsc/chris:3.0.0.pre2
     command: celery -A core worker -c 4 -l info -Q main1,main2
     env_file: secrets.env
     environment:
@@ -38,7 +38,7 @@ services:
     networks:
       - local
   worker_periodic:
-    image: docker.io/fnndsc/chris:3.0.0.pre1
+    image: ghcr.io/fnndsc/chris:3.0.0.pre2
     environment:
       DJANGO_DB_MIGRATE: "off"
       DJANGO_COLLECTSTATIC: "off"
@@ -51,7 +51,7 @@ services:
     networks:
       - local
   scheduler:
-    image: docker.io/fnndsc/chris:3.0.0.pre1
+    image: ghcr.io/fnndsc/chris:3.0.0.pre2
     command: celery -A core beat -l info --pidfile /home/localuser/celerybeat.pid --scheduler django_celery_beat.schedulers:DatabaseScheduler
     env_file: secrets.env
     environment:
