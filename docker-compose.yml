@@ -15,6 +15,8 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock:rw"
     restart: always
     userns_mode: host
+    depends_on:
+      - chris
   chris:
     container_name: chris
     image: ghcr.io/fnndsc/chris:3.0.0.pre2
