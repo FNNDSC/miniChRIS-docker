@@ -8,6 +8,10 @@ if [ "$(docker info -f '{{ .Swarm.LocalNodeState }}')" = "active" ] && docker in
   fi
 fi
 
+if [ "$CI" = "true" ]; then
+  not='-T'
+fi
+
 set -ex
 docker compose up -d
-exec docker compose exec chrisomatic chrisomatic apply
+exec docker compose exec $not chrisomatic chrisomatic apply
