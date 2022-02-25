@@ -77,9 +77,47 @@ jobs:
 
 # About
 
-`./minichris.sh` is a no-nonsense collection of scripts to start ChRIS without the shenanigans of
-[make.sh](https://github.com/FNNDSC/ChRIS_ultron_backEnd/blob/master/make.sh).
-It is fully managed by `docker-compose`.
+_miniChRIS_ provides a no-nonsense collection of scripts which use
+[Docker Compose](https://docs.docker.com/compose/)
+to run a minimal and complete _ChRIS_ system.
+
+## v.s. `make.sh`
+
+The conventional way to run a _ChRIS_ system is
+[ChRIS_ultron_backEnd/make.sh](https://github.com/FNNDSC/ChRIS_ultron_backEnd/blob/master/make.sh).
+
+_miniChRIS_ does not replace `make.sh`. However, for most users
+looking for how to run _ChRIS_ and have it "just work," _miniChRIS_
+is right for you.
+
+- _miniChRIS_ has 109 lines of shell code --- *ChRIS_ultron_backEnd* has 3,200
+- _miniChRIS_ does not create files on host outside of named docker volumes
+- `make.sh` runs arbitrary `chmod 755` and `chmod -R 777` on the host filesystem.
+- _miniChRIS_ is fully containerized.
+- `make.sh` has unlisted dependencies, does not work cross-platform (e.g. default `bash` on Mac not supported, no support for Windows)
+- `minichris.sh` does not have any command-line arguments. Usage: `./minichris.sh`
+- The recommended way to run `./make.sh` is: `docker swarm leave --force && docker swarm init --advertise-addr 127.0.0.1 && ./unmake.sh && sudo rm -fr CHRIS_REMOTE_FS && rm -fr CHRIS_REMOTE_FS && ./make.sh -U -I -i`
+- `make.sh` runs backend automatic tests.
+- `minichris.sh` provides a complete `docker-compose.yml`
+- `make.sh` uses `docker stack deploy`; `docker-compose_dev.yml` depends on `.env` and other variables set by `make.sh`
+
+### Goals
+
+- fast and minimal
+- practical for E2E testing
+
+#### Non-Goals
+
+- production use
+- back-end development environment
+
+### Performance
+
+`./minichris.sh` takes 30-60 seconds on a decent laptop (quad-core, 16 GB, SSD)
+and takes 2-3 minutes in [Github Actions' Ubuntu VMs](https://github.com/FNNDSC/miniChRIS/actions).
+It is strongly recommended that you use an SSD!
+
+## How It Works
 
 Traditionally, to bring up CUBE+pfcon+pman on a single-machine on-the-metal requires a few extra steps on the host.
 
@@ -115,24 +153,3 @@ docker daemon to create and join a swarm.
 and provides it to `pman`.
 
 About: https://github.com/FNNDSC/ChRIS_ultron_backEnd/blob/78670f6abf0b6ebac7aeef75989893b4502d4823/docker-compose_dev.yml#L208-L222
-
-### Performance
-
-`./minichris.sh` takes 30 seconds on an okay laptop (quad-core, 16 GB, SSD)
-and takes 2-3 minutes in [Github Actions' Ubuntu VMs](https://github.com/FNNDSC/miniChRIS/actions).
-It is strongly recommended that you use an SSD!
-
-### Goals
-
-- fast
-- simple use
-  - no arguments
-  - do one thing, and one thing well (a UNIX philosophy)
-- legible code
-- practical for E2E testing
-
-#### Non-Goals
-
-- configurable
-- production use
-- back-end development environment
