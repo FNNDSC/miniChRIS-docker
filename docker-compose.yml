@@ -5,6 +5,16 @@
 version: '3.7'
 
 services:
+  chrisomatic:
+    container_name: chrisomatic
+    image: docker.io/fnndsc/chrisomatic:0.1.0
+    networks:
+      - local
+    volumes:
+      - "./chrisomatic.yml:/etc/chrisomatic/chrisomatic.yml:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock:rw"
+    restart: always
+    userns_mode: host
   chris:
     container_name: chris
     image: ghcr.io/fnndsc/chris:3.0.0.pre2
@@ -21,7 +31,8 @@ services:
       DJANGO_DB_MIGRATE: "on"
       DJANGO_COLLECTSTATIC: "on"
     labels:
-      org.chrisproject.info: "miniChRIS"
+      org.chrisproject.role: "ChRIS ultron backEnd"
+      org.chrisproject.miniChRIS: "miniChRIS"
   worker:
     image: ghcr.io/fnndsc/chris:3.0.0.pre2
     command: celery -A core worker -c 4 -l info -Q main1,main2
@@ -161,7 +172,7 @@ services:
       SECRET_KEY: secret
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:rw
-      - ./storebase_workaround.sh:/entrypoint.sh:ro
+      - ./workarounds/storebase.sh:/entrypoint.sh:ro
     entrypoint: /entrypoint.sh
     depends_on:
       - swarm-status
@@ -199,47 +210,9 @@ services:
     container_name: swarm-status
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./provision/swarm.sh:/entrypoint.sh
+      - ./workarounds/swarm.sh:/entrypoint.sh
     userns_mode: "host"
     entrypoint: /entrypoint.sh
-
-  # wait for CUBE to come online
-  cube-starting:
-    image: docker.io/curlimages/curl:latest
-    container_name: cube-starting
-    depends_on:
-      - chris
-    volumes:
-      - ./provision/wait.sh:/wait.sh:ro
-    entrypoint: /wait.sh
-    command: ["chris:8000"]
-    networks:
-      - local
-  
-  cube-setup:
-    container_name: cube-setup
-    image: docker
-    command: /setup.sh
-    depends_on:
-      - cube-starting
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - state:/miniChRIS_state
-      - ./provision/setup.sh:/setup.sh
-    userns_mode: "host"
-
-  plugins:
-    container_name: minichris_plugins_installer
-    build:
-      context: ./plugins/script
-      args:
-        - http_proxy
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - state:/miniChRIS_state:ro
-      - ./plugins:/plugins
-    userns_mode: "host"
-
 
 networks:
   local:
@@ -250,4 +223,3 @@ volumes:
   chris_store_db_data:
   swift_storage:
   remote:
-  state:

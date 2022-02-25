@@ -24,21 +24,13 @@ ChRIS_store_ui | http://localhost:8021/
 ### Start
 
 ```bash
-docker-compose up -d
+./minichris.sh
 ```
 
 ### Stop
 
 ```bash
-docker-compose down -v
-```
-
-### Fancy Start
-
-Waits for the backend to be ready and does a few sanity checks.
-
-```bash
-./minichris.sh
+./unmake.sh
 ```
 
 ### Not Working?
@@ -47,19 +39,14 @@ Waits for the backend to be ready and does a few sanity checks.
 2. Stop all running containers.
 3. No process should be bound to ports 5005, 5010, 5055, 8000, 8010, 8020, 8021
 
-#### Troubleshooting
+#### Still Not Working?
 
-Run `docker-compose down -v && docker-compose up -d`
-
-
-If you still get an error, create a detailed [bug report](https://github.com/FNNDSC/miniChRIS/issues).
-Include the output from the above command. Also wait 5 minutes and use
-`docker-compose ps` to see specifically which service was unsuccessful, and
-`docker-compose logs <service_name>` for a complete error report.
+Try `docker compose down -v --remove-orphans`.
 
 ### Add Plugins
 
-See [plugins/README](plugins/)
+Add them to `chrisomatic.yml` and then rerun `./minichris.sh`.
+For more information, see https://github.com/FNNDSC/chrisomatic#plugins-and-pipelines
 
 # Github Actions
 
@@ -96,38 +83,42 @@ It is fully managed by `docker-compose`.
 
 Traditionally, to bring up CUBE+pfcon+pman on a single-machine on-the-metal requires a few extra steps on the host.
 
-CUBE setup involves:
+CUBE setup typically involves:
 
 1. waiting for web server to come online
 2. creating a superuser
 3. adding `host` as a compute environment
-4. registering some plugins
+4. registering some plugins: `pl-dircopy` and `pl-topologicalcopy` are required
 
 ### pman
 
 `pman` setup involves:
 
 1. joining a docker swarm
-2. figuring out the [`STOREBASE` environment variable](https://github.com/FNNDSC/ChRIS_ultron_backEnd/blob/78670f6abf0b6ebac7aeef75989893b4502d4823/docker-compose_dev.yml#L208-L222)
+2. figuring out the [`STOREBASE` environment variable](h)
 
 `pman` is special because it itself is a container which spawns other containers on its host.
 
 It needs `/var/run/docker.sock` to be mounted inside the container.
 We can resolve the two setup requirements by connecting to the host's dockerd.
 
+#### docker swarm
+
+`workarounds/swarm.sh` manages single-machine swarm cluster state.
+When the service `swarm-status` is brought up, it tells the local
+docker daemon to create and join a swarm.
+
 #### `STOREBASE`
 
-The workaround for `STOREBASE` is not merged upstream because it might not work
-on a multi-node docker swarm deployment using `docker stack deploy`.
-The pull request is here: https://github.com/FNNDSC/pman/pull/165
+`STOREBASE` is a space for files created by plugin instances.
+`./workarounds/storebase.sh` derives the path of a docker volume
+and provides it to `pman`.
 
-Hence, a fork of `pman` with the patch applied is independently maintained and pushed
-under the docker tag `fnndsc/pman:*-rc.?-single`.
-This image is recommended for use with single-machine deployments.
+About: https://github.com/FNNDSC/ChRIS_ultron_backEnd/blob/78670f6abf0b6ebac7aeef75989893b4502d4823/docker-compose_dev.yml#L208-L222
 
 ### Performance
 
-`./minichris.sh` takes 50 seconds on an okay laptop (quad-core, 16 GB, SSD)
+`./minichris.sh` takes 30 seconds on an okay laptop (quad-core, 16 GB, SSD)
 and takes 2-3 minutes in [Github Actions' Ubuntu VMs](https://github.com/FNNDSC/miniChRIS/actions).
 It is strongly recommended that you use an SSD!
 
