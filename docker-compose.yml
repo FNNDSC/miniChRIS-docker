@@ -7,7 +7,7 @@ version: '3.7'
 services:
   chrisomatic:
     container_name: chrisomatic
-    image: ghcr.io/fnndsc/chrisomatic:0.1.4
+    image: ghcr.io/fnndsc/chrisomatic:0.1.5
     networks:
       - local
     volumes:
