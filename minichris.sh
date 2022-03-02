@@ -12,6 +12,9 @@ if [ "$CI" = "true" ]; then
   not='-T'
 fi
 
+# change to directory where this script lives
+cd $(dirname "$0")
+
 set -ex
 docker compose up -d
 exec docker compose exec $not chrisomatic chrisomatic apply
