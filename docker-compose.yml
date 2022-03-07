@@ -148,7 +148,7 @@ services:
 
   pfcon:
     container_name: pfcon
-    image: ghcr.io/fnndsc/pfcon:4.0.0
+    image: ghcr.io/fnndsc/pfcon:4.0.1
     environment:
       COMPUTE_SERVICE_URL: http://pman:5010/api/v1/
       SECRET_KEY: secret
