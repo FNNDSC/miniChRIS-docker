@@ -19,7 +19,7 @@ services:
       - chris
   chris:
     container_name: chris
-    image: ghcr.io/fnndsc/chris:3.0.0.pre2
+    image: ghcr.io/fnndsc/chris:3.0.0.pre4
     ports:
       - "8000:8000"
     depends_on:
@@ -36,7 +36,7 @@ services:
       org.chrisproject.role: "ChRIS ultron backEnd"
       org.chrisproject.miniChRIS: "miniChRIS"
   worker:
-    image: ghcr.io/fnndsc/chris:3.0.0.pre2
+    image: ghcr.io/fnndsc/chris:3.0.0.pre4
     command: celery -A core worker -c 4 -l info -Q main1,main2
     env_file: secrets.env
     environment:
@@ -51,7 +51,7 @@ services:
     networks:
       - local
   worker_periodic:
-    image: ghcr.io/fnndsc/chris:3.0.0.pre2
+    image: ghcr.io/fnndsc/chris:3.0.0.pre4
     environment:
       DJANGO_DB_MIGRATE: "off"
       DJANGO_COLLECTSTATIC: "off"
@@ -64,7 +64,7 @@ services:
     networks:
       - local
   scheduler:
-    image: ghcr.io/fnndsc/chris:3.0.0.pre2
+    image: ghcr.io/fnndsc/chris:3.0.0.pre4
     command: celery -A core beat -l info --pidfile /home/localuser/celerybeat.pid --scheduler django_celery_beat.schedulers:DatabaseScheduler
     env_file: secrets.env
     environment:
