@@ -18,7 +18,7 @@ def by_label(label):
     return d.containers.list(filters={'label': f'org.chrisproject.role={label}'})[0]
 
 pfcon = by_label('pfcon')
-storebase = [v['Source'] for v in pfcon.attrs['Mounts'] if v['Destination'] == '/home/localuser/storeBase'][0]
+storebase = [v['Source'] for v in pfcon.attrs['Mounts'] if v['Destination'] == '/var/local/storeBase'][0]
 print(storebase)
 
 pman = by_label('pman')

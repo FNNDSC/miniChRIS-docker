@@ -148,7 +148,7 @@ services:
 
   pfcon:
     container_name: pfcon
-    image: ghcr.io/fnndsc/pfcon:4.0.1
+    image: ghcr.io/fnndsc/pfcon:4.0.2
     environment:
       COMPUTE_SERVICE_URL: http://pman:5010/api/v1/
       SECRET_KEY: secret
@@ -157,7 +157,7 @@ services:
     ports:
       - "5005:5005"
     volumes:
-      - remote:/home/localuser/storeBase
+      - remote:/var/local/storeBase
     networks:
       local:
         aliases:
