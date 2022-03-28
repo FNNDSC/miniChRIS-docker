@@ -16,5 +16,5 @@ fi
 cd $(dirname "$0")
 
 set -ex
-docker compose up -d
-exec docker compose exec $not chrisomatic chrisomatic apply
+docker-compose up -d
+exec docker-compose exec $not chrisomatic chrisomatic apply
