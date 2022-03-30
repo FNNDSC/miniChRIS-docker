@@ -41,7 +41,7 @@ ChRIS_store_ui | http://localhost:8021/
 
 #### Still Not Working?
 
-Try `docker compose down -v --remove-orphans`.
+Try `docker-compose down -v --remove-orphans`.
 
 ### Add Plugins
 
