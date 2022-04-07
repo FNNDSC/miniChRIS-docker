@@ -6,8 +6,8 @@
 Run a demo of ChRIS. https://chrisproject.org/
 
 ```bash
-git clone https://github.com/FNNDSC/miniChRIS.git
-cd miniChRIS
+git clone https://github.com/FNNDSC/miniChRIS-docker.git
+cd miniChRIS-docker
 ./minichris.sh
 ```
 
