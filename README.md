@@ -64,7 +64,7 @@ jobs:
     steps:
     - name: setup CUBE
       id: cube
-      uses: fnndsc/miniChRIS@v5
+      uses: fnndsc/miniChRIS@20220330
     - name: make a request
       run: curl -u "${{ steps.cube.outputs.cube-user }}" "${{ steps.cube.outputs.cube-url }}"
 ```
