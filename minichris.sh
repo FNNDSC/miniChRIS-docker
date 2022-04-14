@@ -17,4 +17,4 @@ cd $(dirname "$0")
 
 set -ex
 docker-compose up -d
-exec docker-compose exec $not chrisomatic chrisomatic apply
+exec docker-compose run --rm $not chrisomatic

@@ -2,21 +2,22 @@
 #
 # warning: /var/run/docker.sock is mounted into some services (notably pman)
 
-version: '3.7'
+version: '3.9'
 
 services:
   chrisomatic:
-    container_name: chrisomatic
-    image: ghcr.io/fnndsc/chrisomatic:0.1.5
+    image: ghcr.io/fnndsc/chrisomatic:0.2.0
     networks:
       - local
     volumes:
       - "./chrisomatic.yml:/etc/chrisomatic/chrisomatic.yml:ro"
       - "/var/run/docker.sock:/var/run/docker.sock:rw"
-    restart: always
     userns_mode: host
     depends_on:
       - chris
+      - chris_store
+    profiles:
+      - tools
   chris:
     container_name: chris
     image: fnndsc/cube:next-3.0.0.a2.git.ba5ff6f
