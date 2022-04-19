@@ -197,6 +197,9 @@ services:
   chris_store_ui:
     image: docker.io/fnndsc/chris_store_ui:0.2.0-rc.1
     command: sirv --quiet --single
+    volumes:
+      - ./workarounds/chris_store_ui.sh:/entrypoint.sh
+    entrypoint: /entrypoint.sh
     environment:
       REACT_APP_STORE_URL: http://localhost:8010/api/v1/
     ports:
