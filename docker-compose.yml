@@ -189,15 +189,15 @@ services:
       org.chrisproject.role: "pman"
 
   chris_ui:
-    image: ghcr.io/fnndsc/chris_ui:20220601
-    command: sirv --quiet --single
+    image: ghcr.io/fnndsc/chris_ui:20220630.2-b3051099
+    command: sirv --single
     environment:
       REACT_APP_CHRIS_UI_URL: http://localhost:8000/api/v1/
     ports:
       - "8020:3000"
   chris_store_ui:
-    image: docker.io/fnndsc/chris_store_ui:0.2.0-rc.1
-    command: sirv --quiet --single
+    image: ghcr.io/fnndsc/chris_store_ui:0.2.0
+    command: sirv --single
     environment:
       REACT_APP_STORE_URL: http://localhost:8010/api/v1/
     ports:
