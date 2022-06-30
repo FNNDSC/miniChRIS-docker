@@ -20,7 +20,7 @@ services:
       - tools
   chris:
     container_name: chris
-    image: fnndsc/cube:next-3.0.0.a9
+    image: fnndsc/cube:3.0.0.a10
     ports:
       - "8000:8000"
     depends_on:
@@ -37,7 +37,7 @@ services:
       org.chrisproject.role: "ChRIS ultron backEnd"
       org.chrisproject.miniChRIS: "miniChRIS"
   worker:
-    image: fnndsc/cube:next-3.0.0.a9
+    image: fnndsc/cube:3.0.0.a10
     command: celery -A core worker -c 4 -l info -Q main1,main2
     env_file: secrets.env
     environment:
@@ -52,7 +52,7 @@ services:
     networks:
       - local
   worker_periodic:
-    image: fnndsc/cube:next-3.0.0.a9
+    image: fnndsc/cube:3.0.0.a10
     environment:
       DJANGO_DB_MIGRATE: "off"
       DJANGO_COLLECTSTATIC: "off"
@@ -65,7 +65,7 @@ services:
     networks:
       - local
   scheduler:
-    image: fnndsc/cube:next-3.0.0.a9
+    image: fnndsc/cube:3.0.0.a10
     command: celery -A core beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
     env_file: secrets.env
     environment:
@@ -149,7 +149,7 @@ services:
 
   pfcon:
     container_name: pfcon
-    image: fnndsc/pfcon:next-5.0.0.a1.git.6822e96
+    image: fnndsc/pfcon:5.0.0.a2
     environment:
       COMPUTE_SERVICE_URL: http://pman:5010/api/v1/
       SECRET_KEY: secret
@@ -168,7 +168,7 @@ services:
       org.chrisproject.role: "pfcon"
 
   pman:
-    image: fnndsc/pman:next-4.0.0.a1.git.c245243
+    image: fnndsc/pman:4.0.0.a3
     container_name: pman
     environment:
       CONTAINER_ENV: swarm
