@@ -10,7 +10,7 @@ services:
     networks:
       - local
     volumes:
-      - "./chrisomatic.yml:/etc/chrisomatic/chrisomatic.yml:ro"
+      - "./chrisomatic.yml:/chrisomatic.yml:ro"
       - "/var/run/docker.sock:/var/run/docker.sock:rw"
     userns_mode: host
     depends_on:
