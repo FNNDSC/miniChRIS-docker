@@ -20,7 +20,7 @@ services:
       - tools
   chris:
     container_name: chris
-    image: fnndsc/cube:3.0.0.a15
+    image: fnndsc/cube:3.0.0.a16
     ports:
       - "8000:8000"
     depends_on:
@@ -37,7 +37,7 @@ services:
       org.chrisproject.role: "ChRIS ultron backEnd"
       org.chrisproject.miniChRIS: "miniChRIS"
   worker:
-    image: fnndsc/cube:3.0.0.a15
+    image: fnndsc/cube:3.0.0.a16
     command: celery -A core worker -c 4 -l info -Q main1,main2
     env_file: secrets.env
     environment:
@@ -52,7 +52,7 @@ services:
     networks:
       - local
   worker_periodic:
-    image: fnndsc/cube:3.0.0.a15
+    image: fnndsc/cube:3.0.0.a16
     environment:
       DJANGO_DB_MIGRATE: "off"
       DJANGO_COLLECTSTATIC: "off"
@@ -65,7 +65,7 @@ services:
     networks:
       - local
   scheduler:
-    image: fnndsc/cube:3.0.0.a15
+    image: fnndsc/cube:3.0.0.a16
     command: celery -A core beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
     env_file: secrets.env
     environment:
@@ -163,7 +163,7 @@ services:
       org.chrisproject.role: "pfcon"
 
   pman:
-    image: fnndsc/pman:4.0.0.a3
+    image: fnndsc/pman:4.0.0.a4
     container_name: pman
     environment:
       CONTAINER_ENV: swarm
@@ -184,7 +184,7 @@ services:
       org.chrisproject.role: "pman"
 
   chris_ui:
-    image: fnndsc/chris_ui:20220715.51-2500e030
+    image: fnndsc/chris_ui:20220720.56-8fe95ee5
     command: sirv --host --single
     environment:
       REACT_APP_CHRIS_UI_URL: http://localhost:8000/api/v1/
