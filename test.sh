@@ -20,7 +20,7 @@ set -e
 # assert that chrisomatic plugin registration worked
 curl -su 'chris:chris1234' \
   'http://localhost:8000/api/v1/plugins/search/?name_exact=pl-simpledsapp' \
-  | grep -q 'fnndsc/pl-simpledsapp:2.0.2'
+  | grep -q 'fnndsc/pl-simpledsapp:2.1.0'
 
 # log in
 token=$(
@@ -39,7 +39,7 @@ curl -s 'http://localhost:8000/api/v1/uploadedfiles/' \
 
 # find the plugin ID for pl-dircopy
 inst_url=$(
-  curl -s 'http://localhost:8000/api/v1/plugins/search/?name=pl-dircopy' \
+  curl -s 'http://localhost:8000/api/v1/plugins/search/?name_exact=pl-dircopy' \
     -H "Authorization: Token $token" \
     -H 'Accept: application/json' | jq -r '.results[0].instances'
 )
