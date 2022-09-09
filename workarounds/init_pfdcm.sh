@@ -1,4 +1,17 @@
-#!/bin/sh -ex
+#!/bin/sh
+
+# wait for pfdcm
+poll=0
+until curl -fs 'http://pfdcm:4005/api/v1/hello/' > /dev/null; do
+  sleep 1
+  poll=$((poll+1))
+  if [ "$poll" = "20" ]; then
+    >&2 echo "error: timed out after 20 seconds waiting for pfdcm."
+    exit 1
+  fi
+done
+
+set -ex
 
 curl -if -X 'POST' \
   'http://pfdcm:4005/api/v1/listener/initialize/' \
