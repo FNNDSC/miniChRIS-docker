@@ -20,6 +20,15 @@ website        | URL
 ChRIS_ui       | http://localhost:8020/
 ChRIS admin    | http://localhost:8000/chris-admin/
 ChRIS_store_ui | http://localhost:8021/
+Orthanc        | http://localhost:8042/
+
+### Default Logins
+
+website      | username | password
+-------------|----------|----------
+ChRIS        | chris    | chris1234
+ChRIS Store  | chris    | chris1234
+Orthanc      | orthanc  | orthanc
 
 ### Start
 
