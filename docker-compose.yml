@@ -224,7 +224,7 @@ services:
 
   pfdcm-listener:
     image: fnndsc/pfdcm:2.8.2
-    command: /usr/local/bin/storescp.sh -t /tmp/data -p 11113 -E /usr/local/bin -D /home/dicom
+    command: sh -c "mkdir -vp /tmp/data && storescp --fork -od /tmp/data -pm -sp -xcr '/usr/local/bin/px-repack --xcrdir \"#p\" --xcrfile \"#f\" --verbosity 0 --logdir /home/dicom/log --datadir /home/dicom/data --cleanup' 11113"
     volumes:
       - pfdcm:/home/dicom:rw
     networks:
