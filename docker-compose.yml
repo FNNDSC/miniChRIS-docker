@@ -188,7 +188,7 @@ services:
     command: sirv --host --single
     environment:
       REACT_APP_CHRIS_UI_URL: http://localhost:8000/api/v1/
-      REACT_APP_PFDCM_URL: http://localhost:4005/api/v1/  # WARNING: not actually used atm.
+      REACT_APP_PFDCM_URL: http://localhost:4005/
     ports:
       - "8020:3000"
   chris_store_ui:
@@ -212,17 +212,35 @@ services:
 
   pfdcm:
     image: fnndsc/pfdcm:2.8.2
-    # volumes:
+    volumes:
+      - pfdcm:/home/dicom:rw
     command: /start-reload.sh
     ports:
       - "4005:4005"
-      - "10402:11113"
-      - "5555:5555"
-      - "10502:10502"
-      - "11113:11113"
     networks:
       - pacs
       - local
+    user: "10100"
+
+  pfdcm-listener:
+    image: fnndsc/pfdcm:2.8.2
+    command: /usr/local/bin/storescp.sh -t /tmp/data -p 11113 -E /usr/local/bin -D /home/dicom
+    volumes:
+      - pfdcm:/home/dicom:rw
+    networks:
+      - pacs
+    user: "10100"
+    restart: on-failure
+    depends_on:
+      - pfdcm-nonroot-user-volume-fix
+
+  pfdcm-nonroot-user-volume-fix:
+    image: alpine
+    volumes:
+      - pfdcm:/home/dicom:rw
+    user: root
+    command: chown 10100 /home/dicom
+    restart: "no"
 
   # ====================
   # Provisioning
@@ -259,3 +277,4 @@ volumes:
   swift_storage:
   remote:
   orthanc:
+  pfdcm:

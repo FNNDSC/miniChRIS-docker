@@ -13,13 +13,15 @@ done
 
 set -ex
 
-curl -if -X 'POST' \
-  'http://pfdcm:4005/api/v1/listener/initialize/' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
-  -d '{
-  "value": "default"
-}'
+# it is not necessary to start the listener, because storescp is running
+# in another container.
+#curl -if -X 'POST' \
+#  'http://pfdcm:4005/api/v1/listener/initialize/' \
+#  -H 'accept: application/json' \
+#  -H 'Content-Type: application/json' \
+#  -d '{
+#  "value": "default"
+#}'
 
 curl -if -X 'PUT' \
   'http://pfdcm:4005/api/v1/PACSservice/orthanc/' \

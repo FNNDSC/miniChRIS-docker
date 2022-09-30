@@ -312,7 +312,7 @@
      * and the third one is the TCP port number corresponding
      * to the DICOM protocol on the remote modality (usually 104).
      **/
-     "CHRISLOCAL" : ["CHRISLOCAL", "pfdcm", 11113 ]
+     "CHRISLOCAL" : ["CHRISLOCAL", "pfdcm-listener", 11113 ]
 
     /**
      * A fourth parameter is available to enable patches for
