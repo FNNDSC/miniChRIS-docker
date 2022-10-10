@@ -5,6 +5,16 @@
 
 Run a demo of ChRIS. https://chrisproject.org/
 
+### System Requirements
+
+_miniChRIS_ requires docker-compose version v2.6 or above on a Linux system.
+WSL 2 on Windows and Docker Desktop for Mac also work.
+
+At least 8GB RAM and 15GB disk space is recommended. Docker Desktop users
+should make sure that the Linux VM has 8GB memory allocated to it.
+
+## Quick Start
+
 ```bash
 git clone https://github.com/FNNDSC/miniChRIS-docker.git
 cd miniChRIS-docker
