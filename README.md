@@ -1,9 +1,30 @@
 # ![ChRIS logo](https://raw.githubusercontent.com/FNNDSC/ChRIS_ultron_backEnd/master/docs/assets/logo_chris.png) miniChRIS
 
-[![CI](https://github.com/FNNDSC/miniChRIS/workflows/CI/badge.svg)](https://github.com/FNNDSC/miniChRIS/actions?query=workflow%3ACI)
-[![GitHub license](https://img.shields.io/github/license/FNNDSC/miniChRIS)](LICENSE)
+[![CI badge](https://github.com/FNNDSC/miniChRIS-docker/workflows/CI/badge.svg)](https://github.com/FNNDSC/miniChRIS-docker/actions?query=workflow%3ACI)
+[![MIT license](https://img.shields.io/github/license/FNNDSC/miniChRIS-docker)](LICENSE)
 
 Run a demo of ChRIS. https://chrisproject.org/
+
+## Abstract
+
+_ChRIS_ is an open-source platform facilitating cloud-based medical compute.
+This repository, _miniChRIS-docker_, provides a docker-compose based distribution
+of the _ChRIS_ system including:
+
+- _ChRIS_ backend ([ChRIS_ultron_backEnd](https://github.com/fnndsc/CHRIS_ultron_backEnd) a.k.a. CUBE)
+- _ChRIS_ frontend ([ChRIS_ui](https://github.com/FNNDSC/ChRIS_ui))
+- compute controller ([pfcon](https://github.com/FNNDSC/pfcon))
+- process manager ([pman](https://github.com/FNNDSC/pman))
+- _ChRIS_ store backend ([ChRIS_store](https://github.com/FNNDSC/ChRIS_store))
+- _ChRIS_ store frontend ([ChRIS_store_ui](https://github.com/FNNDSC/ChRIS_store_ui))
+- chrisomatic ([chrisomatic](https://github.com/FNNDSC/chrisomatic))
+- Orthanc server https://www.orthanc-server.com/
+- pfdcm ([pfdcm](https://github.com/FNNDSC/pfdcm))
+
+Image tags are pinned to stable versions, so _miniChRIS_ might be
+out-of-date with development versions of _ChRIS_ components.
+Please visit the repositories linked above for instructions
+on how to run development environments for the latest versions.
 
 ### System Requirements
 
@@ -57,6 +78,15 @@ Orthanc      | orthanc  | orthanc
 #### Still Not Working?
 
 Try `docker compose down -v --remove-orphans`.
+
+### Network Configuration
+
+To run _miniChRIS_ remotely it is necessary to replace occurrences of `localhost` with your machine's hostname or IP address in `docker-compose.yml`.
+
+```shell
+sed -i -e 's/localhost/my_machines_hostname/' docker-compose.yml
+docker compose up -d
+```
 
 ### Add Plugins
 
