@@ -60,7 +60,7 @@ Orthanc      | orthanc  | orthanc
 
 #### Still Not Working?
 
-Try `docker-compose down -v --remove-orphans`.
+Try `docker compose down -v --remove-orphans`.
 
 ### Add Plugins
 

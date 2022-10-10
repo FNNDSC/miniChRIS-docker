@@ -36,7 +36,7 @@ trap end_swarm TERM INT
 # Now, we just want to sleep and let the script end via the
 # function end_swarm which is invoked asynchronously by
 #
-#     docker-compose down
+#     docker compose down
 
 docker wait swarm-status &
 wait
