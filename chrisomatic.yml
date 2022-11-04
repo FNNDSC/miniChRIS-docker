@@ -29,3 +29,8 @@ cube:
       version: 0.2
     - name: pl-simpledsapp
       version: 2.1.0
+
+    - name: pl-fetal-brain-mask
+    - name: pl-ANTs_N4BiasFieldCorrection
+    - name: pl-fetal-brain-assessment
+    - name: pl-irtk-reconstruction
