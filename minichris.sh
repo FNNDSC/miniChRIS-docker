@@ -17,6 +17,4 @@ cd $(dirname "$0")
 
 set -ex
 docker compose up -d
-docker compose run --rm $not init-pfdcm
 exec docker compose run --rm $not chrisomatic
-

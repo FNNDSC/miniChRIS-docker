@@ -211,10 +211,11 @@ services:
       - pacs
 
   pfdcm:
-    image: fnndsc/pfdcm:2.8.2
+    image: fnndsc/pfdcm:3.0.12
+    container_name: pfdcm
     volumes:
       - pfdcm:/home/dicom:rw
-    command: /start-reload.sh
+      - ./pfdcm-services:/home/dicom/services:ro
     ports:
       - "4005:4005"
     networks:
@@ -223,7 +224,7 @@ services:
     user: "10100"
 
   pfdcm-listener:
-    image: fnndsc/pfdcm:2.8.2
+    image: fnndsc/pfdcm:3.0.12
     command: sh -c "mkdir -vp /tmp/data && storescp --fork -od /tmp/data -pm -sp -xcr '/usr/local/bin/px-repack --xcrdir \"#p\" --xcrfile \"#f\" --verbosity 0 --logdir /home/dicom/log --datadir /home/dicom/data --cleanup' 11113"
     volumes:
       - pfdcm:/home/dicom:rw
