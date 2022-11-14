@@ -59,7 +59,7 @@ function test() {
 }
 
 function patchChrisomatic() {
-  const inputPlugins = process.env['INPUT_plugins'];
+  const inputPlugins = process.env['INPUT_PLUGINS'];
   const pluginsAsYml = inputPlugins2yml(inputPlugins);
   const chrisomaticFileName = path.join(__dirname, 'chrisomatic.yml');
   fs.appendFileSync(chrisomaticFileName, pluginsAsYml);
