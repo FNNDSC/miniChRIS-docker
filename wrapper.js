@@ -26,17 +26,13 @@ else {
 }
 
 function main() {
-  const inputPlugins = process.env['INPUT_plugins'];
-  const pluginsAsYml = inputPlugins2yml(inputPlugins);
-  const chrisomaticFileName = path.join(__dirname, 'chrisomatic.yml');
-  fs.appendFileSync(chrisomaticFileName, pluginsAsYml);
+  if (!IS_POST) {
+    patchChrisomatic();
+    console.log('::save-state name=isPost::true');
+  }
 
   const script = path.join(__dirname, IS_POST ? 'unmake.sh' : 'minichris.sh');
   execFileSync(script, { stdio: 'inherit' });
-
-  if (!IS_POST) {
-    console.log('::save-state name=isPost::true');
-  }
 }
 
 function test() {
@@ -60,6 +56,13 @@ function test() {
     '',
     inputPlugins2yml('').trim()
   );
+}
+
+function patchChrisomatic() {
+  const inputPlugins = process.env['INPUT_plugins'];
+  const pluginsAsYml = inputPlugins2yml(inputPlugins);
+  const chrisomaticFileName = path.join(__dirname, 'chrisomatic.yml');
+  fs.appendFileSync(chrisomaticFileName, pluginsAsYml);
 }
 
 function inputPlugins2yml(input) {
