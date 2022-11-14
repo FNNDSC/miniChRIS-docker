@@ -27,8 +27,7 @@ jobs:
       - name: Check extra plugins installed
         run: |
           all_plugin_names="$(
-            curl -sLu "${{ steps.cube.outputs.cube-user }}" \
-              "${{ steps.cube.outputs.cube-url }}plugins/" \
+            curl -sLu 'chris:chris1234' 'http://localhost:8000/api/v1/plugins/' \
               -H 'Accept: application/json'
           )"
 

@@ -111,7 +111,7 @@ jobs:
       id: cube
       uses: FNNDSC/miniChRIS-docker@20221109
     - name: make a request
-      run: curl -u "${{ steps.cube.outputs.cube-user }}" "${{ steps.cube.outputs.cube-url }}"
+      run: curl -u chris:chris1234 http://localhost:8000/api/v1/
 ```
 
 ### Adding Plugins
