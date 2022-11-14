@@ -26,7 +26,7 @@ else {
 }
 
 function main() {
-  const inputPlugins = !!process.env['INPUT_plugins'];
+  const inputPlugins = process.env['INPUT_plugins'];
   const pluginsAsYml = inputPlugins2yml(inputPlugins);
   const chrisomaticFileName = path.join(__dirname, 'chrisomatic.yml');
   fs.appendFileSync(chrisomaticFileName, pluginsAsYml);
@@ -52,7 +52,7 @@ function test() {
   );
 
   assert.deepEqual(
-    '\n    - pl-dircopy\n     - pl-med2img\n     - pl-covidnet\n',
+    '\n    - pl-dircopy\n    - pl-med2img\n    - pl-covidnet\n',
     plugins2yml(['pl-dircopy', 'pl-med2img', 'pl-covidnet'])
   );
 
@@ -67,7 +67,7 @@ function inputPlugins2yml(input) {
 }
 
 function plugins2yml(plugins) {
-  return `\n${plugins.map((plugin) => `    - ${plugin}\n`).join(' ')}`;
+  return `\n${plugins.map((plugin) => `    - ${plugin}\n`).join('')}`;
 }
 
 function parsePlugins(input) {

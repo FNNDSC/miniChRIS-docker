@@ -29,3 +29,6 @@ cube:
       version: 0.2
     - name: pl-simpledsapp
       version: 2.1.0
+
+    - pl-re-sub
+    - pl-med2img
