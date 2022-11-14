@@ -109,9 +109,36 @@ jobs:
     steps:
     - name: setup CUBE
       id: cube
-      uses: FNNDSC/miniChRIS-docker@20220718
+      uses: FNNDSC/miniChRIS-docker@20221109
     - name: make a request
       run: curl -u "${{ steps.cube.outputs.cube-user }}" "${{ steps.cube.outputs.cube-url }}"
+```
+
+### Adding Plugins
+
+`plugins` should be a whitespace-separated list of plugin identifiers.
+Lines starting with `#` are treated as comments and ignored.
+Plugin identifiers are interpreted by _chrisomatic_ as described here:
+https://github.com/fnndsc/chrisomatic#plugins-and-pipelines
+
+#### Example
+
+```yaml
+on: [push]
+
+jobs:
+  hello_world_job:
+    runs-on: ubuntu-latest
+    name: Do nothing useful
+    steps:
+    - name: setup CUBE
+      id: cube
+      uses: FNNDSC/miniChRIS-docker@TBA
+      with:
+        plugins: |
+          https://chrisstore.co/api/v1/plugins/157/
+          pl-lung_cnp
+          ghcr.io/fnndsc/pl-re-sub:1.1.1
 ```
 
 ### Examples

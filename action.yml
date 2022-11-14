@@ -1,6 +1,11 @@
 name: "ChRIS Backend"
 description: "Bring up ephemeral instances of CUBE, pfcon, pman, pfioh, swift, and ChRIS_store"
 author: "FNNDSC"
+inputs:
+  plugins:
+    description: "List of plugins to register, separated by whitespace."
+    required: false
+    default: ''
 outputs:
   cube-user:
     description: "ChRIS user"

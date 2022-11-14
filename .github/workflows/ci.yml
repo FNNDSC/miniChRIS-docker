@@ -13,7 +13,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: JS unit tests
+        run: node wrapper.js test
       - name: miniChRIS
+        id: cube
         uses: ./
+        with:
+          plugins: |
+            pl-mri-preview
+            pl-re-sub
       - name: Run pl-dircopy
         run: ./test.sh
+      - name: Check extra plugins installed
+        run: |
+          all_plugin_names="$(
+            curl -sLu "${{ steps.cube.outputs.cube-user }}" \
+              "${{ steps.cube.outputs.cube-url }}plugins/" \
+              -H 'Accept: application/json'
+          )"
+
+          function assert_has () {
+            [[ "$all_plugin_names" = *"$1"* ]]
+          }
+
+          set -e
+          assert_has pl-mri-preview
+          assert_has pl-re-sub
