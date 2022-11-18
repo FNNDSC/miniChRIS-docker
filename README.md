@@ -109,7 +109,7 @@ jobs:
     steps:
     - name: setup CUBE
       id: cube
-      uses: FNNDSC/miniChRIS-docker@20221109
+      uses: FNNDSC/miniChRIS-docker@master
     - name: make a request
       run: curl -u chris:chris1234 http://localhost:8000/api/v1/
 ```
@@ -133,7 +133,7 @@ jobs:
     steps:
     - name: setup CUBE
       id: cube
-      uses: FNNDSC/miniChRIS-docker@TBA
+      uses: FNNDSC/miniChRIS-docker@master
       with:
         plugins: |
           https://chrisstore.co/api/v1/plugins/157/
