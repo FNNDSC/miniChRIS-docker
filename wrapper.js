@@ -28,11 +28,15 @@ else {
 function main() {
   if (!IS_POST) {
     patchChrisomatic();
-    console.log('::save-state name=isPost::true');
+    setIsPost();
   }
 
   const script = path.join(__dirname, IS_POST ? 'unmake.sh' : 'minichris.sh');
   execFileSync(script, { stdio: 'inherit' });
+}
+
+function setIsPost() {
+  fs.appendFileSync(process.env['GITHUB_STATE'], 'isPost=true\n');
 }
 
 function test() {
