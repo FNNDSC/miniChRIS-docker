@@ -88,7 +88,7 @@ sed -i -e 's/localhost/my_machines_hostname/' docker-compose.yml
 docker compose up -d
 ```
 
-### Add Plugins
+### Add Plugins to CUBE
 
 Plugins are added to _ChRIS_ via the Django admin dashboard.
 
