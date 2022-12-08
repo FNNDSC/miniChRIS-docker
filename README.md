@@ -90,8 +90,39 @@ docker compose up -d
 
 ### Add Plugins
 
-Add them to `chrisomatic.yml` and then rerun `./minichris.sh`.
-For more information, see https://github.com/FNNDSC/chrisomatic#plugins-and-pipelines
+Plugins are added to _ChRIS_ via the Django admin dashboard.
+
+https://github.com/FNNDSC/ChRIS_ultron_backEnd/wiki/%5BHOW-TO%5D-Register-a-plugin-via-Django-dashboard
+
+Alternatively, plugins can be added declaratively.
+A common use case would be to run locally built Python
+[`chris_plugin`](https://github.com/FNNDSC/chris_plugin)-based
+_ChRIS_ plugins. These can be added using `chrisomatic` by
+listing their (docker) image tags. For example, if your local image
+was built with the tag `localhost/myself/pl-workinprogress` by running
+
+```shell
+docker build -t localhost/myself/pl-workinprogress .
+```
+
+The bottom of your `chrisomatic.yml` file should look like
+
+```yaml
+  plugins:
+    - name: pl-dircopy
+      version: 2.1.1
+    - name: pl-tsdircopy
+      version: 1.2.1
+    - name: pl-topologicalcopy
+      version: 0.2
+    - name: pl-simpledsapp
+      version: 2.1.0
+    - localhost/myself/pl-workinprogress
+```
+
+After modifying `chrisomatic.yml`, apply the changes by rerunning `./minichris.sh`
+
+For details, see https://github.com/FNNDSC/chrisomatic#plugins-and-pipelines
 
 # Github Actions
 
