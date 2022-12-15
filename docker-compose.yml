@@ -82,7 +82,7 @@ services:
     env_file: secrets.env
     restart: on-failure
     volumes:
-      - chris_db_data:/var/lib/mysql
+      - chris_db_data:/var/lib/postgresql
     networks:
       - local
   queue:
@@ -123,7 +123,7 @@ services:
       - POSTGRES_USER=chris
       - POSTGRES_PASSWORD=chirs1234
     volumes:
-      - chris_store_db_data:/var/lib/mysql
+      - chris_store_db_data:/var/lib/postgresql
     networks:
       - local
     labels:
