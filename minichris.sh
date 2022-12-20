@@ -6,6 +6,15 @@ if [ "$(docker info -f '{{ .Swarm.LocalNodeState }}')" = "active" ] && ! docker 
   if [ $proceed != 'y' ]; then
     exit
   fi
+  echo "Reset swarm? Unsaved data will be lost! [yN]"
+  read -n 1 reset_swarm
+  if [ $reset_swarm = 'y' ]; then
+    set -ex
+    docker swarm leave --force
+    { set +x; } 2> /dev/null
+  else
+    echo "WARNING: swarm state is stale, plugin instances might fail!"
+  fi
 fi
 
 if [ "$CI" = "true" ]; then
