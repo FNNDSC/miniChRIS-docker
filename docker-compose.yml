@@ -6,7 +6,7 @@ version: '3.9'
 
 services:
   chrisomatic:
-    image: fnndsc/chrisomatic:0.3.3
+    image: fnndsc/chrisomatic:0.4.0
     networks:
       - local
     volumes:
