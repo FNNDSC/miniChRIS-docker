@@ -20,7 +20,7 @@ services:
       - tools
   chris:
     container_name: chris
-    image: fnndsc/cube:4.0.0.pre2
+    image: fnndsc/cube:4.0.0.pre5
     ports:
       - "8000:8000"
     depends_on:
@@ -37,7 +37,7 @@ services:
       org.chrisproject.role: "ChRIS ultron backEnd"
       org.chrisproject.miniChRIS: "miniChRIS"
   worker:
-    image: fnndsc/cube:4.0.0.pre2
+    image: fnndsc/cube:4.0.0.pre5
     command: celery -A core worker -c 4 -l info -Q main1,main2
     env_file: secrets.env
     environment:
@@ -52,7 +52,7 @@ services:
     networks:
       - local
   worker_periodic:
-    image: fnndsc/cube:4.0.0.pre2
+    image: fnndsc/cube:4.0.0.pre5
     environment:
       DJANGO_DB_MIGRATE: "off"
       DJANGO_COLLECTSTATIC: "off"
@@ -65,7 +65,7 @@ services:
     networks:
       - local
   scheduler:
-    image: fnndsc/cube:4.0.0.pre2
+    image: fnndsc/cube:4.0.0.pre5
     command: celery -A core beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
     env_file: secrets.env
     environment:
