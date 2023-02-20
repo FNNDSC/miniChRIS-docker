@@ -266,6 +266,63 @@ services:
       - pacs
     profiles:
       - tools
+  zookeeper:
+    container_name: chris_zookeeper
+    image: debezium/zookeeper:2.1.2.Final
+    restart: always
+    networks:
+      - local
+    ports:
+      - "2181:2181"
+      - "2888:2888"
+      - "3888:3888"
+  kafka:
+    container_name: chris_kafka
+    image: debezium/kafka:2.1.2.Final
+    restart: always
+    ports:
+      - "9092:9092"
+    links:
+      - zookeeper
+    networks:
+      - local
+    environment:
+      - ZOOKEEPER_CONNECT=zookeeper:2181
+  connect:
+    container_name: chris_connect
+    build:
+      context: ./debezium-connect
+    ports:
+      - "8083:8083"
+    networks:
+      - local
+    environment:
+      - BOOTSTRAP_SERVERS=kafka:9092
+      - GROUP_ID=1
+      - CONFIG_STORAGE_TOPIC=my_connect_configs
+      - OFFSET_STORAGE_TOPIC=my_connect_offsets
+      - STATUS_STORAGE_TOPIC=my_connect_statuses
+      - INTERNAL_KEY_CONVERTER=org.apache.kafka.connect.json.JsonConverter
+      - INTERNAL_VALUE_CONVERTER=org.apache.kafka.connect.json.JsonConverter
+
+  elasticsearch:
+    container_name: chris_elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.6.1
+    restart: always
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - local
+    environment:
+      - http.host=0.0.0.0
+      - transport.host=127.0.0.1
+      - xpack.security.enabled=false
+      - "discovery.type=single-node"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - http.cors.enabled=true
+      - http.cors.allow-origin="http://localhost:8080"
 
 networks:
   local:
@@ -279,3 +336,4 @@ volumes:
   remote:
   orthanc:
   pfdcm:
+  elasticsearch_data:
