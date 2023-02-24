@@ -1,0 +1,20 @@
+{
+  "name": "es-chris-sink",
+    "config": {
+    "connector.class": "io.confluent.connect.elasticsearch.ElasticsearchSinkConnector",
+    "tasks.max": "1",
+    "topics": "minichris.public.plugins_plugin",
+    "connection.url": "http://elasticsearch:9200",
+    "type.name": "_doc",
+    "key.ignore": "false",
+    "behavior.on.null.values": "IGNORE",
+    "transforms": "unwrap,key",
+    "transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
+    "transforms.key.type": "org.apache.kafka.connect.transforms.ExtractField$Key",
+    "transforms.key.field": "id",
+    "transforms.unwrap.drop.tombstones": "false",
+    "transforms.unwrap.drop.deletes": "false",
+    "transforms.ExtractTopic.type": "org.apache.kafka.connect.transforms.ExtractTopic$Value",
+    "transforms.ExtractTopic.field": "source"
+  }
+}

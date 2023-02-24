@@ -1,0 +1,44 @@
+{
+  "name": "postgres-chris-source",
+  "config": {
+    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+    "tasks.max": "1",
+    "plugin.name": "pgoutput",
+    "database.hostname": "chris_db",
+    "database.port": "5432",
+    "database.user": "chris",
+    "database.password": "chris1234",
+    "database.dbname": "chris",
+    "schema.include.list": "public",
+    "include.schema.changes": "true",
+    "database.server.name": "postgre-chris",
+    "database.server.id": "5401",
+    "database.history.kafka.bootstrap.servers": "kafka:9092",
+    "database.history.kafka.topic": "public.history",
+    "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "topic.prefix": "minichris",
+    "tombstones.on.delete": "true",
+    "delete.enabled": "true"
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

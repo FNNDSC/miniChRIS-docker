@@ -21,11 +21,714 @@ cube:
       password: pfcon1234
       description: Local compute environment
   plugins:
-    - name: pl-dircopy
-      version: 2.1.1
-    - name: pl-tsdircopy
-      version: 1.2.1
-    - name: pl-topologicalcopy
-      version: 0.2
-    - name: pl-simpledsapp
-      version: 2.1.0
+    - name: pl-parmodel-surface
+      version: 1.0.0
+    - name: pl-subdiv-minc
+      version: 1.0.0
+    - name: pl-fetal-surface-extract
+      version: 2.0.1
+    - name: pl-fetal-surface-extract
+      version: 2.0.0
+    - name: ep-expand_from_white_fetal_parameterized
+      version: 1.0.0
+    - name: pl-pyvista-volume
+      version: 1.0.0
+    - name: pl-adapt_object_mesh
+      version: 1.0.0
+    - name: ep-subdivide-mnc-methods
+      version: 1.1.1
+    - name: ep-subdivide-mnc-methods
+      version: 1.0.0
+    - name: pl-dylld
+      version: 4.4.2
+    - name: pl-dylld
+      version: 4.4.0
+    - name: pl-dylld
+      version: 4.2.6
+    - name: pl-dylld
+      version: 4.2.4
+    - name: pl-dylld
+      version: 4.2.2
+    - name: pl-dylld
+      version: 4.2.0
+    - name: pl-dylld
+      version: 4.0.2
+    - name: pl-dylld
+      version: 4.0.0
+    - name: pl-dylld
+      version: 3.4.8
+    - name: pl-dylld
+      version: 3.4.6
+    - name: pl-dylld
+      version: 3.4.4
+    - name: pl-dylld
+      version: 3.4.2
+    - name: pl-dylld
+      version: 3.2.8
+    - name: pl-dylld
+      version: 3.2.6
+    - name: pl-dylld
+      version: 3.2.0
+    - name: pl-dylld
+      version: 1.0.9
+    - name: pl-dylld
+      version: 1.0.5
+    - name: pl-dylld
+      version: 1.0.4
+    - name: pl-shexec
+      version: 1.2.2
+    - name: pl-shexec
+      version: 1.0.8
+    - name: pl-shexec
+      version: 1.0.4
+    - name: pl-shexec
+      version: 1.0.2
+    - name: ep-surface_fit_parameterized
+      version: 0.4.3
+    - name: ep-surface_fit_parameterized
+      version: 0.4.2
+    - name: ep-surface_fit_parameterized
+      version: 0.4.1
+    - name: ep-surface_fit_parameterized
+      version: 0.4.0
+    - name: pl-orthanc_push
+      version: 1.0.12
+    - name: pl-orthanc_push
+      version: 1.0.10
+    - name: pl-orthanc_push
+      version: 1.0.8
+    - name: pl-orthanc_push
+      version: 1.0.6
+    - name: pl-orthanc_push
+      version: 1.0.4
+    - name: pl-orthanc_push
+      version: 1.0.2
+    - name: pl-orthanc_push
+      version: 1.0.1
+    - name: pl-orthanc_push
+      version: 1.0.0
+    - name: pl-orthanc_push
+      version: 0.1.3
+    - name: pl-orthanc_push
+      version: 0.1.1
+    - name: pl-dicom_headerEdit
+      version: 1.0.8
+    - name: pl-dicom_info
+      version: 1.0.28
+    - name: pl-dicom_info
+      version: 1.0.26
+    - name: pl-img2dcm
+      version: 1.0.6
+    - name: pl-img2dcm
+      version: 1.0.3
+    - name: pl-img2dcm
+      version: 1.0.2
+    - name: pl-img2dcm
+      version: 1.0.1
+    - name: pl-img2dcm
+      version: 1.0.0
+    - name: pl-img2dcm
+      version: 0.1.3
+    - name: pl-img2dcm
+      version: 0.1.2
+    - name: pl-img2dcm
+      version: 0.1.1
+    - name: pl-img2dcm
+      version: 0.1.0
+    - name: pl-png_overlay
+    #   version: 1.0.0
+    # - name: pl-png_overlay
+    #   version: 0.2
+    # - name: pl-png_overlay
+    #   version: 0.1
+    # - name: classification_test
+    #   version: 0.1
+    # - name: cni_challenge_evaluation
+    #   version: 0.1
+    # - name: pl-markimg
+    #   version: 1.1.18
+    # - name: pl-markimg
+    #   version: 1.1.16
+    # - name: pl-markimg
+    #   version: 1.1.14
+    # - name: pl-markimg
+    #   version: 1.1.12
+    # - name: pl-markimg
+    #   version: 1.1.10
+    # - name: pl-markimg
+    #   version: 1.1.8
+    # - name: pl-markimg
+    #   version: 1.1.7
+    # - name: pl-markimg
+    #   version: 1.1.6
+    # - name: pl-markimg
+    #   version: 1.1.5
+    # - name: pl-markimg
+    #   version: 1.1.4
+    # - name: pl-markimg
+    #   version: 1.1.3
+    # - name: pl-markimg
+    #   version: 1.1.2
+    # - name: pl-markimg
+    #   version: 1.1.1
+    # - name: pl-markimg
+    #   version: 1.0.9
+    # - name: pl-markimg
+    #   version: 1.0.8
+    # - name: pl-markimg
+    #   version: 1.0.7
+    # - name: pl-markimg
+    #   version: 1.0.6
+    # - name: pl-markimg
+    #   version: 1.0.5
+    # - name: pl-markimg
+    #   version: 1.0.4
+    # - name: pl-markimg
+    #   version: 1.0.3
+    # - name: pl-markimg
+    #   version: 1.0.2
+    # - name: pl-markimg
+    #   version: 1.0.1
+    # - name: pl-markimg
+    #   version: 1.0.0
+    # - name: pl-markimg
+    #   version: 0.1.9
+    # - name: pl-markimg
+    #   version: 0.1.8
+    # - name: pl-markimg
+    #   version: 0.1.7
+    # - name: pl-markimg
+    #   version: 0.1.6
+    # - name: pl-markimg
+    #   version: 0.1.5
+    # - name: pl-markimg
+    #   version: 0.1.4
+    # - name: pl-markimg
+    #   version: 0.1.3
+    # - name: pl-markimg
+    #   version: 0.1.2
+    # - name: pl-markimg
+    #   version: 0.1.0
+    # - name: pl-csv2json
+    #   version: 1.0.4
+    # - name: pl-csv2json
+    #   version: 1.0.1
+    # - name: pl-csv2json
+    #   version: 1.0.0
+    # - name: pl-csv2json
+    #   version: 0.1.6
+    # - name: pl-csv2json
+    #   version: 0.1.5
+    # - name: pl-csv2json
+    #   version: 0.1.4
+    # - name: pl-csv2json
+    #   version: 0.1.3
+    # - name: pl-csv2json
+    #   version: 0.1.2
+    # - name: pl-csv2json
+    #   version: 0.1.1
+    # - name: pl-csv2json
+    #   version: 0.1.0
+    # - name: pl-pngquant
+    #   version: 1.0.0
+    # - name: pl-dcm2mha_cnvtr
+    #   version: 1.1.8
+    # - name: pl-dcm2mha_cnvtr
+    #   version: 1.1.6
+    # - name: pl-dcm2mha_cnvtr
+    #   version: 1.1.4
+    # - name: pl-dcm2mha_cnvtr
+    #   version: 1.1.2
+    # - name: pl-dcm2mha_cnvtr
+    #   version: 1.1.0
+    # - name: pl-dcm2mha_cnvtr
+    #   version: 1.0.9
+    # - name: pl-dcm2mha_cnvtr
+    #   version: 1.0.8
+    # - name: pl-dcm2mha_cnvtr
+    #   version: 1.0.7
+    # - name: pl-dcm2mha_cnvtr
+    #   version: 1.0.6
+    # - name: pl-dcm2mha_cnvtr
+    #   version: 1.0.5
+    # - name: pl-dcm2mha_cnvtr
+    #   version: 1.0.4
+    # - name: pl-dcm2mha_cnvtr
+    #   version: 1.0.3
+    # - name: pl-dcm2mha_cnvtr
+    #   version: 1.0.2
+    # - name: pl-dcm2mha_cnvtr
+    #   version: 1.0.1
+    # - name: pl-dcm2mha_cnvtr
+    #   version: 1.0.0
+    # - name: pl-ffmpeg
+    #   version: 0.1
+    # - name: pl-lld_inference
+    #   version: 2.0.6
+    # - name: pl-lld_inference
+    #   version: 2.0.4
+    # - name: pl-lld_inference
+    #   version: 2.0.3
+    # - name: pl-lld_inference
+    #   version: 2.0.0
+    # - name: pl-lld_inference
+    #   version: 1.1.2
+    # - name: pl-lld_inference
+    #   version: 1.1.0
+    # - name: pl-lld_inference
+    #   version: 1.0.9
+    # - name: pl-lld_inference
+    #   version: 1.0.7
+    # - name: pl-lld_inference
+    #   version: 1.0.6
+    # - name: pl-lld_inference
+    #   version: 1.0.5
+    # - name: pl-lld_inference
+    #   version: 1.0.4
+    # - name: pl-lld_inference
+    #   version: 1.0.3
+    # - name: pl-lld_inference
+    #   version: 1.0.1
+    # - name: pl-lld_inference
+    #   version: 1.0.0
+    # - name: pl-gpu_test
+    #   version: 0.2.5
+    # - name: pl-gpu_test
+    #   version: 0.2.3
+    # - name: pl-gpu_test
+    #   version: 0.2.2
+    # - name: pl-obj-avg-edge-length
+    #   version: 1.0.0
+    # - name: pl-covidnet-meta
+    #   version: 1.0.10
+    # - name: pl-covidnet-meta
+    #   version: 1.0.8
+    # - name: rc-fpmmid
+    #   version: 1.1.0
+    # - name: pl-unirep_analysis
+    #   version: 0.3.0
+    # - name: pl-unirep_analysis
+    #   version: 0.2.8
+    # - name: pl-unirep_analysis
+    #   version: 0.2.6
+    # - name: pl-fpmmid
+    #   version: 1.1.9
+    # - name: pl-fpmmid
+    #   version: 1.1.8
+    # - name: pl-fpmmid
+    #   version: 1.1.7
+    # - name: pl-fpmmid
+    #   version: 1.1.6
+    # - name: pl-fpmmid
+    #   version: 1.1.5
+    # - name: pl-fpmmid
+    #   version: 1.1.4
+    # - name: pl-fpmmid
+    #   version: 1.1.3
+    # - name: pl-fpmmid
+    #   version: 1.1.2
+    # - name: pl-fpmmid
+    #   version: 1.1.1
+    # - name: pl-fpmmid
+    #   version: 1.1.0
+    # - name: pl-fpmmid
+    #   version: 1.0.9
+    # - name: pl-fpmmid
+    #   version: 1.0.8
+    # - name: pl-fpmmid
+    #   version: 1.0.7
+    # - name: pl-fpmmid
+    #   version: 1.0.6
+    # - name: pl-fpmmid
+    #   version: 1.0.5
+    # - name: pl-fpmmid
+    #   version: 1.0.4
+    # - name: pl-fpmmid
+    #   version: 1.0.3
+    # - name: pl-fpmmid
+    #   version: 1.0.2
+    # - name: pl-unirep_analysis:cpu
+    #   version: 0.1.7
+    # - name: ep-radial_surface_fit_parameterized
+    #   version: 0.3.0
+    # - name: ep-radial_surface_fit_parameterized
+    #   version: 0.2.0
+    # - name: ep-radial_surface_fit_parameterized
+    #   version: 0.1.0
+    # - name: ep-radial_surface_fit_parameterized
+    #   version: 0.0.1
+    # - name: pl-freesurfer_simplereport
+    #   version: 1.1.12
+    # - name: pl-freesurfer_simplereport
+    #   version: 1.1.10
+    # - name: pl-freesurfer_simplereport
+    #   version: 1.1.8
+    # - name: pl-freesurfer_simplereport
+    #   version: 1.1.6
+    # - name: pl-freesurfer_simplereport
+    #   version: 1.1.2
+    # - name: pl-fetal-cp-surface-extract
+    #   version: 1.2.0
+    # - name: pl-fetal-cp-surface-extract
+    #   version: 1.1.0
+    # - name: pl-fetal-cp-surface-extract
+    #   version: 1.0.0
+    # - name: pl-pfdorun:2.2.8
+    #   version: 2.2.8
+    # - name: pl-xfm
+    #   version: 0.1.0
+    # - name: pl-xfm
+    #   version: 0.0.1
+    # - name: pl-mri-preview
+    #   version: 1.2.2
+    # - name: pl-mri-preview
+    #   version: 1.2.1
+    # - name: pl-mri-preview
+    #   version: 1.2.0
+    # - name: pl-mri-preview
+    #   version: 1.1.0
+    # - name: pl-mri-preview
+    #   version: 1.0.0
+    # - name: pl-surfdisterr
+    #   version: 1.2.1
+    # - name: pl-surfdisterr
+    #   version: 1.2.0
+    # - name: pl-surfdisterr
+    #   version: 1.1.1
+    # - name: pl-surfdisterr
+    #   version: 1.1.0
+    # - name: pl-surfdisterr
+    #   version: 1.0.0
+    # - name: pl-bulk-rename
+    #   version: 0.1.2
+    # - name: pl-bulk-rename
+    #   version: 0.1.1
+    # - name: pl-bulk-rename
+    #   version: 0.1.0
+    # - name: ep-interpolate-surface-with-sphere
+    #   version: 0.1.2
+    # - name: ep-interpolate-surface-with-sphere
+    #   version: 0.1.1
+    # - name: ep-interpolate-surface-with-sphere
+    #   version: 0.1.0
+    # - name: ep-premc-mincmorph
+    #   version: 0.1.1
+    # - name: ep-premc-mincmorph
+    #   version: 0.1.0
+    # - name: pl-dcm2niix
+    #   version: 0.1.0
+    # - name: ep-skimage-mcubes-mni
+    #   version: 1.2.0
+    # - name: ep-skimage-mcubes-mni
+    #   version: 1.0.0
+    # - name: ep-sphere_mesh
+    #   version: 0.0.3
+    # - name: ep-sphere_mesh
+    #   version: 0.0.2
+    # - name: ep-sphere_mesh
+    #   version: 0.0.1
+    # - name: pl-nums2mask
+    #   version: 1.0.1
+    # - name: pl-nums2mask
+    #   version: 1.0.0
+    # - name: pl-nii2mnc-u8
+    #   version: 1.0.1
+    # - name: pl-nii2mnc-u8
+    #   version: 1.0.0
+    # - name: pl-surface-volume-distance
+    #   version: 1.0.1
+    # - name: pl-surface-volume-distance
+    #   version: 1.0.0
+    # - name: pl-smoothness-error
+    #   version: 2.0.1
+    # - name: pl-smoothness-error
+    #   version: 1.0.0
+    # - name: pl-pfdo_med2img
+    #   version: 1.1.9
+    # - name: pl-pfdo_med2img
+    #   version: 1.1.8
+    # - name: pl-pfdo_med2img
+    #   version: 1.1.6
+    # - name: pl-pfdo_med2img
+    #   version: 1.1.4
+    # - name: pl-pfdo_med2img
+    #   version: 1.1.2
+    # - name: pl-pfdo_med2img
+    #   version: 1.1.0
+    # - name: pl-pfdo_med2img
+    #   version: 1.0.3
+    # - name: pl-infantfs-UNLICENSED
+    #   version: 7.1.1.2
+    # - name: pl-pfdicom_tagsub
+    #   version: 3.2.4
+    # - name: pl-graph2table
+    #   version: 0.2.0
+    # - name: pl-graph2table
+    #   version: 0.1.2
+    # - name: pl-office-convert
+    #   version: 0.0.2
+    # - name: pl-office-convert
+    #   version: 0.0.1
+    # - name: pl-sys_info
+    #   version: 0.2.2
+    # - name: pl-sys_info
+    #   version: 0.2.0
+    # - name: pl-sys_info
+    #   version: 0.1
+    # - name: pl-re-sub
+    #   version: 1.1.1
+    # - name: pl-re-sub
+    #   version: 1.1.0
+    # - name: pl-re-sub
+    #   version: 1.0.1
+    # - name: pl-re-sub
+    #   version: 1.0.0
+    # - name: pl-fastsurfer_inference_gpu
+    #   version: 1.0.15
+    # - name: pl-pfdorun_ghcr
+    #   version: 2.2.6
+    # - name: pl-multipass_ghcr
+    #   version: 1.2.12
+    # - name: pl-fastsurfer_inference_cpu_30
+    #   version: 1.0.15
+    # - name: pl-fastsurfer_inference_ghcr_cpu
+    #   version: 1.0.15
+    # - name: pl-fastsurfer_inference_ghcr
+    #   version: 1.0.15
+    # - name: pl-mgz2lut_report_ghcr_m4
+    #   version: 1.3.1
+    # - name: pl-mgz2lut_report_ghcr_m3
+    #   version: 1.3.0
+    # - name: pl-mgz2lut_report_ghcr_m2
+    #   version: 1.3.0
+    # - name: pl-mgz2lut_report_ghcr_m
+    #   version: 1.1.0
+    # - name: pl-mgz2lut_report_ghcr
+    #   version: 1.1.0
+    # - name: pl-pfdicom_tagextract_ghcr
+    #   version: 3.1.0
+    # - name: pl-fshack_ghcr:1.0.0
+    #   version: 1.2.0
+    # - name: pl-fshack_ghcr
+    #   version: 1.2.0
+    # - name: pl-pfdicom_tagsub_ghcr
+    #   version: 3.2.0
+    # - name: sandip117/pl-simpledsapp
+    #   version: 2.0.2
+    # - name: pl-mpcs
+    #   version: 1.0.10
+    # - name: pl-mpcs
+    #   version: 1.0.6
+    # - name: pl-fastsurfer_inference
+    #   version: 1.0.15
+    # - name: pl-CT-covidnet
+    #   version: 0.2.0
+    # - name: pl-heatmap
+    #   version: 2.0.7
+    # - name: pl-heatmap
+    #   version: 2.0.6
+    # - name: pl-fshack-infant
+    #   version: 1.0.2
+    # - name: pl-covidnet
+    #   version: 0.3.0
+    # - name: pl-covidnet
+    #   version: 0.2.4
+    # - name: pl-covidnet
+    #   version: 0.2.3
+    # - name: pl-covidnet
+    #   version: 0.2.2
+    # - name: pl-fetal-brain-assessment
+    #   version: 1.3.0
+    # - name: pl-covidnet-pdfgeneration
+    #   version: 0.3.0
+    # - name: pl-covidnet-pdfgeneration
+    #   version: 0.2.1
+    # - name: pl-covidnet-pdfgeneration
+    #   version: 0.2.0
+    # - name: pl-fetal-brain-mask
+    #   version: 1.2.1
+    # - name: pl-mgz2LUT_report
+    #   version: 1.3.2
+    # - name: pl-mgz2LUT_report
+    #   version: 1.3.1
+    # - name: pl-mgz2LUT_report
+    #   version: 1.3.0
+    # - name: pl-mgz2LUT_report
+    #   version: 1.2.5
+    # - name: pl-mgz2LUT_report
+    #   version: 1.2.4
+    # - name: pl-mgz2LUT_report
+    #   version: 1.2.3
+    # - name: pl-mgz2LUT_report
+    #   version: 1.2.2
+    # - name: pl-mgz2LUT_report
+    #   version: 1.2.0
+    # - name: pl-mgz2LUT_report
+    #   version: 1.1.2
+    # - name: pl-mgz2LUT_report
+    #   version: 1.1.1
+    # - name: pl-mgz2LUT_report
+    #   version: 1.0.2
+    # - name: pl-multipass
+    #   version: 1.3.0
+    # - name: pl-multipass
+    #   version: 1.2.12
+    # - name: pl-med2img
+    #   version: 1.1.12
+    # - name: pl-med2img
+    #   version: 1.1.2
+    # - name: pl-med2img
+    #   version: 1.1.0.1
+    # - name: pl-s3retrieve
+    #   version: 1.0.1
+    # - name: pl-s3retrieve
+    #   version: 1.0.0
+    # - name: pl-pfdorun_imgmagick
+    #   version: 1.0.1
+    # - name: pl-pfdorun_imgmagick
+    #   version: 1.0.0
+    # - name: pl-simpledsapp
+    #   version: 2.1.0
+    # - name: pl-simpledsapp
+    #   version: 2.0.2
+    # - name: pl-pfdicom_tagSub
+    #   version: 3.2.3
+    # - name: pl-pfdicom_tagExtract
+    #   version: 3.1.3
+    # - name: pl-pfdicom_tagExtract
+    #   version: 3.1.2
+    # - name: pl-pfdicom_tagExtract
+    #   version: 3.0.0
+    # - name: pl-pfdo_mgz2img
+    #   version: 1.0.3
+    # - name: pl-pfdo_mgz2img
+    #   version: 0.1
+    # - name: pl-mgz2imageslices
+    #   version: 2.1.0
+    # - name: pl-mgz2imageslices
+    #   version: 2.0.10
+    # - name: pl-pfdorun_mriconvert
+    #   version: 1.0.1
+    # - name: pl-pfdorun_mriconvert
+    #   version: 1.0.0
+    # - name: pl-surfaces-fetus
+    #   version: 1.0
+    # - name: pl-civet
+    #   version: 2.1.1.3
+    # - name: pl-z2labelmap
+    #   version: 2.4.3
+    # - name: pl-s3path
+    #   version: 0.1.1
+    # - name: pl-medcon
+    #   version: 1.0.5
+    # - name: pl-medcon
+    #   version: 1.0.4
+    # - name: pl-reconall
+    #   version: 0.1.1
+    # - name: pl-dtk
+    #   version: 0.1.1
+    # - name: pl-freesurfer_pp
+    #   version: 2.0.8
+    # - name: pl-pfdorun
+    #   version: 2.2.8
+    # - name: pl-pfdorun
+    #   version: 2.2.7
+    # - name: pl-pfdorun
+    #   version: 2.2.6
+    # - name: pl-s3push
+    #   version: 0.1.2
+    # - name: pl-s3push
+    #   version: 0.1.1
+    # - name: pl-dsdircopy
+    #   version: 1.0.1
+    # - name: pl-dsdircopy
+    #   version: 1.0.0
+    # - name: pl-irtk-reconstruction
+    #   version: 1.1.0
+    # - name: pl-irtk-reconstruction
+    #   version: 1.0.3
+    # - name: pl-ANTs_N4BiasFieldCorrection
+    #   version: 0.2.7.2
+    # - name: pl-ANTs_N4BiasFieldCorrection
+    #   version: 0.2.7.1
+    # - name: pl-fshack
+    #   version: 1.4.4
+    # - name: pl-fshack
+    #   version: 1.4.3
+    # - name: pl-fshack
+    #   version: 1.4.2
+    # - name: pl-fshack
+    #   version: 1.4.1
+    # - name: pl-fshack
+    #   version: 1.4.0
+    # - name: pl-fshack
+    #   version: 1.3.0
+    # - name: pl-fshack
+    #   version: 1.2.0
+    # - name: test_data_generator
+    #   version: 0.1
+    # - name: pl-create_tetra
+    #   version: 1.0.0
+    # - name: dbg-bigfiles
+    #   version: 1.0.0
+    # - name: dbg-nvidia-smi
+    #   version: 1.0.10
+    # - name: dbg-nvidia-smi
+    #   version: 1.0.6
+    # - name: dbg-nvidia-smi
+    #   version: 1.0.1
+    # - name: dbg-nvidia-smi
+    #   version: 1.0.0
+    # - name: pl-git-clone
+    #   version: 1.0.0
+    # - name: Git Clone Wrapper
+    #   version: 1.0.0
+    # - name: pl-pull_scp
+    #   version: 1.2.2
+    # - name: pl-pull_scp
+    #   version: 1.2.0
+    # - name: pl-pull_scp
+    #   version: 1.0.8
+    # - name: pl-pull_scp
+    #   version: 1.0.6
+    # - name: pl-pull_scp
+    #   version: 1.0.4
+    # - name: pl-pull_scp
+    #   version: 1.0.2
+    # - name: pl-pull_scp
+    #   version: 1.0.0
+    # - name: pl-mri_sag_anon_192
+    #   version: 1.0.3
+    # - name: pl-mri_sag_anon_192
+    #   version: 1.0.2
+    # - name: pl-brainmgz
+    #   version: 2.0.4
+    # - name: pl-brainmgz
+    #   version: 2.0.3
+    # - name: pl-lungct
+    #   version: 1.0.3
+    # - name: pl-lungct
+    #   version: 1.0.2
+    # - name: pl-dircopy
+    #   version: 2.1.1
+    # - name: pl-dircopy
+    #   version: 2.1.0
+    # - name: pl-simplefsapp
+    #   version: 1.0.1
+    # - name: pl-simplefsapp
+    #   version: 1.0.0
+    # - name: pl-lung_cnp
+    #   version: 1.1.0
+    # - name: pl-mri10yr06mo01da_normal
+    #   version: 1.1.4
+    # - name: pl-topologicalcopy
+    #   version: 0.2.6
+    # - name: pl-topologicalcopy
+    #   version: 0.2.4
+    # - name: pl-topologicalcopy
+    #   version: 0.2
+    # - name: pl-tsdircopy
+    #   version: 1.2.1
+    # - name: pl-tsdircopy
+    #   version: 1.2.0
+

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#!/bin/bash
+
 if [ "$(docker info -f '{{ .Swarm.LocalNodeState }}')" = "active" ] && ! docker inspect swarm-status > /dev/null 2>&1; then
   echo "WARNING: docker swarm is currently active. Proceed? [yN]"
   read -n 1 proceed
@@ -26,4 +28,18 @@ cd $(dirname "$0")
 
 set -ex
 docker compose up -d
+
+# Wait for the Kafka Connect REST API to become available
+until $(curl --output /dev/null --silent --head --fail http://localhost:8083); do
+    printf '.'
+    sleep 5
+done
+
+# setup elasticsearch sink
+curl -i -X PUT -H "Accept:application/json" -H  "Content-Type:application/json" http://localhost:9200/plugins_plugin
+curl -i -X POST -H "Accept:application/json" -H  "Content-Type:application/json" http://localhost:8083/connectors/ -d @configs/es-chris-sink.json
+
+# setup connector
+curl -i -X POST -H "Accept:application/json" -H  "Content-Type:application/json" http://localhost:8083/connectors/ -d @configs/postgres-chris-source.json
+
 exec docker compose run --rm $not chrisomatic
