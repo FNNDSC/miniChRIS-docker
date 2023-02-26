@@ -285,6 +285,7 @@ services:
     volumes:
       - grafana_data:/var/lib/grafana
       - ./grafana.ini:/etc/grafana/grafana.ini:ro
+      - ./provisioning:/etc/grafana/provisioning:ro
   prometheus:
     image: quay.io/prometheus/prometheus:v2.37.0
     ports:

@@ -1,0 +1,13 @@
+apiVersion: 1
+datasources:
+  - name: Postgres
+    type: postgres
+    url: chris_db:5432
+    database: chris
+    user: chris
+    jsonData:
+      maxOpenConns: 0 # Grafana v5.4+
+      maxIdleConns: 2 # Grafana v5.4+
+      connMaxLifetime: 14400 # Grafana v5.4+
+    secureJsonData:
+      password: chris1234
