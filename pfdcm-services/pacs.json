@@ -1,0 +1,13 @@
+{
+    "services" : {
+        "orthanc": {
+            "info": {
+                "aet": "CHRISLOCAL",
+                "aet_listener": "ORTHANC",
+                "aec": "ORTHANC",
+                "serverIP": "orthanc",
+                "serverPort": "4242"
+            }
+        }
+    }
+}

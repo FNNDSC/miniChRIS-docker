@@ -88,10 +88,41 @@ sed -i -e 's/localhost/my_machines_hostname/' docker-compose.yml
 docker compose up -d
 ```
 
-### Add Plugins
+### Add Plugins to CUBE
 
-Add them to `chrisomatic.yml` and then rerun `./minichris.sh`.
-For more information, see https://github.com/FNNDSC/chrisomatic#plugins-and-pipelines
+Plugins are added to _ChRIS_ via the Django admin dashboard.
+
+https://github.com/FNNDSC/ChRIS_ultron_backEnd/wiki/%5BHOW-TO%5D-Register-a-plugin-via-Django-dashboard
+
+Alternatively, plugins can be added declaratively.
+A common use case would be to run locally built Python
+[`chris_plugin`](https://github.com/FNNDSC/chris_plugin)-based
+_ChRIS_ plugins. These can be added using `chrisomatic` by
+listing their (docker) image tags. For example, if your local image
+was built with the tag `localhost/myself/pl-workinprogress` by running
+
+```shell
+docker build -t localhost/myself/pl-workinprogress .
+```
+
+The bottom of your `chrisomatic.yml` file should look like
+
+```yaml
+  plugins:
+    - name: pl-dircopy
+      version: 2.1.1
+    - name: pl-tsdircopy
+      version: 1.2.1
+    - name: pl-topologicalcopy
+      version: 0.2
+    - name: pl-simpledsapp
+      version: 2.1.0
+    - localhost/myself/pl-workinprogress
+```
+
+After modifying `chrisomatic.yml`, apply the changes by rerunning `./minichris.sh`
+
+For details, see https://github.com/FNNDSC/chrisomatic#plugins-and-pipelines
 
 # Github Actions
 
@@ -109,15 +140,43 @@ jobs:
     steps:
     - name: setup CUBE
       id: cube
-      uses: FNNDSC/miniChRIS-docker@20220718
+      uses: FNNDSC/miniChRIS-docker@master
     - name: make a request
-      run: curl -u "${{ steps.cube.outputs.cube-user }}" "${{ steps.cube.outputs.cube-url }}"
+      run: curl -u chris:chris1234 http://localhost:8000/api/v1/
+```
+
+### Adding Plugins
+
+`plugins` should be a whitespace-separated list of plugin identifiers.
+Lines starting with `#` are treated as comments and ignored.
+Plugin identifiers are interpreted by _chrisomatic_ as described here:
+https://github.com/fnndsc/chrisomatic#plugins-and-pipelines
+
+#### Example
+
+```yaml
+on: [push]
+
+jobs:
+  hello_world_job:
+    runs-on: ubuntu-latest
+    name: Do nothing useful
+    steps:
+    - name: setup CUBE
+      id: cube
+      uses: FNNDSC/miniChRIS-docker@master
+      with:
+        plugins: |
+          https://chrisstore.co/api/v1/plugins/157/
+          pl-lung_cnp
+          ghcr.io/fnndsc/pl-re-sub:1.1.1
 ```
 
 ### Examples
 
-- [FNNDSC/cookicutter-chrisapp/.github/workflows/test.yml](https://github.com/FNNDSC/cookiecutter-chrisapp/blob/16db74860e8201f3d201183961eadc39116ce8a7/.github/workflows/test.yml#L31) uses *ChRIS miniChRIS* for end-to-end testing.
-- [FNNDSC/cni-store-proxy/package.json](https://github.com/FNNDSC/cni-store-proxy/blob/master/package.json) uses *ChRIS miniChRIS* as a git submodule for a local dev environment.
+- [FNNDSC/ChRIS_ui/.github/workflows/tests.yml](https://github.com/FNNDSC/ChRIS_ui/blob/0b7e4c5c5ae9dec9c44ea68db85373d2df403b64/.github/workflows/tests.yml#L21-L27) uses _miniChRIS_ for testing using [Cypress](https://cypress.io)
+- [FNNDSC/cookicutter-chrisapp/.github/workflows/test.yml](https://github.com/FNNDSC/cookiecutter-chrisapp/blob/16db74860e8201f3d201183961eadc39116ce8a7/.github/workflows/test.yml#L31) uses _mihiChRIS_ for end-to-end testing.
+- [FNNDSC/cni-store-proxy/package.json](https://github.com/FNNDSC/cni-store-proxy/blob/master/package.json) uses _miniChRIS_ as a git submodule for a local dev environment.
 
 
 # About

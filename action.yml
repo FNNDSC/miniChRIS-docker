@@ -1,13 +1,12 @@
 name: "ChRIS Backend"
 description: "Bring up ephemeral instances of CUBE, pfcon, pman, pfioh, swift, and ChRIS_store"
 author: "FNNDSC"
-outputs:
-  cube-user:
-    description: "ChRIS user"
-    value: "chris:chris1234"
-  cube-url:
-    description: "CUBE URL"
-    value: "http://localhost:8010/api/v1/"
+inputs:
+  plugins:
+    description: "List of plugins to register, separated by whitespace."
+    required: false
+    default: ''
+
 runs:
   using: node16
   main: wrapper.js
