@@ -9,16 +9,6 @@ datasources:
       maxOpenConns: 0 # Grafana v5.4+
       maxIdleConns: 2 # Grafana v5.4+
       connMaxLifetime: 14400 # Grafana v5.4+
+      sslmode: 'disable'
     secureJsonData:
       password: chris1234
-  - name: PostgresChrisStoreDB
-    type: postgres
-    url: chris_store_db:5432
-    database: chris_store
-    user: chris
-    jsonData:
-      maxOpenConns: 0 # Grafana v5.4+
-      maxIdleConns: 2 # Grafana v5.4+
-      connMaxLifetime: 14400 # Grafana v5.4+
-    secureJsonData:
-      password: chirs1234
