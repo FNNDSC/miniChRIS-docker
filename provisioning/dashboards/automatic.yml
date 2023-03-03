@@ -1,0 +1,9 @@
+apiVersion: 1
+
+providers:
+  - name: Default # A uniquely identifiable name for the provider
+    type: file
+    updateIntervalSeconds: 15
+    options:
+      path: /etc/grafana/provisioning/dashboards
+      foldersFromFilesStructure: true
