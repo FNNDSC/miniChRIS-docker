@@ -257,16 +257,6 @@ services:
     userns_mode: "host"
     entrypoint: /entrypoint.sh
 
-  init-pfdcm:
-    image: docker.io/curlimages/curl:7.85.0
-    volumes:
-      - ./workarounds/init_pfdcm.sh:/init_pfdcm.sh:ro
-    command: /init_pfdcm.sh
-    networks:
-      - pacs
-    profiles:
-      - tools
-
 networks:
   local:
   remote:
