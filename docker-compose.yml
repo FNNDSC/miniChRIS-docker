@@ -6,7 +6,7 @@ version: '3.9'
 
 services:
   chrisomatic:
-    image: fnndsc/chrisomatic:0.4.0
+    image: ghcr.io/fnndsc/chrisomatic:0.4.0
     networks:
       - local
     volumes:
@@ -20,7 +20,7 @@ services:
       - tools
   chris:
     container_name: chris
-    image: fnndsc/cube:4.0.0.pre6
+    image: ghcr.io/fnndsc/cube:4.0.0.pre6
     ports:
       - "8000:8000"
     depends_on:
@@ -37,7 +37,7 @@ services:
       org.chrisproject.role: "ChRIS ultron backEnd"
       org.chrisproject.miniChRIS: "miniChRIS"
   worker:
-    image: fnndsc/cube:4.0.0.pre6
+    image: ghcr.io/fnndsc/cube:4.0.0.pre6
     command: celery -A core worker -c 4 -l info -Q main1,main2
     env_file: secrets.env
     environment:
@@ -52,7 +52,7 @@ services:
     networks:
       - local
   worker_periodic:
-    image: fnndsc/cube:4.0.0.pre6
+    image: ghcr.io/fnndsc/cube:4.0.0.pre6
     environment:
       DJANGO_DB_MIGRATE: "off"
       DJANGO_COLLECTSTATIC: "off"
@@ -65,7 +65,7 @@ services:
     networks:
       - local
   scheduler:
-    image: fnndsc/cube:4.0.0.pre6
+    image: ghcr.io/fnndsc/cube:4.0.0.pre6
     command: celery -A core beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
     env_file: secrets.env
     environment:
@@ -78,7 +78,7 @@ services:
     networks:
       - local
   chris_db:
-    image: postgres:13
+    image: docker.io/library/postgres:13
     env_file: secrets.env
     restart: on-failure
     volumes:
@@ -86,14 +86,14 @@ services:
     networks:
       - local
   queue:
-    image: rabbitmq:3
+    image: docker.io/library/rabbitmq:3
     restart: on-failure
     networks:
       - local
 
   chris_store:
     container_name: chris_store
-    image: fnndsc/chris_store:2.2.0
+    image: ghcr.io/fnndsc/chris_store:2.2.0
     environment:
       - DJANGO_DB_MIGRATE=on
       - DJANGO_SETTINGS_MODULE=config.settings.production
@@ -117,7 +117,7 @@ services:
         aliases:
           - chrisstore.local
   chris_store_db:
-    image: postgres:13
+    image: docker.io/library/postgres:13
     environment:
       - POSTGRES_DB=chris_store
       - POSTGRES_USER=chris
@@ -130,7 +130,7 @@ services:
       name: "ChRIS_store MySQL Database"
 
   swift:
-    image: fnndsc/docker-swift-onlyone:latest
+    image: docker.io/fnndsc/docker-swift-onlyone:latest
     init: true
     environment:
       - SWIFT_USERNAME=chris:chris1234
@@ -144,7 +144,7 @@ services:
 
   pfcon:
     container_name: pfcon
-    image: fnndsc/pfcon:5.0.0
+    image: ghcr.io/fnndsc/pfcon:5.0.0
     environment:
       COMPUTE_SERVICE_URL: http://pman:5010/api/v1/
       SECRET_KEY: secret
@@ -163,7 +163,7 @@ services:
       org.chrisproject.role: "pfcon"
 
   pman:
-    image: fnndsc/pman:4.0.2
+    image: ghcr.io/fnndsc/pman:4.0.2
     container_name: pman
     environment:
       CONTAINER_ENV: swarm
@@ -184,7 +184,7 @@ services:
       org.chrisproject.role: "pman"
 
   chris_ui:
-    image: fnndsc/chris_ui:20230223.203-f0074403
+    image: ghcr.io/fnndsc/chris_ui:20230223.203-f0074403
     command: sirv --host --single
     environment:
       REACT_APP_CHRIS_UI_URL: http://localhost:8000/api/v1/
@@ -192,7 +192,7 @@ services:
     ports:
       - "8020:3000"
   chris_store_ui:
-    image: fnndsc/chris_store_ui:0.2.1
+    image: ghcr.io/fnndsc/chris_store_ui:0.2.1
     command: sirv --host --single
     environment:
       REACT_APP_STORE_URL: http://localhost:8010/api/v1/
@@ -200,7 +200,7 @@ services:
       - "8021:3000"
 
   orthanc:
-    image: jodogne/orthanc-plugins:1.11.0
+    image: docker.io/jodogne/orthanc-plugins:1.11.0
     volumes:
       - ./orthanc.json:/etc/orthanc/orthanc.json:ro
       - orthanc:/var/lib/orthanc/db
@@ -211,7 +211,7 @@ services:
       - pacs
 
   pfdcm:
-    image: fnndsc/pfdcm:3.0.12
+    image: ghcr.io/fnndsc/pfdcm:3.0.12
     container_name: pfdcm
     volumes:
       - pfdcm:/home/dicom:rw
@@ -224,7 +224,7 @@ services:
     user: "10100"
 
   pfdcm-listener:
-    image: fnndsc/pfdcm:3.0.12
+    image: ghcr.io/fnndsc/pfdcm:3.0.12
     command: sh -c "mkdir -vp /tmp/data && storescp --fork -od /tmp/data -pm -sp -xcr '/usr/local/bin/px-repack --xcrdir \"#p\" --xcrfile \"#f\" --verbosity 0 --logdir /home/dicom/log --datadir /home/dicom/data --cleanup' 11113"
     volumes:
       - pfdcm:/home/dicom:rw
@@ -236,7 +236,7 @@ services:
       - pfdcm-nonroot-user-volume-fix
 
   pfdcm-nonroot-user-volume-fix:
-    image: alpine
+    image: docker.io/library/alpine:latest
     volumes:
       - pfdcm:/home/dicom:rw
     user: root
@@ -249,7 +249,7 @@ services:
 
   # start docker swarm for pman
   swarm-status:
-    image: docker
+    image: docker.io/library/docker:latest
     container_name: swarm-status
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -258,7 +258,7 @@ services:
     entrypoint: /entrypoint.sh
 
   init-pfdcm:
-    image: curlimages/curl:7.85.0
+    image: docker.io/curlimages/curl:7.85.0
     volumes:
       - ./workarounds/init_pfdcm.sh:/init_pfdcm.sh:ro
     command: /init_pfdcm.sh
