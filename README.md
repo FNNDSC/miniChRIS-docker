@@ -26,6 +26,12 @@ out-of-date with development versions of _ChRIS_ components.
 Please visit the repositories linked above for instructions
 on how to run development environments for the latest versions.
 
+#### Which ChRIS???
+
+- _miniChRIS-docker_ is the easiest, fastest, and most portable way to run _ChRIS_.
+- [_miniChRIS-podman_](https://github.com/FNNDSC/miniChRIS-podman) uses rootless Podman to run _ChRIS_.
+- [ChRIS_ultron_backEnd/make.sh](https://github.com/FNNDSC/ChRIS_ultron_backEnd) runs the _ChRIS_ backend in development mode and optionally runs integration tests.
+
 ### System Requirements
 
 _miniChRIS_ requires docker-compose version v2.6 or above.
@@ -179,13 +185,13 @@ jobs:
 - [FNNDSC/cni-store-proxy/package.json](https://github.com/FNNDSC/cni-store-proxy/blob/master/package.json) uses _miniChRIS_ as a git submodule for a local dev environment.
 
 
-# About
+## About
 
 _miniChRIS_ provides a no-nonsense collection of scripts which use
 [Docker Compose](https://docs.docker.com/compose/)
 to run a minimal and complete _ChRIS_ system.
 
-## v.s. `make.sh`
+### v.s. `make.sh`
 
 The conventional way to run a _ChRIS_ system is
 [ChRIS_ultron_backEnd/make.sh](https://github.com/FNNDSC/ChRIS_ultron_backEnd/blob/master/make.sh).
@@ -205,55 +211,18 @@ is right for you.
 - `minichris.sh` provides a complete `docker-compose.yml`
 - `make.sh` uses `docker stack deploy`; `docker-compose_dev.yml` depends on `.env` and other variables set by `make.sh`
 
-### Goals
+#### Goals
 
 - fast and minimal
 - practical for E2E testing
 
-#### Non-Goals
+##### Non-Goals
 
 - production use
 - back-end development environment
 
-### Performance
+#### Performance
 
 `./minichris.sh` takes 30-60 seconds on a decent laptop (quad-core, 16 GB, SSD)
 and takes 2-3 minutes in [Github Actions' Ubuntu VMs](https://github.com/FNNDSC/miniChRIS/actions).
 It is strongly recommended that you use an SSD!
-
-## How It Works
-
-Traditionally, to bring up CUBE+pfcon+pman on a single-machine on-the-metal requires a few extra steps on the host.
-
-CUBE setup typically involves:
-
-1. waiting for web server to come online
-2. creating a superuser
-3. adding `host` as a compute environment
-4. registering some plugins: `pl-dircopy` and `pl-topologicalcopy` are required
-
-### pman
-
-`pman` setup involves:
-
-1. joining a docker swarm
-2. figuring out the [`STOREBASE` environment variable](h)
-
-`pman` is special because it itself is a container which spawns other containers on its host.
-
-It needs `/var/run/docker.sock` to be mounted inside the container.
-We can resolve the two setup requirements by connecting to the host's dockerd.
-
-#### docker swarm
-
-`workarounds/swarm.sh` manages single-machine swarm cluster state.
-When the service `swarm-status` is brought up, it tells the local
-docker daemon to create and join a swarm.
-
-#### `STOREBASE`
-
-`STOREBASE` is a space for files created by plugin instances.
-`./workarounds/storebase.sh` derives the path of a docker volume
-and provides it to `pman`.
-
-About: https://github.com/FNNDSC/ChRIS_ultron_backEnd/blob/78670f6abf0b6ebac7aeef75989893b4502d4823/docker-compose_dev.yml#L208-L222
