@@ -30,7 +30,7 @@ on how to run development environments for the latest versions.
 
 - _miniChRIS-docker_ is the easiest, fastest, and most portable way to run _ChRIS_.
 - [_miniChRIS-podman_](https://github.com/FNNDSC/miniChRIS-podman) uses rootless Podman to run _ChRIS_.
-- [ChRIS_ultron_backEnd/make.sh](https://github.com/FNNDSC/ChRIS_ultron_backEnd) runs the _ChRIS_ backend in development mode and optionally runs integration tests.
+- [ChRIS_ultron_backEnd/make.sh](https://github.com/FNNDSC/ChRIS_ultron_backEnd) runs the _ChRIS_ backend in development mode with pman on Docker swarm and optionally runs integration tests.
 
 ### System Requirements
 
