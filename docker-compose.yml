@@ -6,7 +6,7 @@ version: '3.9'
 
 services:
   chrisomatic:
-    image: ghcr.io/fnndsc/chrisomatic:0.4.0
+    image: ghcr.io/fnndsc/chrisomatic:0.4.1
     networks:
       - local
     volumes:
@@ -161,19 +161,20 @@ services:
       remote:
     labels:
       org.chrisproject.role: "pfcon"
+    user: "10100"
 
   pman:
-    image: ghcr.io/fnndsc/pman:4.0.2
+    image: ghcr.io/fnndsc/pman:5.0.0.a1
     container_name: pman
     environment:
-      CONTAINER_ENV: swarm
+      CONTAINER_ENV: docker
+      CONTAINER_USER: "10100:"
+      ENABLE_HOME_WORKAROUND: "yes"
+      JOB_LABELS: "org.chrisproject.miniChRIS=plugininstance"
       SECRET_KEY: secret
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:rw
-      - ./workarounds/storebase.sh:/entrypoint.sh:ro
-    entrypoint: /entrypoint.sh
     depends_on:
-      - swarm-status
       - pfcon
     ports:
       - "5010:5010"
@@ -235,6 +236,8 @@ services:
     depends_on:
       - pfdcm-nonroot-user-volume-fix
 
+  # Non-root container user workarounds
+
   pfdcm-nonroot-user-volume-fix:
     image: docker.io/library/alpine:latest
     volumes:
@@ -243,19 +246,13 @@ services:
     command: chown 10100 /home/dicom
     restart: "no"
 
-  # ====================
-  # Provisioning
-  # ====================
-
-  # start docker swarm for pman
-  swarm-status:
-    image: docker.io/library/docker:latest
-    container_name: swarm-status
+  pfcon-nonroot-user-volume-fix:
+    image: docker.io/library/alpine:latest
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./workarounds/swarm.sh:/entrypoint.sh
-    userns_mode: "host"
-    entrypoint: /entrypoint.sh
+      - remote:/var/local/storeBase:rw
+    user: root
+    command: chown 10100 /var/local/storeBase
+    restart: "no"
 
 networks:
   local:
