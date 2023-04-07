@@ -29,25 +29,3 @@ cube:
       version: 0.2
     - name: pl-simpledsapp
       version: 2.1.0
-
-    - name: pl-nii2mnc-u8
-      version: 1.0.1
-    - name: pl-nums2mask
-      version: 1.0.1
-    - name: pl-fetal-cp-surface-extract
-      version: 1.1.0
-    - name: pl-smoothness-error
-      version: 2.0.1
-    - name: pl-surfdisterr
-      version: 1.2.0
-
-    - name: pl-covidnet
-      version: 0.3.0
-    - name: pl-covidnet-pdfgeneration
-      version: 0.3.0
-
-    - name: pl-lung_cnp
-    - name: pl-pfdo_med2img
-      version: 1.1.8
-
-    - name: pl-brainmgz
