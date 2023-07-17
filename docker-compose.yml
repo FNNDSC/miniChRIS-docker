@@ -15,7 +15,6 @@ services:
     userns_mode: host
     depends_on:
       - chris
-      - chris_store
     profiles:
       - tools
   chris:
@@ -91,44 +90,6 @@ services:
     networks:
       - local
 
-  chris_store:
-    container_name: chris_store
-    image: ghcr.io/fnndsc/chris_store:2.2.0
-    environment:
-      - DJANGO_DB_MIGRATE=on
-      - DJANGO_SETTINGS_MODULE=config.settings.production
-      - DJANGO_ALLOWED_HOSTS=*
-      - DJANGO_SECRET_KEY=secret
-      - DJANGO_CORS_ALLOW_ALL_ORIGINS=true
-      - DJANGO_CORS_ALLOWED_ORIGINS=https://babymri.org
-      - DJANGO_SECURE_PROXY_SSL_HEADER=
-      - DJANGO_USE_X_FORWARDED_HOST=false
-      - DATABASE_HOST=chris_store_db
-      - DATABASE_PORT=5432
-      - POSTGRES_DB=chris_store
-      - POSTGRES_USER=chris
-      - POSTGRES_PASSWORD=chirs1234
-    ports:
-      - "8010:8010"
-    depends_on:
-      - chris_store_db
-    networks:
-      local:
-        aliases:
-          - chrisstore.local
-  chris_store_db:
-    image: docker.io/library/postgres:13
-    environment:
-      - POSTGRES_DB=chris_store
-      - POSTGRES_USER=chris
-      - POSTGRES_PASSWORD=chirs1234
-    volumes:
-      - chris_store_db_data:/var/lib/postgresql
-    networks:
-      - local
-    labels:
-      name: "ChRIS_store MySQL Database"
-
   swift:
     image: docker.io/fnndsc/docker-swift-onlyone:latest
     init: true
@@ -192,13 +153,6 @@ services:
       REACT_APP_PFDCM_URL: http://localhost:4005/
     ports:
       - "8020:3000"
-  chris_store_ui:
-    image: ghcr.io/fnndsc/chris_store_ui:0.2.1
-    command: sirv --host --single
-    environment:
-      REACT_APP_STORE_URL: http://localhost:8010/api/v1/
-    ports:
-      - "8021:3000"
 
   orthanc:
     image: docker.io/jodogne/orthanc-plugins:1.11.0
@@ -272,7 +226,6 @@ networks:
 
 volumes:
   chris_db_data:
-  chris_store_db_data:
   swift_storage:
   remote:
   orthanc:
