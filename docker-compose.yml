@@ -166,7 +166,7 @@ services:
       - pacs
 
   pfdcm:
-    image: ghcr.io/fnndsc/pfdcm:3.1.0a1
+    image: ghcr.io/fnndsc/pfdcm:3.0.14
     container_name: pfdcm
     volumes:
       - pfdcm:/home/dicom:rw
