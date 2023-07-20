@@ -6,8 +6,7 @@
                 "aet_listener": "ORTHANC",
                 "aec": "ORTHANC",
                 "serverIP": "orthanc",
-                "serverPort": "4242",
-                "reallyEfficient": true
+                "serverPort": "4242"
             }
         }
     }

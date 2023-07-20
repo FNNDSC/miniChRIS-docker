@@ -168,8 +168,6 @@ services:
   pfdcm:
     image: ghcr.io/fnndsc/pfdcm:3.1.0a1
     container_name: pfdcm
-    environment:
-      PYPX_REDIS_URL: redis://pfdcm-redis:6379
     volumes:
       - pfdcm:/home/dicom:rw
       - ./pfdcm-services:/home/dicom/services:ro
@@ -183,8 +181,6 @@ services:
   pfdcm-listener:
     image: ghcr.io/fnndsc/pfdcm:3.1.0a1
     command: sh -c "mkdir -vp /tmp/data && storescp --fork -od /tmp/data -pm -sp -xcr 'px-recount --xcrdir \"#p\" --xcrfile \"#f\" --verbosity 0 --logdir /home/dicom/log --datadir /home/dicom/data --cleanup' 11113"
-    environment:
-      PYPX_REDIS_URL: redis://pfdcm-redis:6379
     volumes:
       - pfdcm:/home/dicom:rw
     networks:
@@ -193,13 +189,6 @@ services:
     restart: on-failure
     depends_on:
       - pfdcm-nonroot-user-volume-fix
-
-  pfdcm-redis:
-    image: redis:7-alpine
-    ports:
-      - 6379:6379
-    networks:
-      - pacs
 
   # Non-root container user workarounds
 
