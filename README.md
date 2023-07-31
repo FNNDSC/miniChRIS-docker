@@ -130,6 +130,15 @@ After modifying `chrisomatic.yml`, apply the changes by rerunning `./minichris.s
 
 For details, see https://github.com/FNNDSC/chrisomatic#plugins-and-pipelines
 
+## Observability Stack
+
+[Prometheus](https://prometheus.io/), [Grafana](https://grafana.com/), and [cAdvisor](https://github.com/google/cadvisor)
+are optionally included for monitoring and telemetry. To use these services, run
+
+```shell
+docker compose --profile observability up -d
+```
+
 # Github Actions
 
 *miniChRIS* can be used as a step in Github Actions workflows to spin up

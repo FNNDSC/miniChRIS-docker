@@ -224,18 +224,22 @@ services:
       monitoring:
     volumes:
       - grafana_data:/var/lib/grafana
-      - ./grafana.ini:/etc/grafana/grafana.ini:ro
+      - ./observability/grafana.ini:/etc/grafana/grafana.ini:ro
+    profiles:
+      - observability
   prometheus:
     image: quay.io/prometheus/prometheus:v2.37.0
     ports:
      - 9090:9090
     volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./observability/prometheus.yml:/etc/prometheus/prometheus.yml:ro
     restart: unless-stopped
     networks:
       monitoring:
     depends_on:
       - cadvisor
+    profiles:
+      - observability
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.45.0
     ports:
@@ -253,6 +257,9 @@ services:
     networks:
       monitoring:
     restart: unless-stopped
+    profiles:
+      - observability
+
 #  loki:
 #    image: grafana/loki:2.6.1
 #    ports:
@@ -261,12 +268,6 @@ services:
 #    networks:
 #      monitoring:
 #      local:
-
-volumes:
-  chris_db_data:
-  chris_store_db_data:
-  remote:
-  provisioner-state:
 
 networks:
   local:
