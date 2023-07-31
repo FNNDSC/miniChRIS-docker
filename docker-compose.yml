@@ -179,7 +179,7 @@ services:
     user: "10100"
 
   pfdcm-listener:
-    image: ghcr.io/fnndsc/pypx-listener:0.1.0-alpha.1
+    image: ghcr.io/fnndsc/pypx-listener:0.1.0
     volumes:
       - pfdcm:/home/dicom:rw
     networks:
