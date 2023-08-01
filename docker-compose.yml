@@ -179,15 +179,21 @@ services:
     user: "10100"
 
   pfdcm-listener:
-    image: ghcr.io/fnndsc/pypx-listener:0.1.0
+    image: ghcr.io/fnndsc/pypx-listener:0.2.0
     volumes:
       - pfdcm:/home/dicom:rw
     networks:
       - pacs
     user: "10100"
     restart: on-failure
+    logging:
+      driver: fluentd
+      options:
+        tag: rx-repack
     depends_on:
       - pfdcm-nonroot-user-volume-fix
+      - fluentbit
+
 
   # Non-root container user workarounds
 
@@ -259,15 +265,36 @@ services:
     restart: unless-stopped
     profiles:
       - observability
+  openobserve:
+    image: public.ecr.aws/zinclabs/openobserve:v0.5.1
+    ports:
+      - 5080:5080
+    volumes:
+      - openobserve_data:/data:rw
+    environment:
+      ZO_DATA_DIR: /data
+      ZO_ROOT_USER_EMAIL: "dev@babymri.org"
+      ZO_ROOT_USER_PASSWORD: "chris1234"
+    restart: unless-stopped
+    networks:
+      monitoring:
+    profiles:
+      - observability
 
-#  loki:
-#    image: grafana/loki:2.6.1
-#    ports:
-#      - "9004:3100"
-#    command: -config.file=/etc/loki/local-config.yaml
-#    networks:
-#      monitoring:
-#      local:
+  # Based on:
+  # https://kevcodez.de/posts/2019-08-10-fluent-bit-docker-logging-driver-elasticsearch/
+  # https://www.velebit.ai/blog/tech-blog-collecting-logs-in-docker-clusters/
+  # must not be part of the "observability" profile because it's used as a log driver
+  fluentbit:
+    image: cr.fluentbit.io/fluent/fluent-bit:2.1.8
+    command: /fluent-bit/bin/fluent-bit -c /fluent-bit/etc/fluent-bit.conf --enable-hot-reload
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
+    volumes:
+      - ./observability/fluent-bit:/fluent-bit/etc:ro
+    networks:
+      monitoring:
 
 networks:
   local:
@@ -282,3 +309,4 @@ volumes:
   orthanc:
   pfdcm:
   grafana_data:
+  openobserve_data:
