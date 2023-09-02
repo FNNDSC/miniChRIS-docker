@@ -6,7 +6,7 @@ cd "$(dirname "$(readlink -f "$0")")"
 set -ex
 
 # remove all plugin instance jobs
-pls=$(docker ps -q -f 'label=org.chrisproject.miniChRIS=plugininstance')
+pls=$(docker ps -q -a -f 'label=org.chrisproject.miniChRIS=plugininstance')
 [ -z "$pls" ] || docker rm -fv $pls
 
 # stop and remove everything
