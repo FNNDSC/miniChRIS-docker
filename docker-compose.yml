@@ -7,92 +7,108 @@ version: '3.9'
 services:
   chrisomatic:
     image: ghcr.io/fnndsc/chrisomatic:0.5.0
-    networks:
-      - local
+    profiles:
+      - tools
     volumes:
       - "./chrisomatic.yml:/chrisomatic.yml:ro"
       - "/var/run/docker.sock:/var/run/docker.sock:rw"
     userns_mode: host
     depends_on:
       - chris
-    profiles:
-      - tools
+    networks:
+    - local
+
+  db_migrate:
+    image: ghcr.io/fnndsc/cube:4.1.0
+    command: python manage.py migrate --noinput
+    env_file: secrets.env
+    volumes:
+      - chris_files:/data:rw
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - local
+  
   chris:
     container_name: chris
-    image: ghcr.io/fnndsc/cube:4.0.0
+    image: ghcr.io/fnndsc/cube:4.1.0
     ports:
       - "8000:8000"
     volumes:
       - chris_files:/data:rw
     depends_on:
-      - chris_db
-      - queue
+      db_migrate:
+        condition: service_completed_successfully
+      queue:
+        condition: service_started
     networks:
       - local
     env_file: secrets.env
-    environment:
-      DJANGO_DB_MIGRATE: "on"
-      DJANGO_COLLECTSTATIC: "on"
     labels:
       org.chrisproject.role: "ChRIS_ultron_backEnd"
       org.chrisproject.miniChRIS: "miniChRIS"
   worker:
-    image: ghcr.io/fnndsc/cube:4.0.0
+    image: ghcr.io/fnndsc/cube:4.1.0
     command: celery -A core worker -c 4 -l info -Q main1,main2
     volumes:
       - chris_files:/data:rw
     env_file: secrets.env
-    environment:
-      DJANGO_DB_MIGRATE: "off"
-      DJANGO_COLLECTSTATIC: "off"
     depends_on:
-      - chris_db
-      - queue
-      - pfcon
-    restart: on-failure
+      db_migrate:
+        condition: service_completed_successfully
+      queue:
+        condition: service_started
+      pfcon:
+        condition: service_started
+    restart: unless-stopped
     networks:
       - local
   worker_periodic:
-    image: ghcr.io/fnndsc/cube:4.0.0
-    environment:
-      DJANGO_DB_MIGRATE: "off"
-      DJANGO_COLLECTSTATIC: "off"
+    image: ghcr.io/fnndsc/cube:4.1.0
     command: celery -A core worker -c 2 -l info -Q periodic
     volumes:
       - chris_files:/data:rw
     env_file: secrets.env
     depends_on:
-      - chris_db
-      - queue
-    restart: on-failure
+      db_migrate:
+        condition: service_completed_successfully
+      queue:
+        condition: service_started
+    restart: unless-stopped
     networks:
       - local
   scheduler:
-    image: ghcr.io/fnndsc/cube:4.0.0
+    image: ghcr.io/fnndsc/cube:4.1.0
     command: celery -A core beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
     volumes:
       - chris_files:/data:rw
     env_file: secrets.env
-    environment:
-      DJANGO_DB_MIGRATE: "off"
-      DJANGO_COLLECTSTATIC: "off"
     depends_on:
-      - chris_db
-      - queue
-    restart: on-failure
+      db_migrate:
+        condition: service_completed_successfully
+      queue:
+        condition: service_started
+    restart: unless-stopped
     networks:
       - local
-  chris_db:
+  db:
     image: docker.io/library/postgres:13
     env_file: secrets.env
-    restart: on-failure
+    restart: unless-stopped
     volumes:
-      - chris_db_data:/var/lib/postgresql
+      - db_data:/var/lib/postgresql/data
     networks:
       - local
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+      interval: 2s
+      timeout: 4s
+      retries: 3
+      start_period: 60s
   queue:
     image: docker.io/library/rabbitmq:3
-    restart: on-failure
+    restart: unless-stopped
     networks:
       - local
 
@@ -139,7 +155,7 @@ services:
       org.chrisproject.role: "pman"
 
   chris_ui:
-    image: ghcr.io/fnndsc/chris_ui:20230725.258-605dfccf
+    image: ghcr.io/fnndsc/chris_ui:20230901.263-b2c5dabe
     command: sirv --host --single
     environment:
       REACT_APP_CHRIS_UI_URL: http://localhost:8000/api/v1/
@@ -181,7 +197,7 @@ services:
     networks:
       - pacs
     user: "1001"
-    restart: on-failure
+    restart: unless-stopped
     logging:
       driver: fluentd
       options:
@@ -193,13 +209,13 @@ services:
 
   # Non-root container user workarounds
 
-  cube-nonroot-user-volume-fix:
-    image: docker.io/library/alpine:latest
-    volumes:
-      - chris_files:/var/chris:rw
-    user: root
-    command: chown 1001 /var/chris
-    restart: "no"
+  # cube-nonroot-user-volume-fix:
+  #   image: docker.io/library/alpine:latest
+  #   volumes:
+  #     - chris_files:/data:rw
+  #   user: root
+  #   command: chmod g+rwx /data
+  #   restart: "no"
 
   pfdcm-nonroot-user-volume-fix:
     image: docker.io/library/alpine:latest
@@ -226,7 +242,7 @@ services:
     ports:
       - 9009:3000
     depends_on:
-      - chris_db
+      - db
       - prometheus
     restart: unless-stopped
     networks:
@@ -308,7 +324,7 @@ networks:
 
 volumes:
   chris_files:
-  chris_db_data:
+  db_data:
   remote:
   orthanc:
   pfdcm:
