@@ -182,7 +182,7 @@ services:
     volumes:
       - pfdcm:/home/dicom:rw
       - ./pfdcm-services:/home/dicom/services:ro
-      - chris_files:/var/chris:rw
+      - chris_files:/chris_files:rw
     ports:
       - "4005:4005"
     networks:
@@ -209,13 +209,13 @@ services:
 
   # Non-root container user workarounds
 
-  # cube-nonroot-user-volume-fix:
-  #   image: docker.io/library/alpine:latest
-  #   volumes:
-  #     - chris_files:/data:rw
-  #   user: root
-  #   command: chmod g+rwx /data
-  #   restart: "no"
+  cube-nonroot-user-volume-fix:
+    image: docker.io/library/alpine:latest
+    volumes:
+      - chris_files:/data:rw
+    user: root
+    command: chmod g+rwx /data
+    restart: "no"
 
   pfdcm-nonroot-user-volume-fix:
     image: docker.io/library/alpine:latest
