@@ -3,7 +3,7 @@
 
 docker compose down --timeout 1 pfdcm pfdcm-listener pfdcm-nonroot-user-volume-fix -v
 
-docker compose exec chris pip install --user tqdm
+docker compose exec chris pip install tqdm
 docker compose exec chris python manage.py shell -c '
 from django.conf import settings
 from core.storage import connect_storage
