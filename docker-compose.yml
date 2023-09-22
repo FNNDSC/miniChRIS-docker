@@ -286,7 +286,7 @@ services:
     profiles:
       - observability
   openobserve:
-    image: public.ecr.aws/zinclabs/openobserve:v0.5.1
+    image: public.ecr.aws/zinclabs/openobserve:v0.6.2
     ports:
       - 5080:5080
     volumes:
