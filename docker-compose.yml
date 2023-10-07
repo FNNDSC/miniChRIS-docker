@@ -6,7 +6,7 @@ version: '3.9'
 
 services:
   chrisomatic:
-    image: ghcr.io/fnndsc/chrisomatic:0.5.0
+    image: ghcr.io/fnndsc/chrisomatic:0.6.0
     profiles:
       - tools
     volumes:
@@ -114,16 +114,19 @@ services:
 
   pfcon:
     container_name: pfcon
-    image: ghcr.io/fnndsc/pfcon:5.0.0
+    image: ghcr.io/fnndsc/pfcon:5.2.2
     environment:
       COMPUTE_SERVICE_URL: http://pman:5010/api/v1/
       SECRET_KEY: secret
       PFCON_USER: pfcon
       PFCON_PASSWORD: pfcon1234
+      PFCON_INNETWORK: "true"
+      STORAGE_ENV: filesystem
+      STOREBASE_MOUNT: /var/local/storeBase
     ports:
       - "5005:5005"
     volumes:
-      - remote:/var/local/storeBase
+      - chris_files:/var/local/storeBase
     networks:
       local:
         aliases:
@@ -131,17 +134,18 @@ services:
       remote:
     labels:
       org.chrisproject.role: "pfcon"
-    user: "10100"
+    user: "1001"
 
   pman:
-    image: ghcr.io/fnndsc/pman:5.0.0.a5
+    image: ghcr.io/fnndsc/pman:6.0.1
     container_name: pman
     environment:
       CONTAINER_ENV: docker
-      CONTAINER_USER: "10100:"
+      CONTAINER_USER: "1001:"
       ENABLE_HOME_WORKAROUND: "yes"
       JOB_LABELS: "org.chrisproject.miniChRIS=plugininstance"
       SECRET_KEY: secret
+      REMOVE_JOBS: "yes"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:rw
     depends_on:
@@ -149,7 +153,7 @@ services:
     ports:
       - "5010:5010"
     networks:
-      - remote
+      remote:
     userns_mode: "host"
     labels:
       org.chrisproject.role: "pman"
@@ -225,14 +229,6 @@ services:
     command: chown 1001 /home/dicom
     restart: "no"
 
-  pfcon-nonroot-user-volume-fix:
-    image: docker.io/library/alpine:latest
-    volumes:
-      - remote:/var/local/storeBase:rw
-    user: root
-    command: chown 10100 /var/local/storeBase
-    restart: "no"
-
   # ====================
   # Monitoring
   # ====================
@@ -256,7 +252,7 @@ services:
   prometheus:
     image: quay.io/prometheus/prometheus:v2.37.0
     ports:
-     - 9090:9090
+      - 9090:9090
     volumes:
       - ./observability/prometheus.yml:/etc/prometheus/prometheus.yml:ro
     restart: unless-stopped
@@ -325,7 +321,6 @@ networks:
 volumes:
   chris_files:
   db_data:
-  remote:
   orthanc:
   pfdcm:
   grafana_data:
