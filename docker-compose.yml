@@ -202,13 +202,8 @@ services:
       - pacs
     user: "1001"
     restart: unless-stopped
-    logging:
-      driver: fluentd
-      options:
-        tag: rx-repack
     depends_on:
       - pfdcm-nonroot-user-volume-fix
-      - fluentbit
 
 
   # Non-root container user workarounds
@@ -228,89 +223,6 @@ services:
     user: root
     command: chown 1001 /home/dicom
     restart: "no"
-
-  # ====================
-  # Monitoring
-  # ====================
-
-  grafana:
-    image: docker.io/grafana/grafana-oss:9.0.7
-    ports:
-      - 9009:3000
-    depends_on:
-      - db
-      - prometheus
-    restart: unless-stopped
-    networks:
-      local:
-      monitoring:
-    volumes:
-      - grafana_data:/var/lib/grafana
-      - ./observability/grafana.ini:/etc/grafana/grafana.ini:ro
-    profiles:
-      - observability
-  prometheus:
-    image: quay.io/prometheus/prometheus:v2.37.0
-    ports:
-      - 9090:9090
-    volumes:
-      - ./observability/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-    restart: unless-stopped
-    networks:
-      monitoring:
-    depends_on:
-      - cadvisor
-    profiles:
-      - observability
-  cadvisor:
-    image: gcr.io/cadvisor/cadvisor:v0.45.0
-    ports:
-      - 9008:8080
-    volumes:
-      - /:/rootfs:ro
-      - /var/run:/var/run:ro
-      - /sys:/sys:ro
-      - /var/lib/docker:/var/lib/docker:ro
-      - /dev/disk/:/dev/disk/:ro
-    devices:
-      - /dev/kmsg
-    privileged: true
-    userns_mode: host
-    networks:
-      monitoring:
-    restart: unless-stopped
-    profiles:
-      - observability
-  openobserve:
-    image: public.ecr.aws/zinclabs/openobserve:v0.6.2
-    ports:
-      - 5080:5080
-    volumes:
-      - openobserve_data:/data:rw
-    environment:
-      ZO_DATA_DIR: /data
-      ZO_ROOT_USER_EMAIL: "dev@babymri.org"
-      ZO_ROOT_USER_PASSWORD: "chris1234"
-    restart: unless-stopped
-    networks:
-      monitoring:
-    profiles:
-      - observability
-
-  # Based on:
-  # https://kevcodez.de/posts/2019-08-10-fluent-bit-docker-logging-driver-elasticsearch/
-  # https://www.velebit.ai/blog/tech-blog-collecting-logs-in-docker-clusters/
-  # must not be part of the "observability" profile because it's used as a log driver
-  fluentbit:
-    image: cr.fluentbit.io/fluent/fluent-bit:2.1.8
-    command: /fluent-bit/bin/fluent-bit -c /fluent-bit/etc/fluent-bit.conf --enable-hot-reload
-    ports:
-      - "24224:24224"
-      - "24224:24224/udp"
-    volumes:
-      - ./observability/fluent-bit:/fluent-bit/etc:ro
-    networks:
-      monitoring:
 
 networks:
   local:

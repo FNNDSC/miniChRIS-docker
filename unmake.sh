@@ -10,4 +10,4 @@ pls=$(docker ps -q -a -f 'label=org.chrisproject.miniChRIS=plugininstance')
 [ -z "$pls" ] || docker rm -fv $pls
 
 # stop and remove everything
-docker compose --profile observability down -v
+docker compose down -v
