@@ -177,6 +177,8 @@ services:
       - "8042:8042"
     networks:
       - pacs
+    profiles:
+      - pacs
 
   pfdcm:
     image: ghcr.io/fnndsc/pfdcm:3.1.2
@@ -193,6 +195,8 @@ services:
       - pacs
       - local
     user: "1001"
+    profiles:
+      - pacs
 
   pfdcm-listener:
     image: ghcr.io/fnndsc/pypx-listener:0.4.0
@@ -204,7 +208,40 @@ services:
     restart: unless-stopped
     depends_on:
       - pfdcm-nonroot-user-volume-fix
+    profiles:
+      - pacs
 
+  pflink:
+    image: docker.io/fnndsc/pflink:settings-39e91ed
+    container_name: pflink
+    restart: unless-stopped
+    environment:
+      PFDCM_NAME: "NOTPFDCMLOCAL"  # work around for hard-coded edge case
+      PFLINK_MONGODB: "mongodb://pflink-db:27017"
+      PFLINK_PFDCM: "http://pfdcm:4005"
+      PFLINK_PORT: "4010"
+    ports:
+      - "4010:4010"
+    networks:
+      local:
+      pflink:
+    depends_on:
+      - pflink-db
+    profiles:
+      - pflink
+
+  pflink-db:
+    image: mongo
+    environment:
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - pflink-db-data:/data/db
+    restart: unless-stopped
+    networks:
+      pflink:
+    profiles:
+      - pflink
 
   # Non-root container user workarounds
 
@@ -229,6 +266,7 @@ networks:
   remote:
   pacs:
   monitoring:
+  pflink:
 
 volumes:
   chris_files:
@@ -237,3 +275,4 @@ volumes:
   pfdcm:
   grafana_data:
   openobserve_data:
+  pflink-db-data:

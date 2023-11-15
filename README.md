@@ -44,6 +44,12 @@ cd miniChRIS-docker
 ./minichris.sh
 ```
 
+Start up optional services with:
+
+```bash
+docker compose --profile pacs,pflink up -d
+```
+
 ## Usage
 
 A default superuser `chris:chris1234` is created.
@@ -129,15 +135,6 @@ The bottom of your `chrisomatic.yml` file should look like
 After modifying `chrisomatic.yml`, apply the changes by rerunning `./minichris.sh`
 
 For details, see https://github.com/FNNDSC/chrisomatic#plugins-and-pipelines
-
-## Observability Stack
-
-[Prometheus](https://prometheus.io/), [Grafana](https://grafana.com/), and [cAdvisor](https://github.com/google/cadvisor)
-are optionally included for monitoring and telemetry. To use these services, run
-
-```shell
-docker compose --profile observability up -d
-```
 
 # Github Actions
 
