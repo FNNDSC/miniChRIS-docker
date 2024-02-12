@@ -211,6 +211,24 @@ services:
     profiles:
       - pacs
 
+  pfbridge:
+    image: docker.io/fnndsc/pfbridge:3.7.2
+    container_name: pfbridge
+    environment:
+      MAX_WORKERS: 1
+      PFLINK_USERNAME: pflink
+      PFLINK_PASSWORD: pflink1234
+      NAME: PFDCMLOCAL
+      PACSNAME: orthanc
+      CUBEANDSWIFTKEY: local
+    ports:
+      - "33333:33333"
+    networks:
+      local:
+      pflink:
+    profiles:
+      - pflink
+
   pflink:
     image: docker.io/fnndsc/pflink:settings-39e91ed
     container_name: pflink
