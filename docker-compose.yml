@@ -168,7 +168,7 @@ services:
       - "8020:3000"
 
   orthanc:
-    image: docker.io/jodogne/orthanc-plugins:1.11.0
+    image: docker.io/jodogne/orthanc-plugins:1.12.3
     volumes:
       - ./orthanc.json:/etc/orthanc/orthanc.json:ro
       - orthanc:/var/lib/orthanc/db
