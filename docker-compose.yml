@@ -159,7 +159,7 @@ services:
       org.chrisproject.role: "pman"
 
   chris_ui:
-    image: ghcr.io/fnndsc/chris_ui:20230901.263-b2c5dabe
+    image: ghcr.io/fnndsc/chris_ui:20240307.427-e4284e46
     command: sirv --host --single
     environment:
       REACT_APP_CHRIS_UI_URL: http://localhost:8000/api/v1/
