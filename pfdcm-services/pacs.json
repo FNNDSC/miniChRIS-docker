@@ -2,7 +2,7 @@
     "services" : {
         "orthanc": {
             "info": {
-                "aet": "CHRISLOCAL",
+                "aet": "ChRIS",
                 "aet_listener": "ORTHANC",
                 "aec": "ORTHANC",
                 "serverIP": "orthanc",
