@@ -281,6 +281,7 @@ services:
 
 networks:
   local:
+    name: minichris-local
   remote:
   pacs:
   monitoring:
