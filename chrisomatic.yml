@@ -16,10 +16,12 @@ cube:
       innetwork: true
   plugins:
     - name: pl-dircopy
-      version: 2.1.1
+      version: 2.1.2
     - name: pl-tsdircopy
       version: 1.2.1
     - name: pl-topologicalcopy
-      version: 0.2
+      version: 1.0.2
     - name: pl-simpledsapp
       version: 2.1.0
+    - name: pl-unstack-folders
+      version: 1.0.0
