@@ -214,6 +214,8 @@ services:
     networks:
       - pacs
       - local
+    profiles:
+      - pacs
   pfbridge:
     image: docker.io/fnndsc/pfbridge:3.7.2
     container_name: pfbridge
