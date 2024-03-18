@@ -179,6 +179,7 @@ services:
       - pacs
     profiles:
       - pacs
+      - orthanc
 
   pfdcm:
     image: ghcr.io/fnndsc/pfdcm:3.1.2
