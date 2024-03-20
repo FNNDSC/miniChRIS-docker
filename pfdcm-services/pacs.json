@@ -1,10 +1,10 @@
 {
     "services" : {
-        "orthanc": {
+        "MINICHRISORTHANC": {
             "info": {
                 "aet": "ChRIS",
-                "aet_listener": "ORTHANC",
-                "aec": "ORTHANC",
+                "aet_listener": "ChRIS",
+                "aec": "MINICHRISORTHANC",
                 "serverIP": "orthanc",
                 "serverPort": "4242"
             }

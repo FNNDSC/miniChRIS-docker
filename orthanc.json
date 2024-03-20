@@ -121,7 +121,7 @@
 
   // The DICOM Application Entity Title (cannot be longer than 16
   // characters)
-  "DicomAet" : "CHRISV3T",
+  "DicomAet" : "MINICHRISORTHANC",
 
   // Check whether the called AET corresponds to the AET of Orthanc
   // during an incoming DICOM SCU request
