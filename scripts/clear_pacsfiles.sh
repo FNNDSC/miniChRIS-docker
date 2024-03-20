@@ -1,7 +1,7 @@
 #!/bin/bash -ex
 # Purpose: wipe pfdcm and CUBE pacsfiles
 
-docker compose down --timeout 1 pfdcm pfdcm-listener pfdcm-nonroot-user-volume-fix -v
+docker compose down --timeout 1 pfdcm pfdcm-nonroot-user-volume-fix -v
 
 docker compose exec chris pip install tqdm
 docker compose exec chris python manage.py shell -c '

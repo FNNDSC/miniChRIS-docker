@@ -198,7 +198,7 @@ services:
       - pacs
 
   oxidicom:
-    image: ghcr.io/fnndsc/oxidicom:latest
+    image: ghcr.io/fnndsc/oxidicom:latest@sha256:b11fc3bc572aa017acd386917fdc896617ca4596891f44c98a06cce982a3a2c9
     container_name: oxidicom
     environment:
       CHRIS_URL: http://chris:8000/api/v1/
@@ -206,7 +206,13 @@ services:
       CHRIS_PASSWORD: chris1234
       CHRIS_FILES_ROOT: /data
       CHRIS_SCP_AET: ChRIS
-      CHRIS_PACS_NAME: orthanc
+      CHRIS_PACS_ADDRESS: orthanc:4242
+      PORT: 11111
+      CHRIS_LISTENER_THREADS: 8
+      CHRIS_PUSHER_THREADS: 2
+      CHRIS_VERBOSE: "yes"
+      # OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4318"
+      # OTEL_RESOURCE_ATTRIBUTES: service.name=oxidicom-test
     volumes:
       - chris_files:/data:rw
     ports:
