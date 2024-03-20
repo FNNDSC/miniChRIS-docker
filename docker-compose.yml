@@ -199,7 +199,7 @@ services:
       - pacs
 
   oxidicom:
-    image: ghcr.io/fnndsc/oxidicom:latest@sha256:b11fc3bc572aa017acd386917fdc896617ca4596891f44c98a06cce982a3a2c9
+    image: ghcr.io/fnndsc/oxidicom:1.0.0-b.1
     container_name: oxidicom
     environment:
       CHRIS_URL: http://chris:8000/api/v1/
