@@ -12,12 +12,12 @@ from tqdm import tqdm
 
 with tqdm(PACSFile.objects.all()) as pbar:
     for pacs_file in pbar:
-        pacs_file.delete()
+        _ = pacs_file.delete()
 
 storage = connect_storage(settings)
 with tqdm(storage.ls("SERVICES/PACS")) as pbar:
     for f in pbar:
-        storage.delete_obj(f)
+        _ = storage.delete_obj(f)
 
 '
 docker compose up -d
