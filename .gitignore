@@ -1,3 +1,4 @@
 node_modules/
 .vagrant/
 .idea/
+/docker-compose-cube-dev.env

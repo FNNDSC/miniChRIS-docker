@@ -206,7 +206,7 @@ _miniChRIS_ does not replace `make.sh`. However, for most users
 looking for how to run _ChRIS_ and have it "just work," _miniChRIS_
 is right for you.
 
-- _miniChRIS_ has 109 lines of shell code --- *ChRIS_ultron_backEnd* has 3,200
+- _miniChRIS_ has 140 lines of shell code (103 lines in `test.sh`) --- *ChRIS_ultron_backEnd* has 3,200
 - _miniChRIS_ does not create files on host outside of named docker volumes
 - `make.sh` runs arbitrary `chmod 755` and `chmod -R 777` on the host filesystem.
 - _miniChRIS_ is fully containerized.
@@ -232,3 +232,16 @@ is right for you.
 `./minichris.sh` takes 30-60 seconds on a decent laptop (quad-core, 16 GB, SSD)
 and takes 2-3 minutes in [Github Actions' Ubuntu VMs](https://github.com/FNNDSC/miniChRIS/actions).
 It is strongly recommended that you use an SSD!
+
+
+## For [ChRIS_ultron_backEnd](https://github.com/FNNDSC/ChRIS_ultron_backEnd) Development
+
+We can use `minichris-cube-dev.sh` for [ChRIS_ultron_backEnd](https://github.com/FNNDSC/ChRIS_ultron_backEnd) development:
+
+* Copy `docker-compose-cube-dev.env.tmpl` to `docker-compose-cube-dev.env` and setup your `ChRIS_ultron_backEnd` path.
+* `./minichris-cube-dev.sh`
+* We can use the same `unmake.sh` to shutdown the docker containers.
+
+### _CAVEAT_ for mac or linux/arm64 users:
+  * Some docker images are not available yet. You need to compile the docker images on your own and tag the images as specified in `docker-compose-cube-dev.yml`.
+  * `oxidicom` seems not compilable in the aarch64 environment (because of [openjp2](https://crates.io/crates/openjp2)). Please comment out the `oxidicom` block in `docker-compose-cube-dev.yml`.

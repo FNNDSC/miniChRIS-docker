@@ -18,10 +18,15 @@ services:
 
   db_migrate:
     image: ghcr.io/fnndsc/cube:5.0.0
-    command: python manage.py migrate --noinput
+    command:
+      - sh
+      - -c
+      - pip install -r /opt/ChRIS_ultron_backEnd/requirements/production.txt && python manage.py migrate --noinput
     env_file: secrets.env
     volumes:
       - chris_files:/data:rw
+      - ${CUBE_SRC}/chris_backend:/opt/app-root/src
+      - ${CUBE_SRC}:/opt/ChRIS_ultron_backEnd
     depends_on:
       db:
         condition: service_healthy
@@ -31,10 +36,16 @@ services:
   chris:
     container_name: chris
     image: ghcr.io/fnndsc/cube:5.0.0
+    command:
+      - sh
+      - -c
+      - pip install -r /opt/ChRIS_ultron_backEnd/requirements/production.txt && gunicorn -b 0.0.0.0:8000 -w 4 config.wsgi:application
     ports:
       - "8000:8000"
     volumes:
       - chris_files:/data:rw
+      - ${CUBE_SRC}/chris_backend:/opt/app-root/src
+      - ${CUBE_SRC}:/opt/ChRIS_ultron_backEnd
     depends_on:
       db_migrate:
         condition: service_completed_successfully
@@ -48,9 +59,14 @@ services:
       org.chrisproject.miniChRIS: "miniChRIS"
   worker:
     image: ghcr.io/fnndsc/cube:5.0.0
-    command: celery -A core worker -c 4 -l info -Q main1,main2
+    command:
+      - sh
+      - -c
+      - pip install -r /opt/ChRIS_ultron_backEnd/requirements/production.txt && celery -A core worker -c 4 -l info -Q main1,main2
     volumes:
       - chris_files:/data:rw
+      - ${CUBE_SRC}/chris_backend:/opt/app-root/src
+      - ${CUBE_SRC}:/opt/ChRIS_ultron_backEnd
     env_file: secrets.env
     depends_on:
       db_migrate:
@@ -64,9 +80,14 @@ services:
       - local
   worker_periodic:
     image: ghcr.io/fnndsc/cube:5.0.0
-    command: celery -A core worker -c 2 -l info -Q periodic
+    command:
+      - sh
+      - -c
+      - pip install -r /opt/ChRIS_ultron_backEnd/requirements/production.txt && celery -A core worker -c 2 -l info -Q periodic
     volumes:
       - chris_files:/data:rw
+      - ${CUBE_SRC}/chris_backend:/opt/app-root/src
+      - ${CUBE_SRC}:/opt/ChRIS_ultron_backEnd
     env_file: secrets.env
     depends_on:
       db_migrate:
@@ -78,9 +99,14 @@ services:
       - local
   scheduler:
     image: ghcr.io/fnndsc/cube:5.0.0
-    command: celery -A core beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    command:
+      - sh
+      - -c
+      - pip install -r /opt/ChRIS_ultron_backEnd/requirements/production.txt && celery -A core beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
     volumes:
       - chris_files:/data:rw
+      - ${CUBE_SRC}/chris_backend:/opt/app-root/src
+      - ${CUBE_SRC}:/opt/ChRIS_ultron_backEnd
     env_file: secrets.env
     depends_on:
       db_migrate:
@@ -157,7 +183,7 @@ services:
       org.chrisproject.role: "pman"
 
   chris_ui:
-    image: ghcr.io/fnndsc/chris_ui:20240307.427-e4284e46
+    image: ghcr.io/fnndsc/chris_ui:20240410.445-c5ca2f65
     command: sirv --host --single
     environment:
       REACT_APP_CHRIS_UI_URL: http://localhost:8000/api/v1/
@@ -197,7 +223,7 @@ services:
       - pacs
 
   oxidicom:
-    image: ghcr.io/fnndsc/oxidicom:1.0.1
+    image: ghcr.io/fnndsc/oxidicom:v1.0.1
     container_name: oxidicom
     environment:
       CHRIS_URL: http://chris:8000/api/v1/
