@@ -135,7 +135,7 @@ services:
     user: "1001"
 
   pman:
-    image: ghcr.io/fnndsc/pman:6.1.0
+    image: ghcr.io/fnndsc/pman:6.2.0
     container_name: pman
     environment:
       CONTAINER_ENV: docker

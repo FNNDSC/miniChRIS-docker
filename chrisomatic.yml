@@ -25,3 +25,4 @@ cube:
       version: 2.1.0
     - name: pl-unstack-folders
       version: 1.0.0
+    - name: dbg-nvidia-smi
