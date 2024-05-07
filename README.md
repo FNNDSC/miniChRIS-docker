@@ -15,8 +15,6 @@ of the _ChRIS_ system including:
 - _ChRIS_ frontend ([ChRIS_ui](https://github.com/FNNDSC/ChRIS_ui))
 - compute controller ([pfcon](https://github.com/FNNDSC/pfcon))
 - process manager ([pman](https://github.com/FNNDSC/pman))
-- _ChRIS_ store backend ([ChRIS_store](https://github.com/FNNDSC/ChRIS_store))
-- _ChRIS_ store frontend ([ChRIS_store_ui](https://github.com/FNNDSC/ChRIS_store_ui))
 - chrisomatic ([chrisomatic](https://github.com/FNNDSC/chrisomatic))
 - Orthanc server https://www.orthanc-server.com/
 - pfdcm ([pfdcm](https://github.com/FNNDSC/pfdcm))
@@ -58,7 +56,6 @@ website        | URL
 ---------------|-----
 ChRIS_ui       | http://localhost:8020/
 ChRIS admin    | http://localhost:8000/chris-admin/
-ChRIS_store_ui | http://localhost:8021/
 Orthanc        | http://localhost:8042/
 
 ### Default Logins
@@ -66,7 +63,6 @@ Orthanc        | http://localhost:8042/
 website      | username | password
 -------------|----------|----------
 ChRIS        | chris    | chris1234
-ChRIS Store  | chris    | chris1234
 Orthanc      | orthanc  | orthanc
 
 ### Start
