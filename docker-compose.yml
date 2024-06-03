@@ -197,30 +197,25 @@ services:
       - pacs
 
   oxidicom:
-    image: ghcr.io/fnndsc/oxidicom:1.0.0-b.1
-    container_name: oxidicom
+    image: ghcr.io/fnndsc/oxidicom:2.0.0
     environment:
-      CHRIS_URL: http://chris:8000/api/v1/
-      CHRIS_USERNAME: chris
-      CHRIS_PASSWORD: chris1234
-      CHRIS_FILES_ROOT: /data
-      CHRIS_SCP_AET: ChRIS
-      CHRIS_PACS_ADDRESS: orthanc:4242
-      PORT: 11111
-      CHRIS_LISTENER_THREADS: 8
-      CHRIS_PUSHER_THREADS: 2
-      CHRIS_VERBOSE: "yes"
-      # OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4318"
-      # OTEL_RESOURCE_ATTRIBUTES: service.name=oxidicom-test
+      OXIDICOM_DB_CONNECTION: postgresql://chris:chris1234@db:5432/chris
+      OXIDICOM_FILES_ROOT: /data
+      OXIDICOM_SCP_AET: ChRIS
+      OXIDICOM_PACS_ADDRESS: '{MINICHRISORTHANC="orthanc:4242"}'
+      OXIDICOM_SCP_PROMISCUOUS: "true"
+      OXIDICOM_DB_BATCH_SIZE: 20
+      OXIDICOM_LISTENER_THREADS: 32
+      OXIDICOM_VERBOSE: "true"
+      OXIDICOM_LISTENER_PORT: 11111
     volumes:
       - chris_files:/data:rw
-    ports:
-      - "11111:11111"
     networks:
       - pacs
       - local
     profiles:
       - pacs
+    user: 1001:0
   pfbridge:
     image: docker.io/fnndsc/pfbridge:3.7.2
     container_name: pfbridge

@@ -1,7 +1,12 @@
-#!/bin/bash -ex
+#!/usr/bin/env bash
 # Purpose: wipe pfdcm and CUBE pacsfiles
 
-docker compose down --timeout 1 pfdcm pfdcm-nonroot-user-volume-fix -v
+# change to directory where this script lives
+cd "$(dirname "$(readlink -f "$0")")"
+
+set -ex
+
+docker compose exec pfdcm sh -c 'rm -rf /home/dicom/log/seriesData/*'
 
 docker compose exec chris pip install tqdm
 docker compose exec chris python manage.py shell -c '
@@ -20,4 +25,3 @@ with tqdm(storage.ls("SERVICES/PACS")) as pbar:
         _ = storage.delete_obj(f)
 
 '
-docker compose up -d
