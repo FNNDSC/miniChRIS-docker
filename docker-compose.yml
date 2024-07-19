@@ -2,94 +2,269 @@
 #
 # warning: /var/run/docker.sock is mounted into some services (notably pman)
 
-version: '3.9'
-
 services:
   chrisomatic:
-    image: ghcr.io/fnndsc/chrisomatic:0.4.1
-    networks:
-      - local
+    image: ghcr.io/fnndsc/chrisomatic:0.7.0
+    profiles:
+      - tools
     volumes:
       - "./chrisomatic.yml:/chrisomatic.yml:ro"
       - "/var/run/docker.sock:/var/run/docker.sock:rw"
     userns_mode: host
     depends_on:
       - chris
-      - chris_store
-    profiles:
-      - tools
+    networks:
+    - local
+
+  db_migrate:
+    image: ghcr.io/fnndsc/cube:5.0.0
+    command: python manage.py migrate --noinput
+    env_file: secrets.env
+    volumes:
+      - chris_files:/data:rw
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - local
+  
   chris:
     container_name: chris
-    image: ghcr.io/fnndsc/cube:4.0.0.pre11
+    image: ghcr.io/fnndsc/cube:5.0.0
     ports:
       - "8000:8000"
+    volumes:
+      - chris_files:/data:rw
     depends_on:
-      - chris_db
-      - swift
-      - queue
+      db_migrate:
+        condition: service_completed_successfully
+      queue:
+        condition: service_started
     networks:
       - local
     env_file: secrets.env
-    environment:
-      DJANGO_DB_MIGRATE: "on"
-      DJANGO_COLLECTSTATIC: "on"
     labels:
-      org.chrisproject.role: "ChRIS ultron backEnd"
+      org.chrisproject.role: "ChRIS_ultron_backEnd"
       org.chrisproject.miniChRIS: "miniChRIS"
   worker:
-    image: ghcr.io/fnndsc/cube:4.0.0.pre11
+    image: ghcr.io/fnndsc/cube:5.0.0
     command: celery -A core worker -c 4 -l info -Q main1,main2
+    volumes:
+      - chris_files:/data:rw
     env_file: secrets.env
-    environment:
-      DJANGO_DB_MIGRATE: "off"
-      DJANGO_COLLECTSTATIC: "off"
     depends_on:
-      - chris_db
-      - swift
-      - queue
-      - pfcon
-    restart: on-failure
+      db_migrate:
+        condition: service_completed_successfully
+      queue:
+        condition: service_started
+      pfcon:
+        condition: service_started
+    restart: unless-stopped
     networks:
       - local
   worker_periodic:
-    image: ghcr.io/fnndsc/cube:4.0.0.pre11
-    environment:
-      DJANGO_DB_MIGRATE: "off"
-      DJANGO_COLLECTSTATIC: "off"
+    image: ghcr.io/fnndsc/cube:5.0.0
     command: celery -A core worker -c 2 -l info -Q periodic
+    volumes:
+      - chris_files:/data:rw
     env_file: secrets.env
     depends_on:
-      - chris_db
-      - queue
-    restart: on-failure
+      db_migrate:
+        condition: service_completed_successfully
+      queue:
+        condition: service_started
+    restart: unless-stopped
     networks:
       - local
   scheduler:
-    image: ghcr.io/fnndsc/cube:4.0.0.pre11
+    image: ghcr.io/fnndsc/cube:5.0.0
     command: celery -A core beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
-    env_file: secrets.env
-    environment:
-      DJANGO_DB_MIGRATE: "off"
-      DJANGO_COLLECTSTATIC: "off"
-    depends_on:
-      - chris_db
-      - queue
-    restart: on-failure
-    networks:
-      - local
-  chris_db:
-    image: docker.io/library/postgres:13
-    env_file: secrets.env
-    restart: on-failure
     volumes:
-      - chris_db_data:/var/lib/postgresql
+      - chris_files:/data:rw
+    env_file: secrets.env
+    depends_on:
+      db_migrate:
+        condition: service_completed_successfully
+      queue:
+        condition: service_started
+    restart: unless-stopped
     networks:
       - local
+  db:
+    image: docker.io/library/postgres:16
+    env_file: secrets.env
+    restart: unless-stopped
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - local
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+      interval: 2s
+      timeout: 4s
+      retries: 3
+      start_period: 60s
   queue:
     image: docker.io/library/rabbitmq:3
     restart: on-failure
     networks:
       - local
+
+  pfcon:
+    container_name: pfcon
+    image: ghcr.io/fnndsc/pfcon:5.2.2
+    environment:
+      COMPUTE_SERVICE_URL: http://pman:5010/api/v1/
+      SECRET_KEY: secret
+      PFCON_USER: pfcon
+      PFCON_PASSWORD: pfcon1234
+      PFCON_INNETWORK: "true"
+      STORAGE_ENV: filesystem
+      STOREBASE_MOUNT: /var/local/storeBase
+    ports:
+      - "5005:5005"
+    volumes:
+      - chris_files:/var/local/storeBase
+    networks:
+      local:
+        aliases:
+          - pfcon.host
+      remote:
+    labels:
+      org.chrisproject.role: "pfcon"
+    user: "1001"
+
+  pman:
+    image: ghcr.io/fnndsc/pman:6.2.0
+    container_name: pman
+    environment:
+      CONTAINER_ENV: docker
+      CONTAINER_USER: "1001:"
+      ENABLE_HOME_WORKAROUND: "yes"
+      JOB_LABELS: "org.chrisproject.miniChRIS=plugininstance"
+      SECRET_KEY: secret
+      REMOVE_JOBS: "yes"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:rw
+    depends_on:
+      - pfcon
+    ports:
+      - "5010:5010"
+    networks:
+      remote:
+    userns_mode: "host"
+    labels:
+      org.chrisproject.role: "pman"
+
+  chris_ui:
+    image: ghcr.io/fnndsc/chris_ui:20240507.446-767958ca
+    command: sirv --host --single
+    environment:
+      REACT_APP_CHRIS_UI_URL: http://localhost:8000/api/v1/
+      REACT_APP_PFDCM_URL: http://localhost:4005/
+    ports:
+      - "8020:3000"
+
+  orthanc:
+    image: docker.io/jodogne/orthanc-plugins:1.12.3
+    volumes:
+      - ./orthanc.json:/etc/orthanc/orthanc.json:ro
+      - orthanc:/var/lib/orthanc/db
+    ports:
+      - "4242:4242"
+      - "8042:8042"
+    networks:
+      - pacs
+    profiles:
+      - pacs
+      - orthanc
+
+  pfdcm:
+    image: ghcr.io/fnndsc/pfdcm:3.1.2
+    container_name: pfdcm
+    environment:
+      MAX_WORKERS: 1
+    volumes:
+      - pfdcm:/home/dicom:rw
+      - ./pfdcm-services:/home/dicom/services:ro
+      - chris_files:/chris_files:rw
+    ports:
+      - "4005:4005"
+    networks:
+      - pacs
+    user: "1001"
+    profiles:
+      - pacs
+
+  oxidicom:
+    image: ghcr.io/fnndsc/oxidicom:2.0.0
+    environment:
+      OXIDICOM_DB_CONNECTION: postgresql://chris:chris1234@db:5432/chris
+      OXIDICOM_FILES_ROOT: /data
+      OXIDICOM_SCP_AET: ChRIS
+      OXIDICOM_PACS_ADDRESS: '{MINICHRISORTHANC="orthanc:4242"}'
+      OXIDICOM_SCP_PROMISCUOUS: "true"
+      OXIDICOM_DB_BATCH_SIZE: 20
+      OXIDICOM_LISTENER_THREADS: 32
+      OXIDICOM_VERBOSE: "true"
+      OXIDICOM_LISTENER_PORT: 11111
+    volumes:
+      - chris_files:/data:rw
+    networks:
+      - pacs
+      - local
+    profiles:
+      - pacs
+    user: 1001:0
+  pfbridge:
+    image: docker.io/fnndsc/pfbridge:3.7.2
+    container_name: pfbridge
+    environment:
+      MAX_WORKERS: 1
+      PFLINK_USERNAME: pflink
+      PFLINK_PASSWORD: pflink1234
+      NAME: PFDCMLOCAL
+      PACSNAME: orthanc
+      CUBEANDSWIFTKEY: local
+    ports:
+      - "33333:33333"
+    networks:
+      local:
+      pflink:
+    profiles:
+      - pflink
+
+  pflink:
+    image: docker.io/fnndsc/pflink:settings-39e91ed
+    container_name: pflink
+    restart: unless-stopped
+    environment:
+      PFDCM_NAME: "NOTPFDCMLOCAL"  # work around for hard-coded edge case
+      PFLINK_MONGODB: "mongodb://pflink-db:27017"
+      PFLINK_PFDCM: "http://pfdcm:4005"
+      PFLINK_PORT: "4010"
+    ports:
+      - "4010:4010"
+    networks:
+      local:
+      pflink:
+    depends_on:
+      - pflink-db
+    profiles:
+      - pflink
+
+  pflink-db:
+    image: mongo
+    environment:
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - pflink-db-data:/data/db
+    restart: unless-stopped
+    networks:
+      pflink:
+    profiles:
+      - pflink
 
   graphql-engine:
     image: hasura/graphql-engine:v2.27.0
@@ -136,178 +311,38 @@ services:
     networks:
       - local
 
-  chris_store:
-    container_name: chris_store
-    image: ghcr.io/fnndsc/chris_store:2.2.0
-    environment:
-      - DJANGO_DB_MIGRATE=on
-      - DJANGO_SETTINGS_MODULE=config.settings.production
-      - DJANGO_ALLOWED_HOSTS=*
-      - DJANGO_SECRET_KEY=secret
-      - DJANGO_CORS_ALLOW_ALL_ORIGINS=true
-      - DJANGO_CORS_ALLOWED_ORIGINS=https://babymri.org
-      - DJANGO_SECURE_PROXY_SSL_HEADER=
-      - DJANGO_USE_X_FORWARDED_HOST=false
-      - DATABASE_HOST=chris_store_db
-      - DATABASE_PORT=5432
-      - POSTGRES_DB=chris_store
-      - POSTGRES_USER=chris
-      - POSTGRES_PASSWORD=chirs1234
-    ports:
-      - "8010:8010"
-    depends_on:
-      - chris_store_db
-    networks:
-      local:
-        aliases:
-          - chrisstore.local
-  chris_store_db:
-    image: docker.io/library/postgres:13
-    environment:
-      - POSTGRES_DB=chris_store
-      - POSTGRES_USER=chris
-      - POSTGRES_PASSWORD=chirs1234
-    volumes:
-      - chris_store_db_data:/var/lib/postgresql
-    networks:
-      - local
-    labels:
-      name: "ChRIS_store MySQL Database"
-
-  swift:
-    image: docker.io/fnndsc/docker-swift-onlyone:latest
-    init: true
-    environment:
-      - SWIFT_USERNAME=chris:chris1234
-      - SWIFT_KEY=testing
-    ports:
-      - "8080:8080"
-    volumes:
-      - swift_storage:/srv
-    networks:
-      - local
-
-  pfcon:
-    container_name: pfcon
-    image: ghcr.io/fnndsc/pfcon:5.0.0
-    environment:
-      COMPUTE_SERVICE_URL: http://pman:5010/api/v1/
-      SECRET_KEY: secret
-      PFCON_USER: pfcon
-      PFCON_PASSWORD: pfcon1234
-    ports:
-      - "5005:5005"
-    volumes:
-      - remote:/var/local/storeBase
-    networks:
-      local:
-        aliases:
-          - pfcon.host
-      remote:
-    labels:
-      org.chrisproject.role: "pfcon"
-    user: "10100"
-
-  pman:
-    image: ghcr.io/fnndsc/pman:5.0.0.a5
-    container_name: pman
-    environment:
-      CONTAINER_ENV: docker
-      CONTAINER_USER: "10100:"
-      ENABLE_HOME_WORKAROUND: "yes"
-      JOB_LABELS: "org.chrisproject.miniChRIS=plugininstance"
-      SECRET_KEY: secret
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:rw
-    depends_on:
-      - pfcon
-    ports:
-      - "5010:5010"
-    networks:
-      - remote
-    userns_mode: "host"
-    labels:
-      org.chrisproject.role: "pman"
-
-  chris_ui:
-    image: ghcr.io/fnndsc/chris_ui:20230511.247-3c1675ff
-    command: sirv --host --single
-    environment:
-      REACT_APP_CHRIS_UI_URL: http://localhost:8000/api/v1/
-      REACT_APP_PFDCM_URL: http://localhost:4005/
-    ports:
-      - "8020:3000"
-  chris_store_ui:
-    image: ghcr.io/fnndsc/chris_store_ui:0.2.1
-    command: sirv --host --single
-    environment:
-      REACT_APP_STORE_URL: http://localhost:8010/api/v1/
-    ports:
-      - "8021:3000"
-
-  orthanc:
-    image: docker.io/jodogne/orthanc-plugins:1.11.0
-    volumes:
-      - ./orthanc.json:/etc/orthanc/orthanc.json:ro
-      - orthanc:/var/lib/orthanc/db
-    ports:
-      - "4242:4242"
-      - "8042:8042"
-    networks:
-      - pacs
-
-  pfdcm:
-    image: ghcr.io/fnndsc/pfdcm:3.0.12
-    container_name: pfdcm
-    volumes:
-      - pfdcm:/home/dicom:rw
-      - ./pfdcm-services:/home/dicom/services:ro
-    ports:
-      - "4005:4005"
-    networks:
-      - pacs
-      - local
-    user: "10100"
-
-  pfdcm-listener:
-    image: ghcr.io/fnndsc/pfdcm:3.0.12
-    command: sh -c "mkdir -vp /tmp/data && storescp --fork -od /tmp/data -pm -sp -xcr '/usr/local/bin/px-repack --xcrdir \"#p\" --xcrfile \"#f\" --verbosity 0 --logdir /home/dicom/log --datadir /home/dicom/data --cleanup' 11113"
-    volumes:
-      - pfdcm:/home/dicom:rw
-    networks:
-      - pacs
-    user: "10100"
-    restart: on-failure
-    depends_on:
-      - pfdcm-nonroot-user-volume-fix
-
   # Non-root container user workarounds
+
+  cube-nonroot-user-volume-fix:
+    image: docker.io/library/alpine:latest
+    volumes:
+      - chris_files:/data:rw
+    user: root
+    command: chmod g+rwx /data
+    restart: "no"
 
   pfdcm-nonroot-user-volume-fix:
     image: docker.io/library/alpine:latest
     volumes:
       - pfdcm:/home/dicom:rw
     user: root
-    command: chown 10100 /home/dicom
-    restart: "no"
-
-  pfcon-nonroot-user-volume-fix:
-    image: docker.io/library/alpine:latest
-    volumes:
-      - remote:/var/local/storeBase:rw
-    user: root
-    command: chown 10100 /var/local/storeBase
+    command: chown 1001 /home/dicom
     restart: "no"
 
 networks:
   local:
+    name: minichris-local
   remote:
   pacs:
+  monitoring:
+  pflink:
 
 volumes:
-  chris_db_data:
-  chris_store_db_data:
-  swift_storage:
-  remote:
+  chris_files:
+    name: minichris-files
+  db_data:
   orthanc:
   pfdcm:
+  grafana_data:
+  openobserve_data:
+  pflink-db-data:
