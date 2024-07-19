@@ -4,7 +4,7 @@
 
 services:
   chrisomatic:
-    image: ghcr.io/fnndsc/chrisomatic:0.7.0
+    image: ghcr.io/fnndsc/chrisomatic:0.8.3
     profiles:
       - tools
     volumes:
@@ -14,7 +14,7 @@ services:
     depends_on:
       - chris
     networks:
-    - local
+      - local
 
   db_migrate:
     image: ghcr.io/fnndsc/cube:5.0.0
