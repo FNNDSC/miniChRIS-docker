@@ -267,14 +267,13 @@ services:
       - pflink
 
   graphql-engine:
-    image: hasura/graphql-engine:v2.27.0
+    image: docker.io/hasura/graphql-engine:v2.40.0
     ports:
       - "8090:8080"
-    restart: always
+    restart: unless-stopped
     environment:
       ## postgres database to store Hasura metadata
-      ## TODO maybe we should use a separate one...
-      HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://chris:chris1234@chris_db:5432/chris
+      HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://hasura:hasura1234@hasura-db:5432/hasura
       ## this env var can be used to add the above postgres database to Hasura as a data source. this can be removed/updated based on your needs
       PG_DATABASE_URL: postgres://chris:chris1234@chris_db:5432/chris
       ## enable the console served by server
@@ -288,13 +287,17 @@ services:
       # HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
       HASURA_GRAPHQL_METADATA_DEFAULTS: '{"backend_configs":{"dataconnector":{"athena":{"uri":"http://data-connector-agent:8081/api/v1/athena"},"mariadb":{"uri":"http://data-connector-agent:8081/api/v1/mariadb"},"mysql8":{"uri":"http://data-connector-agent:8081/api/v1/mysql"},"oracle":{"uri":"http://data-connector-agent:8081/api/v1/oracle"},"snowflake":{"uri":"http://data-connector-agent:8081/api/v1/snowflake"}}}}'
     depends_on:
+      hasura-db:
+        condition: service_healthy
       data-connector-agent:
         condition: service_healthy
     networks:
-      - local
+      local:
+    profiles:
+      - hasura
   data-connector-agent:
-    image: hasura/graphql-data-connector:v2.27.0
-    restart: always
+    image: hasura/graphql-data-connector:v2.40.0
+    restart: unless-stopped
     ports:
       - 8081:8081
     environment:
@@ -309,7 +312,28 @@ services:
       retries: 5
       start_period: 5s
     networks:
-      - local
+      local:
+    profiles:
+      - hasura
+  hasura-db:
+    image: docker.io/library/postgres:15
+    restart: unless-stopped
+    volumes:
+      - hasura-db-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: hasura
+      POSTGRES_PASSWORD: hasura1234
+      POSTGRES_DB: hasura
+    networks:
+      local:
+    profiles:
+      - hasura
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+      interval: 2s
+      timeout: 4s
+      retries: 3
+      start_period: 60s
 
   # Non-root container user workarounds
 
@@ -346,3 +370,4 @@ volumes:
   grafana_data:
   openobserve_data:
   pflink-db-data:
+  hasura-db-data:
