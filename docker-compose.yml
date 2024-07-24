@@ -334,6 +334,17 @@ services:
       timeout: 4s
       retries: 3
       start_period: 60s
+  hasura-cli:
+    image: ghcr.io/fnndsc/hasura-cli
+    command: hasura metadata apply
+    restart: never
+    volumes:
+      - ./hasura:/hasura:ro
+    working_dir: /hasura
+    networks:
+      local:
+    profiles:
+      - hasura-cli  # TODO start up automatically after hasura is up
 
   # Non-root container user workarounds
 

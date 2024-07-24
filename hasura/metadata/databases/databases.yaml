@@ -1,0 +1,19 @@
+- name: chris
+  kind: postgres
+  configuration:
+    # https://hasura.io/docs/latest/api-reference/syntax-defs/#pgsourceconnectioninfo
+    connection_info:
+      database_url:
+        # https://hasura.io/docs/latest/api-reference/syntax-defs/#pgconnectionparameters
+        connection_parameters:
+          database: "chris"
+          host: "db"
+          port: 5432
+          username: "chris"
+          password: "chris1234"
+      # pool_settings:
+      #   idle_timeout: 180
+      #   max_connections: 50
+      #   retries: 1
+  tables: []
+  functions: []
