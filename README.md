@@ -210,3 +210,10 @@ jobs:
 `./minichris.sh` takes 30-60 seconds on a decent laptop (quad-core, 16 GB, SSD)
 and takes 2-3 minutes in [Github Actions' Ubuntu VMs](https://github.com/FNNDSC/miniChRIS/actions).
 
+## Development
+
+You can use hasura-cli on the metal like this:
+
+```shell
+env HASURA_GRAPHQL_ENDPOINT=http://localhost:8090 hasura --help
+```

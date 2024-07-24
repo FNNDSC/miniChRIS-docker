@@ -1,0 +1,11 @@
+table:
+  name: pacsfiles_pacs
+  schema: public
+array_relationships:
+  - name: pacsfiles_pacsfiles
+    using:
+      foreign_key_constraint_on:
+        column: pacs_id
+        table:
+          name: pacsfiles_pacsfile
+          schema: public
