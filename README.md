@@ -18,6 +18,8 @@ of the _ChRIS_ system including:
 - chrisomatic ([chrisomatic](https://github.com/FNNDSC/chrisomatic))
 - Orthanc server https://www.orthanc-server.com/
 - pfdcm ([pfdcm](https://github.com/FNNDSC/pfdcm))
+- oxidicom ([oxidicom](https://github.com/FNNDSC/oxidicom))
+- hasura ([Hasura](https://hasura.io))
 
 Image tags are pinned to stable versions, so _miniChRIS_ might be
 out-of-date with development versions of _ChRIS_ components.
@@ -42,10 +44,15 @@ cd miniChRIS-docker
 ./minichris.sh
 ```
 
-Start up optional services with:
+By default, only some of _ChRIS_ is enabled. Optional components can be started afterwards using
+[Docker Compose Profiles](https://docs.docker.com/compose/profiles/). e.g.
 
-```bash
-docker compose --profile pacs,pflink up -d
+```shell
+# start PACS query and retrieve services
+docker compose --profile pacs up -d
+
+# start the Hasura GraphQL engine and database event triggers
+docker compose --profile hasura up -d
 ```
 
 ## Usage
@@ -186,45 +193,20 @@ jobs:
 - [FNNDSC/cookicutter-chrisapp/.github/workflows/test.yml](https://github.com/FNNDSC/cookiecutter-chrisapp/blob/16db74860e8201f3d201183961eadc39116ce8a7/.github/workflows/test.yml#L31) uses _mihiChRIS_ for end-to-end testing.
 - [FNNDSC/cni-store-proxy/package.json](https://github.com/FNNDSC/cni-store-proxy/blob/master/package.json) uses _miniChRIS_ as a git submodule for a local dev environment.
 
+# About _miniChRIS_
 
-## About
-
-_miniChRIS_ provides a no-nonsense collection of scripts which use
-[Docker Compose](https://docs.docker.com/compose/)
-to run a minimal and complete _ChRIS_ system.
-
-### v.s. `make.sh`
-
-The conventional way to run a _ChRIS_ system is
-[ChRIS_ultron_backEnd/make.sh](https://github.com/FNNDSC/ChRIS_ultron_backEnd/blob/master/make.sh).
-
-_miniChRIS_ does not replace `make.sh`. However, for most users
-looking for how to run _ChRIS_ and have it "just work," _miniChRIS_
-is right for you.
-
-- _miniChRIS_ has 109 lines of shell code --- *ChRIS_ultron_backEnd* has 3,200
-- _miniChRIS_ does not create files on host outside of named docker volumes
-- `make.sh` runs arbitrary `chmod 755` and `chmod -R 777` on the host filesystem.
-- _miniChRIS_ is fully containerized.
-- `make.sh` has unlisted dependencies, does not work cross-platform (e.g. default `bash` on Mac not supported, no support for Windows)
-- `minichris.sh` does not have any command-line arguments. Usage: `./minichris.sh`
-- The recommended way to run `./make.sh` is: `docker swarm leave --force && docker swarm init --advertise-addr 127.0.0.1 && ./unmake.sh && sudo rm -fr CHRIS_REMOTE_FS && rm -fr CHRIS_REMOTE_FS && ./make.sh -U -I -i`
-- `make.sh` runs backend automatic tests.
-- `minichris.sh` provides a complete `docker-compose.yml`
-- `make.sh` uses `docker stack deploy`; `docker-compose_dev.yml` depends on `.env` and other variables set by `make.sh`
-
-#### Goals
+### Goals
 
 - fast and minimal
 - practical for E2E testing
 
-##### Non-Goals
+### Non-Goals
 
 - production use
 - back-end development environment
 
-#### Performance
+### Performance
 
 `./minichris.sh` takes 30-60 seconds on a decent laptop (quad-core, 16 GB, SSD)
 and takes 2-3 minutes in [Github Actions' Ubuntu VMs](https://github.com/FNNDSC/miniChRIS/actions).
-It is strongly recommended that you use an SSD!
+
