@@ -295,6 +295,12 @@ services:
       local:
     profiles:
       - hasura
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/healthz?strict=false"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+      start_period: 5s
   data-connector-agent:
     image: hasura/graphql-data-connector:v2.40.0
     restart: unless-stopped
@@ -335,16 +341,19 @@ services:
       retries: 3
       start_period: 60s
   hasura-cli:
-    image: ghcr.io/fnndsc/hasura-cli
+    image: ghcr.io/fnndsc/hasura-cli:2.41.0
     command: hasura metadata apply
-    restart: never
+    restart: "no"
     volumes:
       - ./hasura:/hasura:ro
     working_dir: /hasura
     networks:
       local:
     profiles:
-      - hasura-cli  # TODO start up automatically after hasura is up
+      - hasura
+    depends_on:
+      graphql-engine:
+        condition: service_healthy
 
   # Non-root container user workarounds
 
