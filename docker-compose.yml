@@ -208,6 +208,8 @@ services:
       OXIDICOM_LISTENER_THREADS: 32
       OXIDICOM_VERBOSE: "true"
       OXIDICOM_LISTENER_PORT: 11111
+    ports:
+      - "11111:11111"
     volumes:
       - chris_files:/data:rw
     networks:
