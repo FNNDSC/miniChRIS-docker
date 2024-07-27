@@ -187,6 +187,26 @@ jobs:
           ghcr.io/fnndsc/pl-re-sub:1.1.1
 ```
 
+### Optimization
+
+Suppose you want to run a test which needs the _CUBE_ server, database, and oxidicom, but you don't need to be able to run plugins.
+You can omit the workers and pfcon from startup, which can improve startup speeds and reduce memory usage.
+
+```yaml
+on: [push]
+
+jobs:
+  hello_world_job:
+    runs-on: ubuntu-latest
+    name: Do nothing useful
+    steps:
+    - name: setup CUBE
+      id: cube
+      uses: FNNDSC/miniChRIS-docker@master
+      with:
+        services: chris oxidicom
+```
+
 ### Examples
 
 - [FNNDSC/ChRIS_ui/.github/workflows/tests.yml](https://github.com/FNNDSC/ChRIS_ui/blob/0b7e4c5c5ae9dec9c44ea68db85373d2df403b64/.github/workflows/tests.yml#L21-L27) uses _miniChRIS_ for testing using [Cypress](https://cypress.io)

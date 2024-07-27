@@ -27,7 +27,7 @@ services:
         condition: service_healthy
     networks:
       - local
-  
+
   chris:
     container_name: chris
     image: ghcr.io/fnndsc/cube:5.0.0
