@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # change to directory where this script lives
 cd "$(dirname "$(readlink -f "$0")")"

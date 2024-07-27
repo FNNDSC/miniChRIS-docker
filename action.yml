@@ -1,9 +1,13 @@
-name: "ChRIS Backend"
-description: "Bring up ephemeral instances of CUBE, pfcon, pman, pfioh, swift, and ChRIS_store"
+name: "miniChRIS in Docker"
+description: "Bring up a local ChRIS backend."
 author: "FNNDSC"
 inputs:
   plugins:
     description: "List of plugins to register, separated by whitespace."
+    required: false
+    default: ''
+  services:
+    description: "Manually specify list of services to start, separated by whitespace. Setting this option can save time and memory."
     required: false
     default: ''
 

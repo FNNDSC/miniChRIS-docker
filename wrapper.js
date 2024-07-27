@@ -31,12 +31,25 @@ function main() {
     setIsPost();
   }
 
-  const script = path.join(__dirname, IS_POST ? 'unmake.sh' : 'minichris.sh');
-  execFileSync(script, { stdio: 'inherit' });
+  const scriptName = IS_POST ? 'unmake.sh' : 'minichris.sh';
+  runScriptHere(scriptName, getInputServices());
+}
+
+function runScriptHere(fileName, args) {
+  const script = path.join(__dirname, fileName);
+  execFileSync(script, args, { stdio: 'inherit' });
 }
 
 function setIsPost() {
   fs.appendFileSync(process.env['GITHUB_STATE'], 'isPost=true\n');
+}
+
+function getInputServices() {
+  const inputServices = process.env['INPUT_SERVICES'];
+  if (inputServices) {
+    return inputServices.split(/\s+/);
+  }
+  return [];
 }
 
 function test() {
