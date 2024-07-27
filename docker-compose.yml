@@ -40,6 +40,8 @@ services:
         condition: service_completed_successfully
       queue:
         condition: service_started
+      cube-nonroot-user-volume-fix:
+        condition: service_completed_successfully
     networks:
       - local
     env_file: secrets.env
@@ -59,6 +61,8 @@ services:
         condition: service_started
       pfcon:
         condition: service_started
+      cube-nonroot-user-volume-fix:
+        condition: service_completed_successfully
     restart: unless-stopped
     networks:
       - local
@@ -73,6 +77,8 @@ services:
         condition: service_completed_successfully
       queue:
         condition: service_started
+      cube-nonroot-user-volume-fix:
+        condition: service_completed_successfully
     restart: unless-stopped
     networks:
       - local
@@ -87,6 +93,8 @@ services:
         condition: service_completed_successfully
       queue:
         condition: service_started
+      cube-nonroot-user-volume-fix:
+        condition: service_completed_successfully
     restart: unless-stopped
     networks:
       - local
@@ -133,6 +141,9 @@ services:
     labels:
       org.chrisproject.role: "pfcon"
     user: "1001"
+    depends_on:
+      cube-nonroot-user-volume-fix:
+        condition: service_completed_successfully
 
   pman:
     image: ghcr.io/fnndsc/pman:6.2.0
@@ -147,6 +158,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:rw
     depends_on:
+      # see https://github.com/FNNDSC/pman/blob/v6.2.0/README.md#how-storage-works
       - pfcon
     ports:
       - "5010:5010"
@@ -195,6 +207,9 @@ services:
     user: "1001"
     profiles:
       - pacs
+    depends_on:
+      pfdcm-nonroot-user-volume-fix:
+        condition: service_completed_successfully
 
   oxidicom:
     image: ghcr.io/fnndsc/oxidicom:2.0.0
@@ -218,6 +233,9 @@ services:
     profiles:
       - pacs
     user: 1001:0
+    depends_on:
+      cube-nonroot-user-volume-fix:
+        condition: service_completed_successfully
   pfbridge:
     image: docker.io/fnndsc/pfbridge:3.7.2
     container_name: pfbridge
