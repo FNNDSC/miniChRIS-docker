@@ -4,7 +4,7 @@
 
 services:
   chrisomatic:
-    image: ghcr.io/fnndsc/chrisomatic:0.8.3
+    image: ghcr.io/fnndsc/chrisomatic:1.0.0
     profiles:
       - tools
     volumes:
