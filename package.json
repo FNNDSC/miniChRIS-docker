@@ -7,10 +7,10 @@
   "main": "wrapper.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/FNNDSC/miniChRIS.git"
+    "url": "git+https://github.com/FNNDSC/miniChRIS-docker.git"
   },
-  "homepage": "https://github.com/FNNDSC/miniChRIS#readme",
+  "homepage": "https://chrisproject.org/",
   "bugs": {
-    "url": "https://github.com/FNNDSC/miniChRIS/issues"
+    "url": "https://github.com/FNNDSC/miniChRIS-docker/issues"
   }
 }
