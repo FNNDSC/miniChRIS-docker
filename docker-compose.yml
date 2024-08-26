@@ -17,7 +17,7 @@ services:
       - local
 
   db_migrate:
-    image: ghcr.io/fnndsc/cube:5.0.0
+    image: ghcr.io/fnndsc/cube:6.1.0
     command: python manage.py migrate --noinput
     env_file: secrets.env
     volumes:
@@ -30,7 +30,7 @@ services:
 
   chris:
     container_name: chris
-    image: ghcr.io/fnndsc/cube:5.0.0
+    image: ghcr.io/fnndsc/cube:6.1.0
     ports:
       - "8000:8000"
     volumes:
@@ -49,7 +49,7 @@ services:
       org.chrisproject.role: "ChRIS_ultron_backEnd"
       org.chrisproject.miniChRIS: "miniChRIS"
   worker:
-    image: ghcr.io/fnndsc/cube:5.0.0
+    image: ghcr.io/fnndsc/cube:6.1.0
     command: celery -A core worker -c 4 -l info -Q main1,main2
     volumes:
       - chris_files:/data:rw
@@ -67,7 +67,7 @@ services:
     networks:
       - local
   worker_periodic:
-    image: ghcr.io/fnndsc/cube:5.0.0
+    image: ghcr.io/fnndsc/cube:6.1.0
     command: celery -A core worker -c 2 -l info -Q periodic
     volumes:
       - chris_files:/data:rw
@@ -83,7 +83,7 @@ services:
     networks:
       - local
   scheduler:
-    image: ghcr.io/fnndsc/cube:5.0.0
+    image: ghcr.io/fnndsc/cube:6.1.0
     command: celery -A core beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
     volumes:
       - chris_files:/data:rw
