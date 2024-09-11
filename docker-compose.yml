@@ -17,7 +17,7 @@ services:
       - local
 
   db_migrate:
-    image: ghcr.io/fnndsc/cube:6.1.0
+    image: ghcr.io/fnndsc/cube:6.3.0-beta.1
     command: python manage.py migrate --noinput
     env_file: secrets.env
     volumes:
@@ -30,7 +30,7 @@ services:
 
   chris:
     container_name: chris
-    image: ghcr.io/fnndsc/cube:6.1.0
+    image: ghcr.io/fnndsc/cube:6.3.0-beta.1
     ports:
       - "8000:8000"
     volumes:
@@ -39,7 +39,7 @@ services:
       db_migrate:
         condition: service_completed_successfully
       queue:
-        condition: service_started
+        condition: service_healthy
       cube-nonroot-user-volume-fix:
         condition: service_completed_successfully
     networks:
@@ -49,7 +49,7 @@ services:
       org.chrisproject.role: "ChRIS_ultron_backEnd"
       org.chrisproject.miniChRIS: "miniChRIS"
   worker:
-    image: ghcr.io/fnndsc/cube:6.1.0
+    image: ghcr.io/fnndsc/cube:6.3.0-beta.1
     command: celery -A core worker -c 4 -l info -Q main1,main2
     volumes:
       - chris_files:/data:rw
@@ -58,7 +58,7 @@ services:
       db_migrate:
         condition: service_completed_successfully
       queue:
-        condition: service_started
+        condition: service_healthy
       pfcon:
         condition: service_started
       cube-nonroot-user-volume-fix:
@@ -67,7 +67,7 @@ services:
     networks:
       - local
   worker_periodic:
-    image: ghcr.io/fnndsc/cube:6.1.0
+    image: ghcr.io/fnndsc/cube:6.3.0-beta.1
     command: celery -A core worker -c 2 -l info -Q periodic
     volumes:
       - chris_files:/data:rw
@@ -76,14 +76,14 @@ services:
       db_migrate:
         condition: service_completed_successfully
       queue:
-        condition: service_started
+        condition: service_healthy
       cube-nonroot-user-volume-fix:
         condition: service_completed_successfully
     restart: unless-stopped
     networks:
       - local
   scheduler:
-    image: ghcr.io/fnndsc/cube:6.1.0
+    image: ghcr.io/fnndsc/cube:6.3.0-beta.1
     command: celery -A core beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
     volumes:
       - chris_files:/data:rw
@@ -92,7 +92,7 @@ services:
       db_migrate:
         condition: service_completed_successfully
       queue:
-        condition: service_started
+        condition: service_healthy
       cube-nonroot-user-volume-fix:
         condition: service_completed_successfully
     restart: unless-stopped
@@ -115,8 +115,16 @@ services:
   queue:
     image: docker.io/library/rabbitmq:3
     restart: on-failure
+    ports:
+      - 5672:5672
     networks:
       - local
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      start_period: 20s
+      retries: 3
+      timeout: 10s
+      interval: 5s
 
   pfcon:
     container_name: pfcon
@@ -212,17 +220,18 @@ services:
         condition: service_completed_successfully
 
   oxidicom:
-    image: ghcr.io/fnndsc/oxidicom:2.0.0
+    image: ghcr.io/fnndsc/oxidicom:pr-3  # https://github.com/FNNDSC/oxidicom/pull/3
     environment:
-      OXIDICOM_DB_CONNECTION: postgresql://chris:chris1234@db:5432/chris
+      # https://chrisproject.org/docs/oxidicom/deployment#environment-variables
       OXIDICOM_FILES_ROOT: /data
+      OXIDICOM_AMQP_ADDRESS: amqp://queue:5672
+      OXIDICOM_NATS_ADDRESS: nats:4222
+      OXIDICOM_PROGRESS_INTERVAL: 40ms  # 25Hz
       OXIDICOM_SCP_AET: ChRIS
-      OXIDICOM_PACS_ADDRESS: '{MINICHRISORTHANC="orthanc:4242"}'
       OXIDICOM_SCP_PROMISCUOUS: "true"
-      OXIDICOM_DB_BATCH_SIZE: 20
       OXIDICOM_LISTENER_THREADS: 32
-      OXIDICOM_VERBOSE: "true"
       OXIDICOM_LISTENER_PORT: 11111
+      RUST_LOG: oxidicom=info
     ports:
       - "11111:11111"
     volumes:
@@ -234,8 +243,26 @@ services:
       - pacs
     user: 1001:0
     depends_on:
+      queue:
+        condition: service_healthy
+      nats:
+        condition: service_healthy
       cube-nonroot-user-volume-fix:
         condition: service_completed_successfully
+
+  nats:
+    image: docker.io/library/nats:2.10.20-alpine3.20
+    ports:
+      - "4222:4222"
+    networks:
+      - local
+    healthcheck:
+      test: wget http://localhost:8222/healthz -q -S -O -
+      start_period: 10s
+      retries: 3
+      timeout: 2s
+      interval: 2s
+
   pfbridge:
     image: docker.io/fnndsc/pfbridge:3.7.2
     container_name: pfbridge
