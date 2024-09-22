@@ -177,13 +177,27 @@ services:
       org.chrisproject.role: "pman"
 
   chris_ui:
-    image: ghcr.io/fnndsc/chris_ui:20240507.446-767958ca
-    command: sirv --host --single
+    # This image is likely outdated.
+    # Newer tags can be found here --> https://github.com/FNNDSC/ChRIS_ui/pkgs/container/chris_ui
+    image: ghcr.io/fnndsc/chris_ui:staging
     environment:
-      REACT_APP_CHRIS_UI_URL: http://localhost:8000/api/v1/
-      REACT_APP_PFDCM_URL: http://localhost:4005/
+      # https://chrisproject.org/docs/run/chris_ui#environment-variables
+      CHRIS_UI_URL: http://${HOSTNAME:-localhost}:8000/api/v1/
+      PFDCM_URL: http://${HOSTNAME:-localhost}:4005/
+      OHIF_URL: http://${HOSTNAME:-localhost}:8042/ohif/
+      SERVER_PORT: "8020"
+      SERVER_LOG_REMOTE_ADDRESS: "true"
+      SERVER_HEALTH: "true"
     ports:
-      - "8020:3000"
+      - "8020:8020"
+    user: "100100:100100"
+    group_add: [ root ]
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:8020/health"]
+      interval: 5s
+      timeout: 2s
+      retries: 3
+      start_period: 10s
 
   orthanc:
     image: docker.io/jodogne/orthanc-plugins:1.12.3
