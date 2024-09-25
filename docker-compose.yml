@@ -183,7 +183,7 @@ services:
     environment:
       # https://chrisproject.org/docs/run/chris_ui#environment-variables
       CHRIS_UI_URL: http://${HOSTNAME:-localhost}:8000/api/v1/
-      PFDCM_URL: http://${HOSTNAME:-localhost}:4005/
+      PFDCM_URL: http://${HOSTNAME:-localhost}:4005
       OHIF_URL: http://${HOSTNAME:-localhost}:8042/ohif/
       SERVER_PORT: "8020"
       SERVER_LOG_REMOTE_ADDRESS: "true"
