@@ -246,6 +246,7 @@ services:
       OXIDICOM_LISTENER_THREADS: 32
       OXIDICOM_LISTENER_PORT: 11111
       RUST_LOG: oxidicom=info
+      OXIDICOM_DEV_SLEEP: 10ms  # throttle performance, so that we can see what's going on in ChRIS_ui
     ports:
       - "11111:11111"
     volumes:
