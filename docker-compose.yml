@@ -179,7 +179,7 @@ services:
   chris_ui:
     # This image is likely outdated.
     # Newer tags can be found here --> https://github.com/FNNDSC/ChRIS_ui/pkgs/container/chris_ui
-    image: ghcr.io/fnndsc/chris_ui:staging
+    image: ghcr.io/fnndsc/chris_ui:pr-1258
     environment:
       # https://chrisproject.org/docs/run/chris_ui#environment-variables
       CHRIS_UI_URL: http://${HOSTNAME:-localhost}:8000/api/v1/
