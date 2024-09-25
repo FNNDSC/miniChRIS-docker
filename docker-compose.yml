@@ -257,6 +257,7 @@ services:
     profiles:
       - pacs
     user: 1001:0
+    stop_signal: SIGKILL
     depends_on:
       queue:
         condition: service_healthy
