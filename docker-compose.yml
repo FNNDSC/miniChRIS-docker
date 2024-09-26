@@ -193,7 +193,7 @@ services:
     user: "100100:100100"
     group_add: [ root ]
     healthcheck:
-      test: ["CMD", "wget", "--spider", "http://localhost:8020/health"]
+      test: ["CMD", "wget", "--spider", "http://127.0.0.1:8020/health"]
       interval: 5s
       timeout: 2s
       retries: 3
