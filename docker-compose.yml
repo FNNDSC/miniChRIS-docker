@@ -330,7 +330,7 @@ services:
       - pflink
 
   graphql-engine:
-    image: docker.io/hasura/graphql-engine:v2.40.0
+    image: docker.io/hasura/graphql-engine:v2.41.0
     ports:
       - "8090:8080"
     restart: unless-stopped
