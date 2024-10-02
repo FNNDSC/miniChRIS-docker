@@ -22,6 +22,6 @@ cube:
     - name: pl-topologicalcopy
       version: 1.0.2
     - name: pl-simpledsapp
-      version: 2.1.3
+      version: 2.1.0
     - name: pl-unstack-folders
       version: 1.0.0
