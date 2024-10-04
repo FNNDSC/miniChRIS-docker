@@ -135,7 +135,7 @@ services:
       PFCON_USER: pfcon
       PFCON_PASSWORD: pfcon1234
       PFCON_INNETWORK: "true"
-      STORAGE_ENV: filesystem
+      STORAGE_ENV: fslink
       STOREBASE_MOUNT: /var/local/storeBase
     ports:
       - "5005:5005"
