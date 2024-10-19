@@ -240,13 +240,13 @@ services:
       OXIDICOM_FILES_ROOT: /data
       OXIDICOM_AMQP_ADDRESS: amqp://queue:5672
       OXIDICOM_NATS_ADDRESS: nats:4222
-      OXIDICOM_PROGRESS_INTERVAL: 40ms  # 25Hz
       OXIDICOM_SCP_AET: ChRIS
       OXIDICOM_SCP_PROMISCUOUS: "true"
       OXIDICOM_LISTENER_THREADS: 32
       OXIDICOM_LISTENER_PORT: 11111
       RUST_LOG: oxidicom=info
-      OXIDICOM_DEV_SLEEP: 50ms  # throttle performance, so that we can see what's going on in ChRIS_ui
+      OXIDICOM_PROGRESS_INTERVAL: 100ms
+      OXIDICOM_DEV_SLEEP: 150ms  # throttle performance, so that we can see what's going on in ChRIS_ui
     ports:
       - "11111:11111"
     volumes:
