@@ -89,19 +89,23 @@ output_folder_root=$(
     -H "Authorization: Token $token" \
     -H 'Accept: application/json'
 )
-output_folder_children=$(
-  curl -s "$(echo $output_folder_root | jq -r .children)" \
+output_folder_linkfiles=$(
+  curl -s "$(echo $output_folder_root | jq -r .link_files)" \
     -H "Authorization: Token $token" \
     -H 'Accept: application/json'
 )
-
+linked_folder=$(
+  curl -s "$(echo $output_folder_linkfiles | jq -r '.results[0].linked_folder')" \
+    -H "Authorization: Token $token" \
+    -H 'Accept: application/json'
+)
 output_files=$(
-  curl -s "$(echo $output_folder_children | jq -r '.results[0].files')" \
+  curl -s "$(echo $linked_folder | jq -r '.files')" \
     -H "Authorization: Token $token" \
     -H 'Accept: application/json'
 )
 copied_file_url=$(
-  echo $output_files \
+  echo "$output_files" \
     | jq -r '.results | map(select(.fname|endswith("LICENSE")))[0].file_resource'
 )
 
