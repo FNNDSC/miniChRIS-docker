@@ -1,7 +1,9 @@
-#!/bin/bash -x
+#!/usr/bin/env bash
 # run pl-dircopy on the file "LICENSE", that's it
 
 cd $(dirname "$(readlink -f "$0")")
+
+set -x
 
 ok_statuses=(created waiting scheduled started registeringFiles)
 
@@ -31,10 +33,10 @@ token=$(
 )
 
 # upload a file
-curl -s 'http://localhost:8000/api/v1/uploadedfiles/' \
+curl -s 'http://localhost:8000/api/v1/userfiles/' \
   -H 'Accept: application/vnd.collection+json' \
   -H "Authorization: Token $token" \
-  -F 'upload_path=chris/uploads/wow-upload-01/LICENSE' \
+  -F 'upload_path=home/chris/uploads/wow-upload-01/LICENSE' \
   -F "fname=@LICENSE"
 
 # find the plugin ID for pl-dircopy
@@ -50,7 +52,7 @@ feed=$(
     -H "Authorization: Token $token" \
     -H 'Content-Type: application/vnd.collection+json' \
     -H 'Accept: application/json' \
-    --data '{"template":{"data":[{"name":"dir","value":"chris/uploads/wow-upload-01"}]}}'
+    --data '{"template":{"data":[{"name":"dir","value":"home/chris/uploads/wow-upload-01"}]}}'
 )
 
 job_url=$(echo $feed | jq -r .url)
@@ -82,13 +84,28 @@ if [ "$run_status" != "finishedSuccessfully" ]; then
 fi
 
 # download output file
+output_folder_root=$(
+  curl -s "$(echo $job | jq -r .output_folder)" \
+    -H "Authorization: Token $token" \
+    -H 'Accept: application/json'
+)
+output_folder_linkfiles=$(
+  curl -s "$(echo $output_folder_root | jq -r .link_files)" \
+    -H "Authorization: Token $token" \
+    -H 'Accept: application/json'
+)
+linked_folder=$(
+  curl -s "$(echo $output_folder_linkfiles | jq -r '.results[0].linked_folder')" \
+    -H "Authorization: Token $token" \
+    -H 'Accept: application/json'
+)
 output_files=$(
-  curl -s "$(echo $job | jq -r .files)" \
+  curl -s "$(echo $linked_folder | jq -r '.files')" \
     -H "Authorization: Token $token" \
     -H 'Accept: application/json'
 )
 copied_file_url=$(
-  echo $output_files \
+  echo "$output_files" \
     | jq -r '.results | map(select(.fname|endswith("LICENSE")))[0].file_resource'
 )
 

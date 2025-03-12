@@ -8,9 +8,9 @@
  */
 
 
-const fs = require('fs');
-const path = require('path');
-const { execFileSync } = require('child_process');
+const fs = require('node:fs');
+const path = require('node:path');
+const { execFileSync } = require('node:child_process');
 const assert = require('node:assert/strict');
 
 
