@@ -200,7 +200,7 @@ services:
       start_period: 10s
 
   orthanc:
-    image: docker.io/jodogne/orthanc-plugins:1.12.3
+    image: docker.io/jodogne/orthanc-plugins:1.12.7
     volumes:
       - ./orthanc.json:/etc/orthanc/orthanc.json:ro
       - orthanc:/var/lib/orthanc/db
