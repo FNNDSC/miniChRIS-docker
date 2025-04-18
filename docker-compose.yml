@@ -234,7 +234,7 @@ services:
         condition: service_completed_successfully
 
   oxidicom:
-    image: ghcr.io/fnndsc/oxidicom:pr-3  # https://github.com/FNNDSC/oxidicom/pull/3
+    image: ghcr.io/fnndsc/oxidicom:3.0.0
     environment:
       # https://chrisproject.org/docs/oxidicom/deployment#environment-variables
       OXIDICOM_FILES_ROOT: /data
