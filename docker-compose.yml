@@ -267,11 +267,14 @@ services:
         condition: service_completed_successfully
 
   nats:
-    image: docker.io/library/nats:2.11.4
+    # NOTE: using -alpine instead of -scratch so wget can be used in the healthcheck
+    image: docker.io/library/nats:2.11.4-alpine
     ports:
       - "4222:4222"
     networks:
       - local
+    profiles:
+      - pacs
     healthcheck:
       test: wget http://localhost:8222/healthz -q -S -O -
       start_period: 10s
