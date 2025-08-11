@@ -3,7 +3,7 @@
 [![CI badge](https://github.com/FNNDSC/miniChRIS-docker/workflows/CI/badge.svg)](https://github.com/FNNDSC/miniChRIS-docker/actions?query=workflow%3ACI)
 [![MIT license](https://img.shields.io/github/license/FNNDSC/miniChRIS-docker)](LICENSE)
 
-Run a demo of ChRIS. https://chrisproject.org/
+Run a demo of _ChRIS_. https://chrisproject.org/
 
 ## Abstract
 
@@ -28,9 +28,12 @@ on how to run development environments for the latest versions.
 
 #### Which ChRIS???
 
-- _miniChRIS-docker_ is the easiest, fastest, and most portable way to run _ChRIS_.
-- [_miniChRIS-podman_](https://github.com/FNNDSC/miniChRIS-podman) uses rootless Podman to run _ChRIS_.
-- [ChRIS_ultron_backEnd/make.sh](https://github.com/FNNDSC/ChRIS_ultron_backEnd) runs the _ChRIS_ backend in development mode with pman on Docker swarm and optionally runs integration tests.
+- _miniChRIS-docker_ is the easiest, fastest, and most portable way to run a "demo" of _ChRIS_.
+- [ChRIS_ultron_backEnd](https://github.com/FNNDSC/ChRIS_ultron_backEnd) runs the _ChRIS_ backend in development mode and works with either Docker or Podman.
+- [fnndsc/charts](https://chrisproject.org/docs/run/helm) Helm repository is for production.
+
+> [!CAUTION]
+> _miniChRIS_ is not suitable for production. It contains hard-coded secrets and insecure defaults.
 
 ### System Requirements
 
@@ -70,7 +73,6 @@ Orthanc        | http://localhost:8042/
 website      | username | password
 -------------|----------|----------
 ChRIS        | chris    | chris1234
-Orthanc      | orthanc  | orthanc
 
 ### Start
 
@@ -94,20 +96,10 @@ Orthanc      | orthanc  | orthanc
 
 Try `docker compose down -v --remove-orphans`.
 
-### Network Configuration
-
-To run _miniChRIS_ remotely it is necessary to replace occurrences of `localhost` with your machine's hostname or IP address in `docker-compose.yml`.
-
-```shell
-sed -i -e 's/localhost/my_machines_hostname/' docker-compose.yml
-docker compose up -d
-```
-
 ### Add Plugins to CUBE
 
 Plugins are added to _ChRIS_ via the Django admin dashboard.
-
-https://github.com/FNNDSC/ChRIS_ultron_backEnd/wiki/%5BHOW-TO%5D-Register-a-plugin-via-Django-dashboard
+Documentation: https://chrisproject.org/docs/tutorials/upload_plugin#using-the-django-dashboard
 
 Alternatively, plugins can be added declaratively.
 A common use case would be to run locally built Python
@@ -139,10 +131,10 @@ After modifying `chrisomatic.yml`, apply the changes by rerunning `./minichris.s
 
 For details, see https://github.com/FNNDSC/chrisomatic#plugins-and-pipelines
 
-# Github Actions
+## Github Actions
 
-*miniChRIS* can be used as a step in Github Actions workflows to spin up
-an ephermeral instance of the ChRIS backend and its ancillary services
+*miniChRIS* can be used as a step in GitHub Actions workflows to spin up
+an ephemeral instance of the ChRIS backend and its ancillary services
 for the purpose of end-to-end testing.
 
 ```yaml
@@ -213,7 +205,7 @@ jobs:
 - [FNNDSC/cookicutter-chrisapp/.github/workflows/test.yml](https://github.com/FNNDSC/cookiecutter-chrisapp/blob/16db74860e8201f3d201183961eadc39116ce8a7/.github/workflows/test.yml#L31) uses _mihiChRIS_ for end-to-end testing.
 - [FNNDSC/cni-store-proxy/package.json](https://github.com/FNNDSC/cni-store-proxy/blob/master/package.json) uses _miniChRIS_ as a git submodule for a local dev environment.
 
-# About _miniChRIS_
+## About _miniChRIS_
 
 ### Goals
 
@@ -227,13 +219,6 @@ jobs:
 
 ### Performance
 
-`./minichris.sh` takes 30-60 seconds on a decent laptop (quad-core, 16 GB, SSD)
+`./minichris.sh` takes 30-60 seconds on a decent laptop (quad-core, 8GB memory, SSD)
 and takes 2-3 minutes in [Github Actions' Ubuntu VMs](https://github.com/FNNDSC/miniChRIS/actions).
 
-## Development
-
-You can use hasura-cli on the metal like this:
-
-```shell
-env HASURA_GRAPHQL_ENDPOINT=http://localhost:8090 hasura --help
-```
