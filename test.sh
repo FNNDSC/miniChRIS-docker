@@ -22,7 +22,7 @@ set -e
 # assert that chrisomatic plugin registration worked
 curl -su 'chris:chris1234' \
   'http://localhost:8000/api/v1/plugins/search/?name_exact=pl-simpledsapp' \
-  | grep -q 'fnndsc/pl-simpledsapp:2.1.0'
+  | grep -q 'fnndsc/pl-simpledsapp:2.1.5'
 
 # log in
 token=$(
